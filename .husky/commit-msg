@@ -1,0 +1,69 @@
+#!/bin/sh
+
+commit_msg_file=$1
+commit_msg=$(cat $1)
+
+# commit -m 옵션 감지
+if ! grep -q "^#" "$commit_msg_file"; then
+    echo "❌ 'git commit -m' 옵션은 사용할 수 없습니다."
+    echo "
+💡 다음과 같이 합니다.
+1. git commit (엔터)
+2. 템플릿에 맞춰 커밋 메세지 작성
+3. 저장 후 종료
+"
+    exit 1
+fi
+
+# ------------------------------------------------------------------------
+# 위: -m 옵션 감지
+# 아래: 이슈 ID 추출 및 추가 작성
+# ------------------------------------------------------------------------
+
+commit_msg_file=$1
+commit_msg=$(cat $1)
+
+# 주석을 제외한 실제 메세지만 추출
+filtered_msg=$(echo "$commit_msg" | grep -v '^#')
+echo "원본 커밋 메세지"
+echo "$filtered_msg"
+
+# 현재 브랜치 이름 가져오기
+branch_name=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+
+# Jira 이슈 ID 추출 (예: ISSUE-123)
+issue_id=$(echo "$branch_name" | grep -oE '[A-Z]+-[0-9]+' || echo "")
+
+# 이슈 ID가 있고, 커밋 메세지에 이슈 ID가 없는 경우에만 추가
+if [ ! -z "$issue_id" ] && ! echo "$commit_msg" | grep -q "\[$issue_id\]"; then
+    commit_msg="[$issue_id] $commit_msg"
+    echo "$commit_msg" > "$commit_msg_file"
+fi
+
+filtered_msg=$(echo "$commit_msg" | grep -v '^#')
+echo "수정된 커밋 메세지"
+echo "$filtered_msg"
+
+
+# ------------------------------------------------------------------------
+# 위: 이슈 ID 추출 및 추가 작성
+# 아래: 커밋 메세지 패턴 검사
+# ------------------------------------------------------------------------
+
+commit_msg_file=$1
+commit_msg=$(cat $1)
+
+filtered_msg=$(echo "$commit_msg" | grep -v '^#')
+echo "커밋 메세지"
+echo "$filtered_msg"
+
+# 커밋 메세지 패턴 검사
+if ! echo "$commit_msg" | grep -qE '^\[([A-Z]+-[0-9]+)\]\s+(feat|fix|docs|style|refactor|test|chore): .+'; then
+    echo "❌ 잘못된 커밋 메세지 형식입니다."
+    echo "
+    올바른 커밋 메세지 형식
+    [ISSUE-123] feat: 회원가입 API 개발
+    "
+    exit 1
+fi
+

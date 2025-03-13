@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# 커밋 템플릿 적용
+if [ -f .gitmessage ]; then
+    # 템플릿 파일 내용을 커밋 메세지로 적용
+    cat .gitmessage > "$1"
+fi
