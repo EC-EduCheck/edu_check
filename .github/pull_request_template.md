@@ -1,8 +1,8 @@
-# asap 
+# asap
 
 ## 🔍 관련 Jira 이슈
 
-- SSD-${NUMBER}
+- EC-${NUMBER}
 
 ## 📝 변경 사항
 

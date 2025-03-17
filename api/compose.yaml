@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_local
+    container_name: mysql_dev
     ports:
       - "${DATABASE_PORT}:3306"
     environment:
@@ -15,7 +15,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: redis_local
+    container_name: redis_dev
     ports:
       - "${REDIS_PORT}:6379"
     volumes:
