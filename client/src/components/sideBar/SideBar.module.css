@@ -1,0 +1,6 @@
+.sideBar {
+  width: 300px;
+  height: 100%;
+  min-height: var(--height-full);
+  background-color: var(--bg-100);
+}

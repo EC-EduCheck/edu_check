@@ -5,9 +5,9 @@ import SideBar from '../../components/sideBar/SideBar';
 
 export default function DashBoard() {
   return (
-    <div className="container">
-      <Tab></Tab>
+    <div className={`container ${styles.dashBoard}`}>
       <SideBar></SideBar>
+      <Tab></Tab>
     </div>
   );
 }
