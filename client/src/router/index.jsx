@@ -5,6 +5,7 @@ import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import DashBoard from '../pages/dashBoard/DashBoard';
 import EditProfile from '../pages/editProfile/EditProfile';
+import RegisterProfile from '../pages/registerProfile/RegisterProfile';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         index: '/editProfile',
         element: <EditProfile />,
+      },
+      {
+        index: '/registerProfile',
+        element: <RegisterProfile />,
       },
       {
         index: '/dashBoard',
