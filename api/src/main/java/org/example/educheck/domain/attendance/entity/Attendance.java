@@ -1,32 +1,31 @@
 package org.example.educheck.domain.attendance.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import org.example.educheck.domain.lecture.Lecture;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Attendance extends BaseTimeEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "student_id")
-  private Student student;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
 
-  private LocalDateTime checkInTimestamp;
-  private LocalDateTime checkOutTimestamp;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id")
+    private Lecture lecture;
 
-  @Enumerated(EnumType.STRING)
-  private Status status;
+    private LocalDateTime checkInTimestamp;
+    private LocalDateTime checkOutTimestamp;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 }
