@@ -1,0 +1,86 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+:root {
+  /* color */
+  --primary-100: #b3e56a;
+  --primary-200: #57dd79;
+  --primary-300: #e56a6e;
+  --primary-400: #ffd9da;
+  --accent-100: #ffd9da;
+  --accent-200: #eef7e6;
+  --accent-300: #ffea97;
+  --border-100: #cecece;
+  --text-100: #333333;
+  --text-200: #666666;
+  --text-300: #aaaaaa;
+  --bg-100: #efefef;
+
+  /* font size */
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-36: 36px;
+
+  /* padding */
+  --padding-small: 0.5rem;
+  --padding-basic: 1rem;
+  --padding-medium: 1.5rem;
+  --padding-large: 2rem;
+
+  /* margin */
+  --margin-small: 0.5rem;
+  --margin-basic: 1rem;
+  --margin-medium: 1.5rem;
+  --margin-large: 2rem;
+
+  /* border-radius */
+  --border-radius-10: 10px;
+  --border-radius-20: 20px;
+  --border-radius-30: 30px;
+
+  /* transition */
+  --transition-basic: all 0.3s ease-in-out;
+
+  /* box-shadow */
+  --box-shadow-basic: 0 4px 4px rgba(0, 0, 0, 0.25);
+  --box-shadow-hover: 0 0 5px #333333;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--text-100);
+  box-sizing: border-box;
+  font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+}
+
+a {
+  color: var(--text-100);
+  display: block;
+  outline: 0;
+  text-decoration: none;
+  font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+}
+
+img {
+  border: none;
+  object-fit: cover;
+}
+
+button {
+  border: none;
+  color: var(--text-100);
+  font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+}
+
+form input {
+  border: none;
+  font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+}
+
+ol,
+ul,
+li {
+  list-style-type: none;
+}
