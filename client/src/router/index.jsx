@@ -4,6 +4,7 @@ import NotFound from '../pages/error/NotFound';
 import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import DashBoard from '../pages/dashBoard/DashBoard';
+import EditProfile from '../pages/editProfile/EditProfile';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         index: '/login',
         element: <Login />,
+      },
+      {
+        index: '/editProfile',
+        element: <EditProfile />,
       },
       {
         index: '/dashBoard',
