@@ -46,6 +46,14 @@
   /* box-shadow */
   --box-shadow-basic: 0 4px 4px rgba(0, 0, 0, 0.25);
   --box-shadow-hover: 0 0 5px #333333;
+
+  /* width */
+  --width-full: 100vw;
+  --width-half: 50vw;
+
+  /* height */
+  --height-full: 100vh;
+  --height-half: 50vh;
 }
 
 body {
@@ -83,4 +91,8 @@ ol,
 ul,
 li {
   list-style-type: none;
+}
+
+.container {
+  width: var(--width-full);
 }
