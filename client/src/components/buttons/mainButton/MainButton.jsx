@@ -3,6 +3,8 @@ import styles from "./MainButton.module.css"
 
 export default function MainButton() {
   return (
-    <div>MainButton</div>
+    <div>
+      <button className={styles.mainButton}>퇴근</button>
+    </div>
   )
 }
