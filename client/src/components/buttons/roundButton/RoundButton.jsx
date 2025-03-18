@@ -1,8 +1,10 @@
 import React from 'react'
 import styles from "./RoundButton.module.css"
 
-export default function RoundButton() {
+export default function RoundButton({title, handleClick, bgcolor}) {
   return (
-    <div>RoundButton</div>
-  )
+    <div>
+      <button className={styles.roundButton} onClick={handleClick} style={{backgroundColor : bgcolor}}>{title}</button>
+    </div>
+  );
 }
