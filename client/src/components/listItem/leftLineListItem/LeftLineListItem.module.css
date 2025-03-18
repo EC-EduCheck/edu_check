@@ -1,0 +1,29 @@
+.leftLineListItem {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-basic) var(--padding-medium);
+  margin-top: var(--margin-basic);
+  border: 1px solid var(--border-100);
+  border-radius: var(--border-radius-20);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-basic);
+}
+
+.leftLineListItem::before {
+  content: '';
+  width: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--after-bg);
+}
+
+button.leftLineListItem:hover {
+  box-shadow: var(--box-shadow-medium);
+}

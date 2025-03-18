@@ -1,0 +1,48 @@
+.moreButtonbox {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.moreButton {
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-basic);
+}
+
+.moreButton img {
+  width: 22px;
+  rotate: 90deg;
+  filter: opacity(0.8) drop-shadow(0 0 0 var(--border-100));
+  transition: var(--transition-basic);
+}
+
+.moreButton:hover {
+  background-color: var(--bg-100);
+}
+
+.moreButton:hover img {
+  filter: opacity(1) drop-shadow(0 0 0 var(--text-100));
+}
+
+.dropBox {
+  width: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: sticky;
+  top: 100%;
+  left: 0;
+  border-radius: var(--border-radius-10);
+  border: 1px solid var(--bg-300);
+  overflow: hidden;
+  z-index: 999;
+}

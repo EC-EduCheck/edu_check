@@ -8,6 +8,6 @@
 }
 
 .dropBoxButton:hover {
-  color: var(--text-200);
+  color: var(--text-300);
   background-color: var(--bg-100);
 }
