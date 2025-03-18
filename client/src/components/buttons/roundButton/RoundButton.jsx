@@ -6,5 +6,5 @@ export default function RoundButton({title, handleClick, bgcolor}) {
     <div>
       <button className={styles.roundButton} onClick={handleClick} style={{backgroundColor : bgcolor}}>{title}</button>
     </div>
-  );
+  )
 }
