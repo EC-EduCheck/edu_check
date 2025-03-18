@@ -1,0 +1,12 @@
+.tabButton {
+  height: 100%;
+  font-size: var(--font-size-16);
+  padding: var(--padding-small);
+  margin-right: var(--margin-basic);
+  background-color: #fff;
+  transition: var(--transition-basic);
+}
+
+.tabButton:hover {
+  background-color: var(--bg-100);
+}

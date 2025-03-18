@@ -5,7 +5,7 @@ import { getTabContent } from '../../utils/tabContentUtils';
 
 export default function Tab({ menuType }) {
   const tabContent = getTabContent(menuType).map((item, index) => {
-    return <TabButton key={index} item={item}></TabButton>;
+    return <TabButton key={index} index={index} item={item}></TabButton>;
   });
 
   return <div className={styles.tab}>{tabContent}</div>;

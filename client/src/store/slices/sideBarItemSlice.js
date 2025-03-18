@@ -1,18 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  current: '출석',
+  nav: '출석',
+  tab: 0,
 };
 
 const sideBarItemSlice = createSlice({
   name: 'sideBarItem',
   initialState,
   reducers: {
-    update: (state, action) => {
-      state.current = action.payload;
+    updateNav: (state, action) => {
+      state.nav = action.payload;
+      state.tab = 0;
+    },
+    updateTab: (state, action) => {
+      state.tab = action.payload;
     },
   },
 });
 
-export const { update } = sideBarItemSlice.actions;
+export const { updateNav, updateTab } = sideBarItemSlice.actions;
 export default sideBarItemSlice.reducer;
