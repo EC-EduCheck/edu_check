@@ -1,0 +1,8 @@
+.mainButton {
+  padding: var(--padding-small) var(--padding-basic);
+  border: 1px solid var(--bg-100);
+  border-radius: var(--border-radius-10);
+  font-size: var(--font-size-14);
+  text-align: center;
+  background-color: var(--primary-100);
+}
