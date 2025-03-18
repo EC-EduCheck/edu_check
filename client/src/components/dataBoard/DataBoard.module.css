@@ -1,0 +1,15 @@
+.dataBoard {
+  padding: var(--padding-basic);
+  background-color: var(--bg-100);
+  border-radius: var(--border-radius-20);
+}
+
+.dataBoard p:first-child {
+  font-size: var(--font-size-16);
+}
+
+.dataBoard p:last-child {
+  font-size: var(--font-size-14);
+  color: var(--text-300);
+  margin-top: var(--margin-basic);
+}

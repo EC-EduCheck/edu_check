@@ -1,8 +1,8 @@
 import React from 'react'
-import styles from "./DashBoard.module.css"
+import { useSelector } from 'react-redux';
+import styles from './DashBoard.module.css';
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
-import { useSelector } from 'react-redux';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 
 export default function DashBoard() {
