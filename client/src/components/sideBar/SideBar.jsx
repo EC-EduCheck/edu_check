@@ -27,7 +27,7 @@ export default function SideBar() {
         className={styles.memberInfo}
       >
         <div className={styles.memberInfoImg}>
-          <img src="./assets/calender-icon.png" alt="user image" />
+          <img src="./assets/logo.png" alt="user image" />
         </div>
 
         {/* todo : member 이름, 과정 가져오기 */}
