@@ -39,6 +39,7 @@
   --margin-large: 2rem;
 
   /* border-radius */
+  --border-radius-5: 5px;
   --border-radius-10: 10px;
   --border-radius-20: 20px;
   --border-radius-30: 30px;
