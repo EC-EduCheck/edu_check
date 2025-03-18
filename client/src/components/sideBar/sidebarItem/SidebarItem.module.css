@@ -1,0 +1,18 @@
+.sidebarItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--padding-small);
+  border-radius: var(--border-radius-10);
+  transition: var(--transition-basic);
+}
+
+.sidebarItem p {
+  color: var(--text-300);
+  font-size: var(--font-size-16);
+}
+
+.sidebarItem:hover {
+  background-color: var(--bg-300);
+}

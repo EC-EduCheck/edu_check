@@ -15,8 +15,10 @@
   --text-300: #aaaaaa;
   --bg-100: #efefef;
   --bg-200: #fcfcfc;
+  --bg-300: #e5e5e5;
 
   /* font size */
+  --font-size-12: 12px;
   --font-size-14: 14px;
   --font-size-16: 16px;
   --font-size-18: 18px;

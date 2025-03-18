@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  current: '',
+  current: '출석',
 };
 
 const sideBarItemSlice = createSlice({

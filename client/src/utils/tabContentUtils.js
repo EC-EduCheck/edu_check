@@ -8,7 +8,7 @@ export const getTabContent = (menuType) => {
       return attendanceContent;
     case '회의실 예약':
       return meetingRoomContent;
-    case '회의실 예약':
+    case '설정':
       return settingContent;
   }
 };
