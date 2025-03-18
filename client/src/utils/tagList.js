@@ -1,3 +1,5 @@
+export const tagList = ['수강중', '수료', '수강 중단'];
+
 export const getTagColors = (menuType) => {
   switch (true) {
     case ['출석', '수강중'].includes(menuType):

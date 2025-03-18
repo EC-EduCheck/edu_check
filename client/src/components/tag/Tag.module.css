@@ -1,3 +1,7 @@
+.tagBox {
+  position: relative;
+}
+
 .tag {
   width: 82px;
   text-align: center;
@@ -9,4 +13,19 @@
 
 .tag:not(:disabled):hover {
   box-shadow: var(--box-shadow-medium);
+}
+
+.dropBox {
+  width: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border-radius: var(--border-radius-10);
+  border: 1px solid var(--bg-300);
+  overflow: hidden;
+  z-index: 999;
 }

@@ -1,8 +1,10 @@
 import React from 'react'
 import styles from "./DropBoxButton.module.css"
 
-export default function DropBoxButton() {
+export default function DropBoxButton({ title, handleClick }) {
   return (
-    <div>DropBoxButton</div>
-  )
+    <button className={styles.dropBoxButton} onClick={handleClick}>
+      {title}
+    </button>
+  );
 }
