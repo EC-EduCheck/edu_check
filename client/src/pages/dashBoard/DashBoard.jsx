@@ -13,6 +13,7 @@ export default function DashBoard() {
       <SideBar></SideBar>
       <div className={styles.dashBoardBox}>
         <Tab menuType={currentSideBarItem}></Tab>
+
         <div className={styles.dashBoardContent}>
           <DashBoardItem width="100%"></DashBoardItem>
         </div>
