@@ -1,14 +1,15 @@
-package org.example.educheck.domain.absenceAttendance.entity;
+package org.example.educheck.domain.absenceattendanceattachmentfile.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 
 @Getter
 @Entity(name = "absence_attendacne_attachment_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AttachmentFile {
+public class AbsenceAttendanceAttachmentFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

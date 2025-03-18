@@ -1,16 +1,15 @@
-package org.example.educheck.domain.campusStaff.entity;
+package org.example.educheck.domain.meetingroom.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.campus.Campus;
-import org.example.educheck.domain.member.staff.entity.Staff;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CampusStaff {
+public class MeetingRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +19,5 @@ public class CampusStaff {
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
+    private String name;
 }

@@ -1,4 +1,4 @@
-package org.example.educheck.domain.absenceAttendance.entity;
+package org.example.educheck.domain.absenceattendance.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
