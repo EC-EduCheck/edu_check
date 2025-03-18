@@ -7,7 +7,7 @@ export default function DashBoard() {
   return (
     <div className={`container ${styles.dashBoard}`}>
       <SideBar></SideBar>
-      <Tab></Tab>
+      <Tab menuType="attendance"></Tab>
     </div>
   );
 }
