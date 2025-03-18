@@ -3,4 +3,5 @@
   height: 10vh;
   border-bottom: 1px solid var(--bg-100);
   padding-left: var(--padding-large);
+  box-sizing: border-box;
 }

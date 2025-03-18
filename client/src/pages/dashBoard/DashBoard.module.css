@@ -1,3 +1,16 @@
 .dashBoard {
   display: flex;
 }
+
+.dashBoardBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.dashBoardContent {
+  min-height: calc(100vh - 91px);
+  padding: var(--padding-large);
+  box-sizing: border-box;
+}

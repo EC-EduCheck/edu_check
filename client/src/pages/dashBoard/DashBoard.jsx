@@ -10,7 +10,10 @@ export default function DashBoard() {
   return (
     <div className={`container ${styles.dashBoard}`}>
       <SideBar></SideBar>
-      <Tab menuType={currentSideBarItem}></Tab>
+      <div className={styles.dashBoardBox}>
+        <Tab menuType={currentSideBarItem}></Tab>
+        <div className={styles.dashBoardContent}></div>
+      </div>
     </div>
   );
 }
