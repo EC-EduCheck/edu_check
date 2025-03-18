@@ -1,0 +1,23 @@
+.closeButton {
+  width: 36px;
+  height: 36px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-basic);
+}
+
+.closeButton img {
+  width: 18px;
+  transition: var(--transition-basic);
+}
+
+.closeButton:hover {
+  background-color: var(--bg-100);
+}
+
+.closeButton:hover img {
+  filter: opacity(0.5) drop-shadow(0 0 0 var(--text-200));
+}

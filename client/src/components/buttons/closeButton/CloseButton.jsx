@@ -1,8 +1,10 @@
 import React from 'react'
-import style from "./CloseButton.module.css"
+import styles from './CloseButton.module.css';
 
 export default function CloseButton() {
   return (
-    <div>CloseButton</div>
-  )
+    <button className={styles.closeButton}>
+      <img src="./assets/close-icon.png" alt="닫기 아이콘" />
+    </button>
+  );
 }
