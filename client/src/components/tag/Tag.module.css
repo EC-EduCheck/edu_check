@@ -1,0 +1,12 @@
+.tag {
+  width: 82px;
+  text-align: center;
+  font-size: var(--font-size-14);
+  padding: var(--padding-small);
+  border-radius: var(--border-radius-10);
+  transition: var(--transition-basic);
+}
+
+.tag:not(:disabled):hover {
+  box-shadow: var(--box-shadow-medium);
+}
