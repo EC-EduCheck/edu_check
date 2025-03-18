@@ -14,6 +14,7 @@ export default function DashBoard() {
       <div className={styles.dashBoardBox}>
         <Tab menuType={currentSideBarItem}></Tab>
 
+        {/* dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
         <div className={styles.dashBoardContent}>
           <DashBoardItem width="100%"></DashBoardItem>
         </div>
