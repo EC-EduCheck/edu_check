@@ -1,0 +1,6 @@
+.DashBoardItem {
+  padding: var(--padding-medium);
+  border: 1px solid var(--border-100);
+  border-radius: var(--border-radius-20);
+  box-sizing: border-box;
+}
