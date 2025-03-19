@@ -30,6 +30,7 @@ public class Member implements UserDetails {
     private String phoneNumber;
     private LocalDate birthDate;
     private String password;
+    private LocalDate lastLoginDate;
 
     @Enumerated(EnumType.STRING)
     private Role role;
