@@ -31,21 +31,15 @@ public class MeetingRoomReservationService {
 
         Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
 
-        //회의실이 존재하는지 검증 및 엔티티를 저장시 사용해야함(예외 처리가 예쁘지 않음)
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회의실이 존재하지 않습니다."));
 
-        //사용자 캠퍼스랑 회의실 캠퍼스가 일치하는지 검증
         validateUserCampusMatchMeetingRoom(campusId, meetingRoom);
 
-        //유효한 예약 시간대인지 검증
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
 
-        //해당 시간대에 다른 예약이 존재하는지 검증
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
-
-        //예약 처리
 
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
@@ -89,7 +83,6 @@ public class MeetingRoomReservationService {
     }
 
     //TODO: 쿼리 발생하는거 확인 후, FETCH JOIN 처리 등 고려 하기
-    //해당 회의실이 캠퍼스에 속한지 확인한다.
     private void validateUserCampusMatchMeetingRoom(Long campusId, MeetingRoom meetingRoom) {
 
         if (!campusId.equals(meetingRoom.getCampusId())) {
