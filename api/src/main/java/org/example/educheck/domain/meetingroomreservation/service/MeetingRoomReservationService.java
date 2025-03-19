@@ -8,7 +8,7 @@ import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomRese
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,9 @@ public class MeetingRoomReservationService {
     private final MeetingRoomRepository meetingRoomRepository;
 
     @Transactional
-    public void createReservation(User user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
+    public void createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
+
+        Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
 
         //회의실이 존재하는지 검증 및 엔티티를 저장시 사용해야함(예외 처리가 예쁘지 않음)
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
@@ -44,7 +46,7 @@ public class MeetingRoomReservationService {
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
         //예약 처리
-        Member findMember = memberRepository.findByEmail(user.getUsername());
+
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
     }
