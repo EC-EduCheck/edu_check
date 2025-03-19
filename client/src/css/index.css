@@ -48,7 +48,8 @@
   --transition-basic: all 0.3s ease-in-out;
 
   /* box-shadow */
-  --box-shadow-basic: 0 4px 4px rgba(0, 0, 0, 0.25);
+  --box-shadow-small: 0 0px 3px rgba(107, 107, 107, 0.45);
+  --box-shadow-basic: 0 4px 4px rgba(0, 0, 0, 0.5);
   --box-shadow-medium: 0 0px 5px rgba(51, 51, 51, 0.3);
   --box-shadow-hover: 0 0 5px #333333;
 

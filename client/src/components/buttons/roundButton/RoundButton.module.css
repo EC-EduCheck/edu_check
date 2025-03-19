@@ -1,11 +1,14 @@
 .roundButton {
-  width: 130px;
-  height: 50px;
-  margin: 100px 100px 600px 600px;
-  padding: var(--padding-small) var(--padding-basic);
-  border: 1px solid var(--bg-100);
+  font-size: var(--font-size-16);
+  padding: var(--padding-small) var(--padding-medium);
+  margin-right: var(--margin-basic);
+  border: 1px solid var(--bg-300);
   border-radius: var(--border-radius-30);
-  font-size: var(--font-size-18);
   text-align: center;
-  background-color: var(--primary-100);
-} 
+  background-color: #fff;
+  transition: var(--transition-basic);
+}
+
+.roundButton:hover {
+  box-shadow: var(--box-shadow-medium);
+}
