@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.dto.LoginRequestDto;
+import org.example.educheck.domain.member.dto.LoginResponseDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
-import org.example.educheck.domain.member.dto.TokenResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.student.entity.Status;
@@ -21,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @Transactional(readOnly = true)
@@ -66,25 +68,30 @@ public class AuthService {
         return member;
     }
 
-    public TokenResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-//        Authentication authenticate = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        requestDto.getEmail(), requestDto.getPassword()
-//                )
-//        );
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                requestDto.getEmail(), requestDto.getPassword()
-        );
         Authentication authenticate = authenticationManager.authenticate(
-                authentication
+                new UsernamePasswordAuthenticationToken(
+                        requestDto.getEmail(), requestDto.getPassword()
+                )
         );
+
 
         String accessToken = jwtTokenUtil.createToken(authenticate);
         response.setHeader("Authorization", "Bearer " + accessToken);
 //        response.addCookie(리프래시토큰); // TODO
 
-        return new TokenResponseDto(accessToken);
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
+                );
 
+        LoginResponseDto loginResponseDto = memberRepository.findLoginResponseDtoByMemberId(member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+
+        member.setLastLoginDate(LocalDateTime.now());
+
+        return loginResponseDto;
     }
 }
