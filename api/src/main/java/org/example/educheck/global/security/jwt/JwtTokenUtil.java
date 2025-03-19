@@ -25,7 +25,7 @@ public class JwtTokenUtil {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
 
         String username = authentication.getName();
         Claims claims = Jwts.claims().setSubject(username);

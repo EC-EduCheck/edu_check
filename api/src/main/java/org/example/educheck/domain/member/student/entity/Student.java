@@ -1,30 +1,35 @@
 package org.example.educheck.domain.member.student.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.example.educheck.domain.member.entity.Member;
-import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 
 @Entity
-public class Student extends BaseTimeEntity {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Student {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @OneToOne
-  @JoinColumn(name = "member_id")
-  private Member member;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-  @Enumerated(EnumType.STRING)
-  private Status status; // PENDING, NORMAL, WITHDRAW
+    @Enumerated(EnumType.STRING)
+    private Status status; // PENDING, NORMAL, WITHDRAW
 
-  private char courseParticipationStatus;
+    private char courseParticipationStatus;
+
+    @Builder
+    public Student(Member member, Status status, char courseParticipationStatus) {
+        this.member = member;
+        this.status = status;
+        this.courseParticipationStatus = courseParticipationStatus;
+    }
 }
