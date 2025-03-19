@@ -22,6 +22,7 @@ public class Student {
     private Member member;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Status status; // PENDING, NORMAL, WITHDRAW
 
     private char courseParticipationStatus;

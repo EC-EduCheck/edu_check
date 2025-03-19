@@ -32,6 +32,7 @@ public class Member implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
 

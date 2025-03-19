@@ -26,7 +26,7 @@ public class Registration {
     private Course course;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
 
     @Builder
