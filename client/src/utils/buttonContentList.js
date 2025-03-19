@@ -29,3 +29,15 @@ export const getIsClickable = (menuType) => {
       return false;
   }
 };
+
+// LeftLineListItem
+export const getBackgroundColor = (menuType) => {
+  switch (true) {
+    case ['승인'].includes(menuType):
+      return 'green';
+    case ['반려'].includes(menuType):
+      return 'red';
+    default:
+      return false;
+  }
+};

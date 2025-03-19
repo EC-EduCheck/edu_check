@@ -21,9 +21,17 @@
   top: 0;
   left: 0;
   height: 100%;
-  background-color: var(--after-bg);
+  background-color: var(--border-100);
 }
 
-button.leftLineListItem:hover {
+.active:hover {
   box-shadow: var(--box-shadow-medium);
+}
+
+.red::before {
+  background-color: var(--primary-300);
+}
+
+.green::before {
+  background-color: var(--primary-100);
 }
