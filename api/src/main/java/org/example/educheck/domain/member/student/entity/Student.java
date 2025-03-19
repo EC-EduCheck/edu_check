@@ -8,11 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import lombok.Getter;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 
 @Entity
+@Getter
 public class Student extends BaseTimeEntity {
 
   @Id
