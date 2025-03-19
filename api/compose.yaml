@@ -1,18 +1,6 @@
 version: "3.8"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_dev
-    ports:
-      - "${DATABASE_PORT}:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      TZ: Asia/Seoul
-    volumes:
-      - mysql-volume:/var/lib/mysql
-
   redis:
     image: redis:alpine
     container_name: redis_dev
@@ -25,5 +13,4 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
 
 volumes:
-  mysql-volume:
   redis-volume:

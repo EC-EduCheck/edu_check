@@ -44,7 +44,7 @@ public class SignUpRequestDto {
                 .birthDate(birthDate)
                 .email(email)
                 .password(encodedPassword)
-                .role(Role.ROLE_STUDENT)
+                .role(Role.STUDENT)
                 .build();
     }
 

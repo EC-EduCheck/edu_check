@@ -60,20 +60,16 @@ public class MeetingRoomReservationService {
         LocalTime endOfDay = LocalTime.of(22, 0);
 
 
-        if (startTime.isBefore(endTime)) {
+        if (endTime.isBefore(startTime)) {
             throw new IllegalArgumentException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
         }
 
-        if (endTime.isAfter(startTime)) {
+        if (startTime.isAfter(endTime)) {
             throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠를 수 없습니다.");
         }
 
         if (ChronoUnit.MINUTES.between(startTime, endTime) < 15) {
             throw new IllegalArgumentException("최소 예약 시간은 15분입니다.");
-        }
-
-        if (startTime.getMinute() % 15 != 0 || endTime.getMinute() % 15 != 0) {
-            throw new IllegalArgumentException("예약은 15분 단위로만 가능합니다.");
         }
 
         if (startTime.toLocalTime().isBefore(startOfDay) || endTime.toLocalTime().isAfter(endOfDay)) {
@@ -87,7 +83,7 @@ public class MeetingRoomReservationService {
         boolean result = meetingRoomReservationRepository.existsOverlappingReservation(meetingRoom,
                 date, startTime, endTime);
 
-        if (!result) {
+        if (result) {
             throw new IllegalArgumentException("중복 예약이 발생했습니다.");
         }
     }
