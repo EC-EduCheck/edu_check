@@ -1,4 +1,4 @@
-filterButton {
+.filterButton {
   width: 200px;
   height: 90px;
   margin: 150px;
@@ -7,18 +7,13 @@ filterButton {
   border-radius: var(--border-radius-10);
   font-size: var(--font-size-18);
   text-align: left;
-  /* word-spacing: 130px; */
-  /* overflow-wrap: break-all; */
-  /* white-space: pre; */
   line-height: 40px;
-  /* white-space: pre-line;  */
-  /* 문자를 기준으로 줄 나눔 */
   background-color: var(--primary-100);
 }
 
 .text{
   text-align: left;
-  font-size: var(--font-size-28);
+  font-size: var(--font-size-24);
   font-weight: bold;
-  color: #333333;
+  color: var(--text-300);
 }
