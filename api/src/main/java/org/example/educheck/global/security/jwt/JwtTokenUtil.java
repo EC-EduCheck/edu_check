@@ -8,8 +8,10 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +21,7 @@ import java.util.Date;
 @Component
 public class JwtTokenUtil {
 
-    private final long tokenValidityMilliSeconds = 1000L * 60;
+    private final long tokenValidityMilliSeconds = 1000L * 60 * 60 * 24;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -36,8 +38,21 @@ public class JwtTokenUtil {
 
     public String createToken(Authentication authentication) {
 
-        String username = authentication.getName();
-        Claims claims = Jwts.claims().setSubject(username);
+        String email = null;
+        try {
+            Object principal = authentication.getPrincipal();
+            Field field = principal.getClass().getDeclaredField("email");
+            field.setAccessible(true);
+            email = field.get(principal).toString();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("roles", authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList());
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + tokenValidityMilliSeconds);
 
