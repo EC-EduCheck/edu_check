@@ -33,14 +33,15 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
 
     private static final double LOCATION_TOLERANCE = 0.001;
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
+    // 출석 인정 마감 시간
+    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(23, 30);
 
     @Transactional
-    public void checkIn(Long studentId, AttendanceCheckinRequestDto requestDto) {
+    public Status checkIn(Long studentId, AttendanceCheckinRequestDto requestDto) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
 
-        if (student.getCourseParticipationStatus() != 'Y') {
+        if (student.getCourseParticipationStatus() != 'T') {
             throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
         }
 
@@ -51,13 +52,16 @@ public class AttendanceService {
         Course currentCourse = currentRegistration.getCourse();
 
         LocalDate today = LocalDate.now();
-        Lecture todayLecture = lectureRepository.findByCourseIdAndDate(currentCourse.getId(), today.atStartOfDay())
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+        Lecture todayLecture = lectureRepository.findByCourseIdAndDateBetween(
+                        currentCourse.getId(), startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
 
         LocalTime currentTime = LocalTime.now();
         if (currentTime.isAfter(ATTENDANCE_DEADLINE)) {
             createAttendanceRecord(student, todayLecture, Status.LATE);
-            return;
+            return Status.LATE;
         }
 
         Campus campus = currentCourse.getCampus();
@@ -66,6 +70,7 @@ public class AttendanceService {
         }
 
         createAttendanceRecord(student, todayLecture, Status.ATTENDANCE);
+        return Status.ATTENDANCE;
     }
 
     private void createAttendanceRecord(Student student, Lecture lecture, Status status) {
@@ -79,7 +84,6 @@ public class AttendanceService {
     }
 
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        // 캠퍼스 GPS 좌표와 학생 위치 비교 (허용 오차 범위 내에 있는지)
         return Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
                 Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
     }
