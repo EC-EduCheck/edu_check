@@ -1,4 +1,4 @@
-package org.example.educheck.global.common.exceptin.custom;
+package org.example.educheck.global.common.exception.custom;
 
 import org.springframework.security.core.AuthenticationException;
 
