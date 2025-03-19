@@ -1,0 +1,24 @@
+.filterButton {
+  width: 200px;
+  height: 90px;
+  margin: 150px;
+  padding: var(--padding-small) var(--padding-basic);
+  border: 1px solid var(--bg-100);
+  border-radius: var(--border-radius-10);
+  font-size: var(--font-size-18);
+  text-align: left;
+  /* word-spacing: 130px; */
+  /* overflow-wrap: break-all; */
+  /* white-space: pre; */
+  line-height: 130px;
+  /* white-space: pre-line;  */
+  /* 문자를 기준으로 줄 나눔 */
+  background-color: var(--primary-100);
+}
+
+.text {
+  text-align: right;
+  font-size: var(--font-size-28);
+  font-weight: bold;
+  color: #333333;
+}
