@@ -3,9 +3,12 @@ package org.example.educheck.domain.attendance.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
+import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
+import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.global.common.dto.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,24 +26,22 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping("/checkin")
-    public ResponseEntity<ApiResponse<Void>> checkIn(
+    public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkIn(
             @AuthenticationPrincipal Student student,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
+        Status attendanceStatus;
         // student가 null인 경우 처리
         if (student == null) {
             // 테스트용으로 ID 1인 학생 사용
-            attendanceService.checkIn(1L, requestDto);
+            attendanceStatus = attendanceService.checkIn(1L, requestDto);
+
         } else {
-            attendanceService.checkIn(student.getId(), requestDto);
+            attendanceStatus = attendanceService.checkIn(student.getId(), requestDto);
         }
-        return ResponseEntity.ok(
-                ApiResponse.ok
-                        (
-                                "출석 성공",
-                                "SUCCESS",
-                                null
-                        )
-        );
+        AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("출석 성공", "OK", responseDto));
     }
 }
