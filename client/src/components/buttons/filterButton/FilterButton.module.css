@@ -1,21 +1,30 @@
 .filterButton {
-  width: 200px;
-  height: 90px;
-  margin: 150px;
-  padding: var(--padding-basic);
-  border: 1px solid var(--bg-100);
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  padding: var(--padding-basic) var(--padding-large);
   border-radius: var(--border-radius-10);
-  background-color: var(--primary-100);
-  text-align: left;
+  background-color: var(--bg-100);
+  transition: var(--transition-basic);
 }
 
 .filterButton p:first-child {
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-16);
+  font-weight: 600;
 }
 
 .filterButton p:last-child {
-  font-size: var(--font-size-24);
-  font-weight: bold;
-  color: var(--text-300);
+  color: var(--text-200);
+  font-size: var(--font-size-14);
   margin-top: var(--margin-basic);
+}
+
+.filterButton:hover {
+  box-shadow: var(--box-shadow-medium);
+}
+
+.active {
+  background-color: var(--primary-100);
 }
