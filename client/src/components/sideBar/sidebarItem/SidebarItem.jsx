@@ -17,7 +17,7 @@ export default function SidebarItem({ index, item }) {
   return (
     <button className={styles.sidebarItem} onClick={handleClick}>
       <SidebarItemIcon isActive={isActive} index={index}></SidebarItemIcon>
-      <p className={isActive && `${styles.active}`}>{item}</p>
+      <p className={isActive ? `${styles.active}` : ''}>{item}</p>
     </button>
   );
 }
