@@ -9,6 +9,8 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
 
   return (
     <div
+      // TODO : 관리자의 유고 결석 관리만 handleClick 사용
+      // onClick={handleClick}
       className={`${styles.leftLineListItem} ${isClickable && `${styles.active}`} ${bgColor ? styles[bgColor] : ''}`}
     >
       {children}
