@@ -3,6 +3,7 @@ package org.example.educheck.domain.member.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.educheck.domain.member.dto.EmailCheckResponseDto;
 import org.example.educheck.domain.member.dto.LoginRequestDto;
 import org.example.educheck.domain.member.dto.LoginResponseDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
@@ -12,10 +13,7 @@ import org.example.educheck.global.common.exception.custom.LoginValidationExcept
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -44,5 +42,22 @@ public class AuthController {
         } catch (BadCredentialsException ex) {
             throw new LoginValidationException();
         }
+    }
+
+    @GetMapping("/email-check")
+    public ResponseEntity<ApiResponse<EmailCheckResponseDto>> emailCheck(@RequestParam("email") String email) {
+
+        EmailCheckResponseDto emailCheckResult = authService.emailCheck(email);
+
+        if (emailCheckResult.isAvailable()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ApiResponse.ok("사용 가능한 이메일입니다. ", "OK", emailCheckResult)
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.ok("이미 사용 중인 이메일입니다.", "CONFLICT", emailCheckResult)
+        );
+
     }
 }
