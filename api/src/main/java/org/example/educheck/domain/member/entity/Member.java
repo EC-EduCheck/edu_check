@@ -33,6 +33,7 @@ public class Member implements UserDetails {
     private LocalDateTime lastLoginDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,0 +1,21 @@
+.filterButton {
+  width: 200px;
+  height: 90px;
+  margin: 150px;
+  padding: var(--padding-basic);
+  border: 1px solid var(--bg-100);
+  border-radius: var(--border-radius-10);
+  background-color: var(--primary-100);
+  text-align: left;
+}
+
+.filterButton p:first-child {
+  font-size: var(--font-size-18);
+}
+
+.filterButton p:last-child {
+  font-size: var(--font-size-24);
+  font-weight: bold;
+  color: var(--text-300);
+  margin-top: var(--margin-basic);
+}

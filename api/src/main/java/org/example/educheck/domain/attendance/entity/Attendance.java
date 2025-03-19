@@ -26,6 +26,7 @@ public class Attendance extends BaseTimeEntity {
     private LocalDateTime checkOutTimestamp;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
 
 }
