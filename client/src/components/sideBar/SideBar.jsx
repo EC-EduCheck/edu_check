@@ -55,12 +55,13 @@ export default function SideBar() {
               <p>hoho@example.com</p>
             </li>
           </ul>
-          <MainButton></MainButton>
+          {/* todo: 로그아웃 기능 추가 */}
+          <MainButton title="로그아웃"></MainButton>
         </div>
       </button>
 
-      {/* todo: 메인 버튼 스타일 추가 */}
-      <MainButton />
+      {/* todo: 출석하기 기능 추가 */}
+      <MainButton title="출석하기"></MainButton>
       <nav>{sideBarItems}</nav>
     </div>
   );
