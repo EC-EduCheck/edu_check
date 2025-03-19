@@ -34,8 +34,8 @@ public class AttendanceController {
         Status attendanceStatus;
         // student가 null인 경우 처리
         if (user == null) {
-            // 테스트용으로 ID 1인 학생 사용
-            attendanceStatus = attendanceService.checkIn(1L, requestDto);
+            // 테스트용으로 ID 인 학생 사용
+            attendanceStatus = attendanceService.checkIn(3L, requestDto);
         } else {
             String email = user.getUsername();
             attendanceStatus = attendanceService.checkInByEmail(email, requestDto);
