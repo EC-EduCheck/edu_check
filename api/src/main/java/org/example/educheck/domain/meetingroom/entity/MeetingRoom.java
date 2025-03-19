@@ -13,11 +13,15 @@ public class MeetingRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
     private String name;
+
+    public Long getCampusId() {
+        return this.campus != null ? this.campus.getId() : null;
+    }
 }

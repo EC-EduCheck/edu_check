@@ -423,6 +423,8 @@ gradle-app.setting
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+src/test/java/org/example/educheck/http/*
+
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
