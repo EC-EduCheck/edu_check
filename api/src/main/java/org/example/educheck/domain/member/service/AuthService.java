@@ -1,9 +1,12 @@
 package org.example.educheck.domain.member.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
+import org.example.educheck.domain.member.dto.LoginRequestDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
+import org.example.educheck.domain.member.dto.TokenResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.student.entity.Status;
@@ -13,6 +16,8 @@ import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.global.security.jwt.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,7 @@ public class AuthService {
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final CourseRepository courseRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
@@ -43,7 +49,7 @@ public class AuthService {
         Student student = Student.builder()
                 .member(member)
                 .status(Status.NORMAL)
-                .courseParticipationStatus('Y')
+                .courseParticipationStatus('T')
                 .build();
         Student savedStudent = studentRepository.save(student);
         Course course = courseRepository.findById(requestDto.getCourseId())
@@ -60,4 +66,25 @@ public class AuthService {
         return member;
     }
 
+    public TokenResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
+
+//        Authentication authenticate = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        requestDto.getEmail(), requestDto.getPassword()
+//                )
+//        );
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                requestDto.getEmail(), requestDto.getPassword()
+        );
+        Authentication authenticate = authenticationManager.authenticate(
+                authentication
+        );
+
+        String accessToken = jwtTokenUtil.createToken(authenticate);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+//        response.addCookie(리프래시토큰); // TODO
+
+        return new TokenResponseDto(accessToken);
+
+    }
 }
