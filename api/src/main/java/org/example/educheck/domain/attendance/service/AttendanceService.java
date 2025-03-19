@@ -40,7 +40,7 @@ public class AttendanceService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
 
-        if (student.getCourseParticipationStatus() != 'T') {
+        if (student.getCourseParticipationStatus() != 'Y') {
             throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
         }
 
