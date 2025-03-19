@@ -1,8 +1,8 @@
 export const getBgColor = (title) => {
-  switch (title) {
-    case '퇴근':
+  switch (true) {
+    case ['퇴근', '로그인'].includes(title):
       return '#B3E56A';
-    case '로그아웃':
+    case ['로그아웃'].includes(title):
       return '#EFEFEF';
     default:
       return '#FFFFFF';
