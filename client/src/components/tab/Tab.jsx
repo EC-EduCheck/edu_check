@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Tab.module.css';
 import TabButton from './tabButton/TabButton';
-import { getTabContent } from '../../utils/tabContentUtils';
+import { getTabContent } from '../../utils/tabContentList';
 
 export default function Tab({ menuType }) {
   const tabContent = getTabContent(menuType).map((item, index) => {

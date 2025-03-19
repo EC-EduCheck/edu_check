@@ -29,3 +29,18 @@
   overflow: hidden;
   z-index: 999;
 }
+
+.red {
+  color: var(--primary-300);
+  background-color: var(--accent-100);
+}
+
+.yellow {
+  color: var(--primary-400);
+  background-color: var(--accent-300);
+}
+
+.green {
+  color: var(--primary-200);
+  background-color: var(--accent-200);
+}

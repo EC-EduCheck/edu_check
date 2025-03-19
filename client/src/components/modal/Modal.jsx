@@ -1,20 +1,30 @@
 import React from 'react'
 import styles from "./Modal.module.css"
 import MainButton from '../buttons/mainButton/MainButton';
+import CloseButton from '../buttons/closeButton/CloseButton';
 
-export default function Modal({ isOpen, onClose, content, confirmText, cancelText, onConfirm }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  mainClick,
+  subClick,
+  mainText,
+  subText,
+  content,
+}) {
   if (!isOpen) return null;
   return (
     <>
       <div className={styles.backGround}></div>
       <div className={styles.container}>
-        <div>
-          <p>{content}</p>
+        <CloseButton handleClick={onClose}></CloseButton>
 
-          {/* todo: MainButton 확인 후 적용 */}
+        <div>
+          <div>{content}</div>
+
           <div className={styles.buttonBox}>
-            {onConfirm && <MainButton onClick={onConfirm}>{confirmText || '확인'}</MainButton>}
-            <MainButton onClick={onClose}>{cancelText || '취소'}</MainButton>
+            {subClick && <MainButton handleClick={subClick} title={subText || '확인'}></MainButton>}
+            <MainButton handleClick={mainClick} title={mainText || '취소'}></MainButton>
           </div>
         </div>
       </div>

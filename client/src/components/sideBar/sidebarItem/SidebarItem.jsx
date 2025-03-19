@@ -8,8 +8,7 @@ export default function SidebarItem({ index, item }) {
   const dispatch = useDispatch();
 
   const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
-  const currentStyle = currentSideBarItem === item ? { color: '#666' } : {};
-  const isCurrent = currentSideBarItem === item;
+  const isActive = currentSideBarItem === item;
 
   const handleClick = () => {
     dispatch(updateNav(item));
@@ -17,8 +16,8 @@ export default function SidebarItem({ index, item }) {
 
   return (
     <button className={styles.sidebarItem} onClick={handleClick}>
-      <SidebarItemIcon isCurrent={isCurrent} index={index}></SidebarItemIcon>
-      <p style={currentStyle}>{item}</p>
+      <SidebarItemIcon isActive={isActive} index={index}></SidebarItemIcon>
+      <p className={isActive ? `${styles.active}` : ''}>{item}</p>
     </button>
   );
 }

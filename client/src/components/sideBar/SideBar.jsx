@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './SideBar.module.css';
 import { sideBarList } from '../../utils/sideBarList';
 import SideBarItem from './sidebarItem/SidebarItem';
@@ -6,14 +6,20 @@ import MainButton from '../buttons/mainButton/MainButton';
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const infoRef = useRef(null);
 
-  const handleOpenInfoMore = () => {
-    setIsOpen(true);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (infoRef.current && !infoRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
 
-  const handleCloseInfoMore = () => {
-    setIsOpen(false);
-  };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const sideBarItems = sideBarList.map((item, index) => {
     return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
@@ -21,11 +27,7 @@ export default function SideBar() {
 
   return (
     <div className={styles.sideBar}>
-      <button
-        onClick={handleOpenInfoMore}
-        onBlur={handleCloseInfoMore}
-        className={styles.memberInfo}
-      >
+      <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
         <div className={styles.memberInfoImg}>
           <img src="./assets/logo.png" alt="user image" />
         </div>
@@ -37,10 +39,7 @@ export default function SideBar() {
         </div>
 
         {/* todo : member 개인정보 변수 필요 */}
-        <div
-          style={isOpen ? { display: 'block' } : { display: 'none' }}
-          className={styles.memberInfoMore}
-        >
+        <div className={`${styles.memberInfoMore} ${isOpen && `${styles.isOpen}`}`}>
           <ul>
             <li>
               <p>생년월일</p>
@@ -58,7 +57,7 @@ export default function SideBar() {
           {/* todo: 로그아웃 기능 추가 */}
           <MainButton title="로그아웃"></MainButton>
         </div>
-      </button>
+      </div>
 
       {/* todo: 출석하기 기능 추가 */}
       <MainButton title="출석하기"></MainButton>
