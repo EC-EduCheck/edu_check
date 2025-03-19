@@ -16,3 +16,7 @@
 .sidebarItem:hover {
   background-color: var(--bg-300);
 }
+
+.sidebarItem .active {
+  color: var(--text-200);
+}

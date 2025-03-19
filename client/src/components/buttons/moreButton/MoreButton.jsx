@@ -5,7 +5,6 @@ import DropBoxButton from "../../buttons/dropBoxButton/DropBoxButton"
 export default function MoreButton() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-  console.log(isOpen)
 
   useEffect(() => {
     const handleClickOutside = (event) => {

@@ -5,16 +5,18 @@ import { updateTab } from '../../../store/slices/sideBarItemSlice';
 
 export default function TabButton({ index, item }) {
   const dispatch = useDispatch();
-
   const currentTabItem = useSelector((state) => state.sideBarItem.tab);
-  const currentStyle = currentTabItem === index ? { borderBottom: '2px solid #333' } : {};
+  const isActive = currentTabItem === index;
 
   const handleClick = () => {
     dispatch(updateTab(index));
   };
 
   return (
-    <button style={currentStyle} className={styles.tabButton} onClick={handleClick}>
+    <button
+      className={`${styles.tabButton} ${isActive ? `${styles.active}` : ''}`}
+      onClick={handleClick}
+    >
       {item}
     </button>
   );

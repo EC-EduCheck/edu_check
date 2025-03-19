@@ -37,10 +37,7 @@ export default function SideBar() {
         </div>
 
         {/* todo : member 개인정보 변수 필요 */}
-        <div
-          style={isOpen ? { display: 'block' } : { display: 'none' }}
-          className={styles.memberInfoMore}
-        >
+        <div className={`${styles.memberInfoMore} ${isOpen && `${styles.isOpen}`}`}>
           <ul>
             <li>
               <p>생년월일</p>

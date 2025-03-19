@@ -16,3 +16,7 @@
   height: 100%;
   filter: opacity(0.3) drop-shadow(0 0 0 var(--text-300));
 }
+
+.iconBox .active {
+  filter: opacity(0.5) drop-shadow(0 0 0 #666666);
+}

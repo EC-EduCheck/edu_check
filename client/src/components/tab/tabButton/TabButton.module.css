@@ -10,3 +10,7 @@
 .tabButton:hover {
   background-color: var(--bg-100);
 }
+
+.active {
+  border-bottom: 2px solid var(--text-100);
+}
