@@ -1,45 +1,47 @@
 import React, { useState } from 'react';
 import styles from './Tag.module.css';
-import { getTagColors, getIsClickable, tagList } from '../../utils/tagList';
+import { getTagColors, getIsClickable, tagList } from '../../utils/buttonContentList';
 import DropBoxButton from '../buttons/dropBoxButton/DropBoxButton';
 
 export default function Tag({ title }) {
-  const [isOpen, setIsOpen] = useState(false);
   const tagColors = getTagColors(title);
   const isClickable = getIsClickable(title);
 
-  const handleOpenDropBox = () => {
-    setIsOpen(true);
-  };
+  // TODO : 관리자 페이지의 학습자 관리 tag에만 사용
+  // const [isOpen, setIsOpen] = useState(false);
 
-  const handleCloseDropBox = () => {
-    setIsOpen(false);
-  };
+  // const handleOpenDropBox = () => {
+  //   setIsOpen(true);
+  // };
 
-  const dropBoxButtonList = tagList.map((item) => {
-    return <DropBoxButton title={item}></DropBoxButton>;
-  });
+  // const handleCloseDropBox = () => {
+  //   setIsOpen(false);
+  // };
+
+  // const dropBoxButtonList = tagList.map((item, index) => {
+  //   return <DropBoxButton key={index} title={item}></DropBoxButton>;
+  // });
 
   return (
     <div className={styles.tagBox}>
       <button
-        style={{ color: `${tagColors[1]}`, backgroundColor: `${tagColors[0]}` }}
         disabled={!isClickable}
         onClick={handleOpenDropBox}
         onBlur={handleCloseDropBox}
-        className={styles.tag}
+        className={`${styles.tag} ${tagColors ? styles[tagColors] : ''}`}
       >
         {title}
       </button>
 
-      <div
+      {/* TODO : 관리자 페이지의 학습자 관리 tag에만 사용 */}
+      {/* <div
         style={
           isClickable ? (isOpen ? { display: 'block' } : { display: 'none' }) : { display: 'none' }
         }
         className={styles.dropBox}
       >
         {dropBoxButtonList}
-      </div>
+      </div> */}
     </div>
   );
 }
