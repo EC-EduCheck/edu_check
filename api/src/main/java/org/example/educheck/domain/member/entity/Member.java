@@ -1,20 +1,20 @@
 package org.example.educheck.domain.member.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.example.educheck.domain.member.student.entity.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-//TODO: student, staff 관계 설정
+
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
@@ -30,11 +30,14 @@ public class Member implements UserDetails {
     private String phoneNumber;
     private LocalDate birthDate;
     private String password;
+    private LocalDateTime lastLoginDate;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Student student;
 
     @Builder
     public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, Role role) {
