@@ -29,5 +29,6 @@ public class Consulting extends BaseTimeEntity {
     private LocalDateTime consultTime;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Category category;
 }
