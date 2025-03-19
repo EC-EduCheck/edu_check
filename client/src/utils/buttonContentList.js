@@ -1,19 +1,3 @@
-export const getBgColor = (title) => {
-  switch (true) {
-    case ['퇴근', '로그인'].includes(title):
-      return '#B3E56A';
-    case ['로그아웃'].includes(title):
-      return '#EFEFEF';
-    default:
-      return '#FFFFFF';
-  }
-};
+export const activeTitle = ['퇴근', '로그인'];
 
-export const getWidth = (title) => {
-  switch (true) {
-    case ['출석하기', '퇴근'].includes(title):
-      return '100%';
-    default:
-      return 'auto';
-  }
-};
+export const fullWidthTitle = ['퇴근', '출석하기', '로그인'];
