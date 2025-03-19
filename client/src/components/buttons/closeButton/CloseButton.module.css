@@ -1,23 +1,20 @@
 .closeButton {
-  width: 36px;
-  height: 36px;
-  background-color: #fff;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: var(--transition-basic);
+  z-index: 1111;
 }
 
 .closeButton img {
-  width: 18px;
+  width: 22px;
   transition: var(--transition-basic);
 }
 
 .closeButton:hover {
   background-color: var(--bg-100);
-}
-
-.closeButton:hover img {
-  filter: opacity(0.5) drop-shadow(0 0 0 var(--text-200));
 }
