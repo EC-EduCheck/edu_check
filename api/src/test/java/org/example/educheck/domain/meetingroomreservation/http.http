@@ -1,0 +1,15 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+POST http://localhost:8080/api/campuses/17/meeting-rooms/reservations
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI0MDQzNTcsImV4cCI6MTc0MjQwNDQxN30.P2eXpnR_dDaoqRVu2AdZoLmprZru_IXKNGdBispM3BY
+
+{
+  "startTime": "2025-03-20T09:00:00",
+  "endTime": "2025-03-20T10:00:00",
+  "meetingRoomId": 60,
+  "courseId": 1
+}

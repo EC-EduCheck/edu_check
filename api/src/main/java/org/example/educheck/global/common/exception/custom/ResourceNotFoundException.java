@@ -8,7 +8,12 @@ public class ResourceNotFoundException extends GlobalException {
         super(errorCode);
     }
 
+    public ResourceNotFoundException(String customMessage) {
+        super(ErrorCode.RESOURCE_NOT_FOUND, customMessage);
+    }
+
     public ResourceNotFoundException() {
         super(ErrorCode.RESOURCE_NOT_FOUND, ErrorCode.RESOURCE_NOT_FOUND.getMessage());
     }
+
 }

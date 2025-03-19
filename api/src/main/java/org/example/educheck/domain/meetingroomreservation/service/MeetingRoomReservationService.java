@@ -1,6 +1,7 @@
 package org.example.educheck.domain.meetingroomreservation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
 import org.example.educheck.domain.meetingroomreservation.TimeSlot;
@@ -9,6 +10,8 @@ import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomRese
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.global.common.exception.custom.ReservationConflictException;
+import org.example.educheck.global.common.exception.custom.ResourceNotFoundException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -34,24 +38,53 @@ public class MeetingRoomReservationService {
     @Transactional
     public void createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
 
-        Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
+        Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 사용자입니다."));
 
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 회의실이 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회의실이 존재하지 않습니다."));
 
         validateUserCampusMatchMeetingRoom(campusId, meetingRoom);
 
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
-//        if(!isAvailable(meetingRoom.getId(), TimeSlot.from(requestDto))) {
-//            throw new
-//        }
+        TimeSlot timeSlot = TimeSlot.from(requestDto);
 
-        validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
+        //신버전
+        if (!isAvailable(meetingRoom.getId(), timeSlot)) {
+            throw new ReservationConflictException();
+        }
 
+        //RDB에 예약 -> Redis 슬롯 처리
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
+
+        updateRedisSlots(meetingRoom.getId(), timeSlot, true);
+
+        log.info("createReservation 메서드, 예약 성공");
     }
+
+    private void updateRedisSlots(Long roomId, TimeSlot timeSlot, boolean isReserved) {
+
+        String redisKey = generateSlotKey(roomId, timeSlot.getDate());
+
+        Boolean[] slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
+
+        if (slots == null) {
+            initDailyReservationsSlots(timeSlot.getDate());
+            slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
+        }
+
+        int startSlotIndex = calculateSlotIndex(timeSlot.getStartTime());
+        int endSlotIndex = calculateSlotIndex(timeSlot.getEndTime());
+
+        for (int i = startSlotIndex; i <= endSlotIndex; i++) {
+            slots[i] = isReserved;
+        }
+
+        redisTemplate.opsForValue().set(redisKey, slots);
+
+    }
+
 
     /**
      * 예약은 9시부터 22시까지 가능
@@ -80,15 +113,6 @@ public class MeetingRoomReservationService {
 
     }
 
-    private void validateReservableTime(MeetingRoom meetingRoom, LocalDateTime startTime, LocalDateTime endTime) {
-        LocalDate date = startTime.toLocalDate();
-        boolean result = meetingRoomReservationRepository.existsOverlappingReservation(meetingRoom,
-                date, startTime, endTime);
-
-        if (result) {
-            throw new IllegalArgumentException("중복 예약이 발생했습니다.");
-        }
-    }
 
     //TODO: 쿼리 발생하는거 확인 후, FETCH JOIN 처리 등 고려 하기
     private void validateUserCampusMatchMeetingRoom(Long campusId, MeetingRoom meetingRoom) {
