@@ -10,6 +10,8 @@ import org.example.educheck.domain.campus.Campus;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.lecture.Lecture;
 import org.example.educheck.domain.lecture.repository.LectureRepository;
+import org.example.educheck.domain.member.entity.Member;
+import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
@@ -31,6 +33,7 @@ public class AttendanceService {
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
     private final AttendanceRepository attendanceRepository;
+    private final MemberRepository memberRepository;
 
     private static final double LOCATION_TOLERANCE = 0.001;
     // 출석 인정 마감 시간
@@ -86,5 +89,18 @@ public class AttendanceService {
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
         return Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
                 Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
+    }
+    @Transactional
+    public Status checkInByEmail(String email, AttendanceCheckinRequestDto requestDto) {
+        // 이메일로 Member 찾기
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        // Member로 Student 찾기 (StudentRepository에 메소드 추가 필요)
+        Student student = studentRepository.findByMemberId(member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+
+        // 기존 checkIn 메소드 호출
+        return checkIn(student.getId(), requestDto);
     }
 }

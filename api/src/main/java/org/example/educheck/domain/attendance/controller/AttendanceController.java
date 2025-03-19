@@ -11,6 +11,7 @@ import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,18 +28,19 @@ public class AttendanceController {
 
     @PostMapping("/checkin")
     public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkIn(
-            @AuthenticationPrincipal Student student,
+            @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
         Status attendanceStatus;
         // student가 null인 경우 처리
-        if (student == null) {
+        if (user == null) {
             // 테스트용으로 ID 1인 학생 사용
             attendanceStatus = attendanceService.checkIn(1L, requestDto);
-
         } else {
-            attendanceStatus = attendanceService.checkIn(student.getId(), requestDto);
+            String email = user.getUsername();
+            attendanceStatus = attendanceService.checkInByEmail(email, requestDto);
         }
+
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
         return ResponseEntity.status(HttpStatus.OK)
