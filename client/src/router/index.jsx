@@ -18,19 +18,19 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        index: '/login',
+        path: '/login',
         element: <Login />,
       },
       {
-        index: '/editProfile',
+        path: '/editProfile',
         element: <EditProfile />,
       },
       {
-        index: '/registerProfile',
+        path: '/registerProfile',
         element: <RegisterProfile />,
       },
       {
-        index: '/dashBoard',
+        path: '/dashBoard',
         element: <DashBoard />,
       },
     ],
