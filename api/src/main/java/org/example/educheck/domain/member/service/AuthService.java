@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
+import org.example.educheck.domain.member.dto.EmailCheckResponseDto;
 import org.example.educheck.domain.member.dto.LoginRequestDto;
 import org.example.educheck.domain.member.dto.LoginResponseDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
@@ -93,5 +94,10 @@ public class AuthService {
         member.setLastLoginDate(LocalDateTime.now());
 
         return loginResponseDto;
+    }
+
+    public EmailCheckResponseDto emailCheck(String email) {
+
+        return new EmailCheckResponseDto(!memberRepository.existsByEmail(email));
     }
 }

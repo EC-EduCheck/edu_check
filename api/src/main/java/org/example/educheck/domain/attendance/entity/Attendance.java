@@ -1,6 +1,8 @@
 package org.example.educheck.domain.attendance.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.educheck.domain.lecture.Lecture;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
@@ -8,6 +10,8 @@ import org.example.educheck.global.common.entity.BaseTimeEntity;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 public class Attendance extends BaseTimeEntity {
 
     @Id
