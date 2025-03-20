@@ -33,7 +33,7 @@ services:
   api:
     container_name: api-container
     build:
-      context: ./backend
+      context: ./api
       cache_to:
         - type=local,dest=/tmp/.build-cache/api,mode=max
       cache_from:
@@ -55,7 +55,7 @@ services:
   client:
     container_name: client-container
     build:
-      context: ./frontend
+      context: ./client
       cache_to:
         - type=local,dest=/tmp/.build-cache/client,mode=max
       cache_from:
