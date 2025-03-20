@@ -6,9 +6,9 @@ export default function HourBlock() {
 
   const MINITUES = [0, 15, 30, 45]; 
 
-  const list = MINITUES.map((item) => {
-    return <TimeSlot key={item} ></TimeSlot>
-  })
+  const list = MINITUES.map((item, index) => {
+    return <TimeSlot key={index}></TimeSlot>;
+  });
 
   return (
     <div className={styles.container}>

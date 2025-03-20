@@ -11,9 +11,5 @@ export default function TimeGrid() {
     return <HourBlock key={item}></HourBlock>
   }) 
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.gridContainer}>{hourList}</div>
-    </div>
-  )
+  return <div className={styles.container}>{hourList}</div>;
 }
