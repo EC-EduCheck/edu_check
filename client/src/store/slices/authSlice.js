@@ -5,6 +5,13 @@ const initialState = {
   isLoggedIn: false,
   user: {
     name: '',
+    birthDate: '',
+    campusId: '',
+    courseId: '',
+    courseName: '',
+    email: '',
+    phoneNumber: '',
+    lastLoginDate: '',
   },
 };
 
@@ -15,12 +22,21 @@ const authSlice = createSlice({
     login: (state, action) => {
       state.accessToken = action.payload.accessToken;
       state.isLoggedIn = true;
-      state.user.name = action.payload.username;
+      state.user = {
+        name: action.payload.name || '',
+        birthDate: action.payload.birthDate || '',
+        campusId: action.payload.campusId || '',
+        courseId: action.payload.courseId || '',
+        courseName: action.payload.courseName || '',
+        email: action.payload.email || '',
+        phoneNumber: action.payload.phoneNumber || '',
+        lastLoginDate: action.payload.lastLoginDate || '',
+      };
     },
     logout: (state, action) => {
-      state.accessToken = null;
+      state.accessToken = '';
       state.isLoggedIn = false;
-      state.user.name = null;
+      state.user = { ...initialState.user };
     },
   },
 });
