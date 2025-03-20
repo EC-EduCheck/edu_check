@@ -3,8 +3,13 @@ import styles from './Login.module.css';
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import { authApi } from '../../api/authApi';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [inputData, setInputData] = useState({
     email: '',
     password: '',
@@ -21,9 +26,17 @@ export default function Login() {
     event.preventDefault();
     try {
       const response = await authApi.login(inputData.email, inputData.password);
-      console.log(response);
+      const accessToken = response.headers.authorization;
+      dispatch(
+        login({
+          ...response.data.data,
+          accessToken: accessToken,
+        }),
+      );
+      navigate('/', { replace: true });
     } catch (error) {
-      console.error(error);
+      // TODO: BE에서 에러처리 후 에러 메시지 출력
+      console.log(error)
     }
   };
 

@@ -13,7 +13,7 @@ export const authApi = {
       },
     );
 
-    return response.data.data;
+    return response;
   },
 
   reissue: async () => {
