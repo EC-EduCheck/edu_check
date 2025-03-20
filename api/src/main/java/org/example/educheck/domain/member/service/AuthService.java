@@ -1,5 +1,6 @@
 package org.example.educheck.domain.member.service;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
@@ -79,9 +80,17 @@ public class AuthService {
         );
 
 
-        String accessToken = jwtTokenUtil.createToken(authenticate);
+        String accessToken = jwtTokenUtil.createAccessToken(authenticate);
         response.setHeader("Authorization", "Bearer " + accessToken);
-//        response.addCookie(리프래시토큰); // TODO
+
+        String refreshToken = jwtTokenUtil.createRefreshToken(authenticate);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/refresh");
+        response.addCookie(cookie);
+
 
         Member member = memberRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")

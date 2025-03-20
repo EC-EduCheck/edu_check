@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 .requestMatchers("/**").permitAll()
                         // TODO: 인증 엔드포인트 수정
                 )
+                // TODO: 비밀번호 예외처리
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler)
