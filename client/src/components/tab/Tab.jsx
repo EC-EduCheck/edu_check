@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from './Tab.module.css';
 import TabButton from './tabButton/TabButton';
-import { getStudentTabContent, getStaffTabContent } from '../../utils/tabContentList';
 import { roleList } from '../../utils/dashBoardList';
+import { getStudentTabContent, getStaffTabContent } from '../../utils/tabContentList';
 
 export default function Tab({ menuType }) {
   const [tabContents, setTabContents] = useState([]);
