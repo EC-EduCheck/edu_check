@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import styles from './SideBar.module.css';
 import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
+import { roleList } from '../../utils/dashBoardList';
 
 import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
@@ -10,7 +11,7 @@ import MainButton from '../buttons/mainButton/MainButton';
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [itemList, setItemList] = useState(false);
+  const [itemList, setItemList] = useState([]);
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
     (state) => state.auth.user,
   );

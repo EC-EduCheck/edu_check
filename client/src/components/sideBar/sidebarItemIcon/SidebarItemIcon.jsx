@@ -6,7 +6,7 @@ import { roleList } from '../../../utils/dashBoardList';
 
 export default function SidebarItemIcon({ isActive, index }) {
   const { role } = useSelector((state) => state.auth.user);
-  const [icons, setIcons] = useState(null);
+  const [icons, setIcons] = useState([]);
 
   useEffect(() => {
     if (role === roleList[0]) {

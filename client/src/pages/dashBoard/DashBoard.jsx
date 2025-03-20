@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import styles from './DashBoard.module.css';
-import { sideBarList } from '../../utils/sideBarList';
-import { studentNavList, getStudentTabList } from '../../utils/dashBoardList';
+import { roleList } from '../../utils/dashBoardList';
+import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
+import {
+  studentNavList,
+  getStudentTabList,
+  staffNavList,
+  getStaffTabList,
+} from '../../utils/dashBoardList';
 
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
@@ -14,21 +20,29 @@ export default function DashBoard() {
   const navigate = useNavigate();
   const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
   const { nav, tab } = useSelector((state) => state.sideBarItem);
+  const { role } = useSelector((state) => state.auth.user);
 
-  // TODO: 로그인 시 router에서 role 받아오기 (STUDENT, ADMIN)
-  const role = 'staff';
-
-  // sideBar와 tab에 따라 페이지 변경
   useEffect(() => {
-    const navIndex = sideBarList.indexOf(nav);
+    if (role === roleList[0]) {
+      const navIndex = studentSideBarList.indexOf(nav);
 
-    if (tab > 0) {
-      const tabList = getStudentTabList(nav, tab);
-      navigate(`${studentNavList[navIndex]}/${tabList}`);
+      if (tab > 0) {
+        const tabList = getStudentTabList(nav, tab);
+        navigate(`${studentNavList[navIndex]}/${tabList}`);
+      } else {
+        navigate(`${studentNavList[navIndex]}`);
+      }
     } else {
-      navigate(`${studentNavList[navIndex]}`);
+      const navIndex = staffSideBarList.indexOf(nav);
+
+      if (tab > 0) {
+        const tabList = getStaffTabList(nav, tab);
+        navigate(`${staffNavList[navIndex]}/${tabList}`);
+      } else {
+        navigate(`${staffNavList[navIndex]}`);
+      }
     }
-  }, [nav, tab]);
+  }, [role, nav, tab]);
 
   return (
     <div className={`container ${styles.dashBoard}`}>
