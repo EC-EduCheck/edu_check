@@ -4,7 +4,7 @@ const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-api.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
   const accessToken = store.getState().auth.accessToken;
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
