@@ -1,9 +1,11 @@
 package org.example.educheck.domain.member.staff.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.example.educheck.domain.member.entity.Member;
 
 @Entity
+@Getter
 public class Staff {
 
     @Id
