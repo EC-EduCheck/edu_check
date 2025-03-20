@@ -1,8 +1,8 @@
-import api from './axios';
+import apiInstance from './apiInstance';
 
-export default api = {
+export const authApi = {
   login: async (email, password) => {
-    const response = await api.post(
+    const response = await apiInstance.post(
       '/auth/login',
       {
         email: email,
@@ -13,11 +13,11 @@ export default api = {
       },
     );
 
-    return response;
+    return response.data.data;
   },
 
   reissue: async () => {
-    const response = await api.post(
+    const response = await apiInstance.post(
       '/auth/reissue',
       {},
       {
@@ -32,7 +32,7 @@ export default api = {
   },
 
   logout: async () => {
-    const response = await api.post(
+    const response = await apiInstance.post(
       '/auth/logout',
       {},
       {
