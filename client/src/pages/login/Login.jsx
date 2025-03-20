@@ -3,11 +3,12 @@ import styles from './Login.module.css';
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import { authApi } from '../../api/authApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputData, setInputData] = useState({
@@ -43,6 +44,12 @@ export default function Login() {
       setIsLoginButtonEnable(true);
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
 
   useEffect(() => {
     setIsLoginButtonEnable(
