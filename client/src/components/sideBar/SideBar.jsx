@@ -29,7 +29,7 @@ export default function SideBar() {
     <div className={styles.sideBar}>
       <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
         <div className={styles.memberInfoImg}>
-          <img src="./assets/logo.png" alt="user image" />
+          <img src="../../assets/logo.png" alt="user image" />
         </div>
 
         {/* todo : member 이름, 과정 가져오기 */}

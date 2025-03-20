@@ -25,15 +25,15 @@ export default function MoreButton() {
   return (
     <div className={styles.moreButtonbox} ref={dropdownRef}>
       <button onClick={() => setIsOpen((prev) => !prev)} className={styles.moreButton}>
-        <img src="./assets/more-icon.png" alt="더보기 아이콘" />
+        <img src="../../assets/more-icon.png" alt="더보기 아이콘" />
       </button>
 
-      {isOpen &&
+      {isOpen && (
         <div className={styles.dropBox}>
           <DropBoxButton title="삭제"></DropBoxButton>
           <DropBoxButton title="수정"></DropBoxButton>
         </div>
-      }
+      )}
     </div>
-  )
+  );
 }

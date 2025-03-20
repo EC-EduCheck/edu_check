@@ -9,25 +9,20 @@ export default function Login() {
   }
   
   return (
-  <div className={styles.login}>
-    <div className={styles.logoImage}>
-      <img src="./assets/logo.png" alt="user image" />
+    <div className={styles.login}>
+      <div className={styles.logoImage}>
+        <img src="../../assets/logo.png" alt="user image" />
+      </div>
+      <InputBox type="email" title="이메일" disabled={false} onChange={handleChange}></InputBox>
+      <InputBox
+        type="password"
+        title="비밀번호"
+        disabled={false}
+        onChange={handleChange}
+      ></InputBox>
+      <div className={styles.loginButton}>
+        <MainButton title="로그인"></MainButton>
+      </div>
     </div>
-    <InputBox
-    type="email"
-    title="이메일"
-    disabled={false}
-    onChange={handleChange}
-    ></InputBox>
-    <InputBox
-    type="password"
-    title="비밀번호"
-    disabled={false}
-    onChange={handleChange}
-    ></InputBox>
-    <div className={styles.loginButton}>
-    <MainButton title="로그인"></MainButton>
-    </div>
-  </div>
   );
 }
