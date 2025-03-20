@@ -37,11 +37,13 @@ const authSlice = createSlice({
         phoneNumber: action.payload.phoneNumber || '',
         lastLoginDate: action.payload.lastLoginDate || '',
       };
+
     },
     logout: (state, action) => {
       state.accessToken = '';
       state.isLoggedIn = false;
       state.user = { ...initialState.user };
+
     },
   },
 });

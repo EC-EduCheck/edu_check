@@ -1,12 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import styles from './SideBar.module.css';
-import { sideBarList } from '../../utils/sideBarList';
+import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
+import { roleList } from '../../utils/dashBoardList';
+
 import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
 
 export default function SideBar() {
-  const [isOpen, setIsOpen] = useState(false);
   const infoRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemList, setItemList] = useState([]);
+  const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
+    (state) => state.auth.user,
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -21,7 +29,15 @@ export default function SideBar() {
     };
   }, []);
 
-  const sideBarItems = sideBarList.map((item, index) => {
+  useEffect(() => {
+    if (role === roleList[0]) {
+      setItemList(studentSideBarList);
+    } else {
+      setItemList(staffSideBarList);
+    }
+  }, [role]);
+
+  const sideBarItems = itemList.map((item, index) => {
     return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
   });
 
@@ -29,29 +45,27 @@ export default function SideBar() {
     <div className={styles.sideBar}>
       <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
         <div className={styles.memberInfoImg}>
-          <img src="./assets/logo.png" alt="user image" />
+          <img src="../../assets/logo.png" alt="user image" />
         </div>
 
-        {/* todo : member 이름, 과정 가져오기 */}
         <div className={styles.memberInfoDetail}>
-          <h1>수강생</h1>
-          <p>클라우드 기반 JAVA 풀스택 웹개발</p>
+          <h1>{name}</h1>
+          <p>{courseName}</p>
         </div>
 
-        {/* todo : member 개인정보 변수 필요 */}
         <div className={`${styles.memberInfoMore} ${isOpen && `${styles.isOpen}`}`}>
           <ul>
             <li>
               <p>생년월일</p>
-              <p>2025.01.01</p>
+              <p>{birthDate}</p>
             </li>
             <li>
               <p>연락처</p>
-              <p>010-1234-5678</p>
+              <p>{phoneNumber}</p>
             </li>
             <li>
               <p>이메일</p>
-              <p>hoho@example.com</p>
+              <p>{email}</p>
             </li>
           </ul>
           {/* todo: 로그아웃 기능 추가 */}
