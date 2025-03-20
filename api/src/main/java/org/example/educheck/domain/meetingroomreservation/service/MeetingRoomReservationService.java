@@ -10,8 +10,8 @@ import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomRese
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
-import org.example.educheck.global.common.exception.custom.ReservationConflictException;
-import org.example.educheck.global.common.exception.custom.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;

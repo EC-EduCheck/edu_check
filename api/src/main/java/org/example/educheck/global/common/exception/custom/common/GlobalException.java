@@ -1,6 +1,7 @@
-package org.example.educheck.global.common.exception;
+package org.example.educheck.global.common.exception.custom.common;
 
 import lombok.Getter;
+import org.example.educheck.global.common.exception.ErrorCode;
 
 @Getter
 public class GlobalException extends RuntimeException {
