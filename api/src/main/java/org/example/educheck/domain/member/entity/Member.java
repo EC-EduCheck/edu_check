@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class Member implements UserDetails {
 
     @Id
