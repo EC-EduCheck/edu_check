@@ -14,17 +14,17 @@ export default function Login() {
       <img src="./assets/logo.png" alt="user image" />
     </div>
     <InputBox
-    type="email"
-    title="이메일"
-    disabled={false}
-    onChange={handleChange}
-    ></InputBox>
+      type="email"
+      title="이메일"
+      disabled={false}
+      onChange={handleChange}
+    />
     <InputBox
-    type="password"
-    title="비밀번호"
-    disabled={false}
-    onChange={handleChange}
-    ></InputBox>
+      type="password"
+      title="비밀번호"
+      disabled={false}
+      onChange={handleChange}
+    />
     <div className={styles.loginButton}>
     <MainButton title="로그인"></MainButton>
     </div>
