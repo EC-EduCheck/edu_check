@@ -15,9 +15,13 @@ export default function DashBoard() {
   const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
   const { nav, tab } = useSelector((state) => state.sideBarItem);
 
+  // TODO: 로그인 시 router에서 role 받아오기 (STUDENT, ADMIN)
+  const role = 'staff';
+
   // sideBar와 tab에 따라 페이지 변경
   useEffect(() => {
     const navIndex = sideBarList.indexOf(nav);
+
     if (tab > 0) {
       const tabList = getStudentTabList(nav, tab);
       navigate(`${studentNavList[navIndex]}/${tabList}`);

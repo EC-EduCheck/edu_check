@@ -1,3 +1,5 @@
+export const roleList = ['STUDENT', 'STAFF'];
+
 const studentBaseUrl = '/dashBoard/student';
 const staffBaseUrl = '/dashBoard/staff';
 
