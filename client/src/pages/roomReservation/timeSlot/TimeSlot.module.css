@@ -1,0 +1,10 @@
+.container {
+  width: 100%;
+  min-width: 30px;
+  border-right: 01px solid black;
+  background-color: green;
+  flex-direction: row;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+}

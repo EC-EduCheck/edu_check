@@ -4,6 +4,7 @@ import styles from './DashBoard.module.css';
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
+import RoomReservation from '../roomReservation/RoomReservation';
 
 export default function DashBoard() {
   const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
@@ -16,7 +17,9 @@ export default function DashBoard() {
 
         {/* dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
         <div className={styles.dashBoardContent}>
-          <DashBoardItem width="100%"></DashBoardItem>
+          <DashBoardItem width="100%">
+            <RoomReservation></RoomReservation>
+          </DashBoardItem>
         </div>
       </div>
     </div>

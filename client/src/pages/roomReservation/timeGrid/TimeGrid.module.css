@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+  border: 1px solid black;
+  display: flex;
+}
+
+.gridContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: scroll;
+}
