@@ -1,8 +1,8 @@
-import instance from './axios';
+import apiInstance from './apiInstance';
 
 export const attendanceApi = {
   submitAttendance: async (latitude, longitude) => {
-    const response = await instance.post(
+    const response = await apiInstance.post(
       '/checkin',
       {
         longitude,
