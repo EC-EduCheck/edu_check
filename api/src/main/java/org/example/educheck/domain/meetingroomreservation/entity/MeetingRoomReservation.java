@@ -37,11 +37,16 @@ public class MeetingRoomReservation extends BaseTimeEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
     @Builder
     public MeetingRoomReservation(Member member, MeetingRoom meetingRoom, LocalDateTime startTime, LocalDateTime endTime) {
         this.member = member;
         this.meetingRoom = meetingRoom;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.status = ReservationStatus.ACTIVE;
     }
 }
