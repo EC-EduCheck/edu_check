@@ -17,7 +17,6 @@ import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 
 export default function DashBoard() {
   const navigate = useNavigate();
-  const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
   const { nav, tab, sidebarItemList } = useSelector((state) => state.sideBarItem);
   const { role } = useSelector((state) => state.auth.user);
 
@@ -47,7 +46,7 @@ export default function DashBoard() {
     <div className={`container ${styles.dashBoard}`}>
       <SideBar />
       <div className={styles.dashBoardBox}>
-        <Tab menuType={currentSideBarItem}></Tab>
+        <Tab />
 
         {/* TODO : dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
         <div className={styles.dashBoardContent}>
