@@ -71,7 +71,7 @@ public class JwtTokenUtil {
     }
 
     public String createAccessToken(Authentication authentication) {
-        long accessTokenValidityMilliSeconds = 1000L * 60 * 60;
+        long accessTokenValidityMilliSeconds = 1000L * 60 * 60 * 24 * 7; // 개발 7일
 
         return createToken(authentication, accessTokenValidityMilliSeconds);
     }

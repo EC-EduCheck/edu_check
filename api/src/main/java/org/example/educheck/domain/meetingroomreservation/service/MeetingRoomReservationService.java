@@ -8,6 +8,9 @@ import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomRese
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
+import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +35,7 @@ public class MeetingRoomReservationService {
         Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
 
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 회의실이 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회의실이 존재하지 않습니다."));
 
         validateUserCampusMatchMeetingRoom(campusId, meetingRoom);
 
@@ -55,19 +58,19 @@ public class MeetingRoomReservationService {
 
 
         if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
+            throw new ReservationConflictException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
         }
 
         if (startTime.isAfter(endTime)) {
-            throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠를 수 없습니다.");
+            throw new ReservationConflictException("종료 시간이 시작 시간보다 빠를 수 없습니다.");
         }
 
         if (ChronoUnit.MINUTES.between(startTime, endTime) < 15) {
-            throw new IllegalArgumentException("최소 예약 시간은 15분입니다.");
+            throw new ReservationConflictException("최소 예약 시간은 15분입니다.");
         }
 
         if (startTime.toLocalTime().isBefore(startOfDay) || endTime.toLocalTime().isAfter(endOfDay)) {
-            throw new IllegalArgumentException("예약 가능 시간은 오전 9시부터 오후 10시까지입니다.");
+            throw new ReservationConflictException("예약 가능 시간은 오전 9시부터 오후 10시까지입니다.");
         }
 
     }
@@ -78,7 +81,7 @@ public class MeetingRoomReservationService {
                 date, startTime, endTime);
 
         if (result) {
-            throw new IllegalArgumentException("중복 예약이 발생했습니다.");
+            throw new ReservationConflictException();
         }
     }
 
@@ -86,7 +89,7 @@ public class MeetingRoomReservationService {
     private void validateUserCampusMatchMeetingRoom(Long campusId, MeetingRoom meetingRoom) {
 
         if (!campusId.equals(meetingRoom.getCampusId())) {
-            throw new IllegalArgumentException("해당 회의실은 캠퍼스내 회의실이 아닙니다.");
+            throw new ResourceMismatchException("해당 회의실은 캠퍼스내 회의실이 아닙니다.");
         }
     }
 }
