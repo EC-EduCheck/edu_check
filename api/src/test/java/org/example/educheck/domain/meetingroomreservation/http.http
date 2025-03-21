@@ -3,13 +3,13 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ###
-POST http://localhost:8080/api/campuses/17/meeting-rooms/reservations
+POST http://localhost:8080/api/campuses/1/meeting-rooms/reservations
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI0MDQzNTcsImV4cCI6MTc0MjQwNDQxN30.P2eXpnR_dDaoqRVu2AdZoLmprZru_IXKNGdBispM3BY
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QG5hdmVyLmNvbSIsInJvbGVzIjpbIlNUVURFTlQiXSwiaWF0IjoxNzQyNDkyMTgxLCJleHAiOjE3NDI0OTU3ODF9.fgPPSxZZMWZvD1CmcIE1sYc4AdbIkXBp6EO
 
 {
   "startTime": "2025-03-20T09:00:00",
   "endTime": "2025-03-20T10:00:00",
-  "meetingRoomId": 60,
-  "courseId": 1
+  "meetingRoomId": 2,
+  "courseId": 5
 }
