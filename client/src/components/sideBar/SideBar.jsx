@@ -30,56 +30,48 @@ export default function SideBar() {
       isOptimisticGeolocationEnabled: false,
     });
 
-  const submitAttendanceAPI = async (latitude, longitude) => {
-    try {
-      const data = await attendanceApi.submitAttendance(latitude, longitude);
-      alert(data.message);
-      console.log(data.data.status);
-    } catch (error) {
-      alert('출석 체크에 실패했습니다.');
-    }
-  };
-
+    
   const handleAttendanceCheck = () => {
     if (!isGeolocationAvailable) {
       alert('브라우저가 위치 정보를 지원하지 않습니다.');
       return;
     }
 
-    if (!isGeolocationEnabled) {
-      navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
-        if (result.state === 'prompt') {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              console.log('위도:', position.coords.latitude, '경도:', position.coords.longitude);
-              submitAttendanceAPI(position.coords.latitude, position.coords.longitude);
-            },
-            (error) => {
-              console.error('위치 정보 오류:', error);
-              alert('위치 정보를 가져오는데 실패했습니다.');
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 0,
-            },
-          );
+    navigator.permissions
+      .query({ name: 'geolocation' })
+      .then(function (result) {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          getPosition();
         } else if (result.state === 'denied') {
           alert('위치 정보 접근이 차단되었습니다. 브라우저 설정에서 권한을 허용해주세요.');
         }
+      })
+      .catch((error) => {
+        console.error('권한 확인 오류:', error);
+        getPosition();
       });
-      return;
-    }
-
-    getPosition();
   };
 
   useEffect(() => {
     if (coords) {
       console.log('위도:', coords.latitude, '경도:', coords.longitude);
       submitAttendanceAPI(coords.latitude, coords.longitude);
+    } else if (error) {
+      console.error('위치 정보 오류:', error);
+      alert('위치 정보를 가져오는데 실패했습니다: ' + error.message);
     }
-  }, [coords]);
+  }, [coords, error]);
+
+  const submitAttendanceAPI = async (latitude, longitude) => {
+    try {
+      const data = await attendanceApi.submitAttendance(latitude, longitude);
+      alert(data.message);
+      console.log(data);
+    } catch (error) {
+      console.error('출석 체크 오류:', error);
+      alert('출석 체크에 실패했습니다: ' + (error.response?.data?.message || error.message));
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -140,7 +132,11 @@ export default function SideBar() {
 
       <div>
         {error && <div>위치 정보를 가져오는 데 실패했습니다: {error.message}</div>}
-        <MainButton title="출석하기" handleClick={handleAttendanceCheck}></MainButton>
+        <MainButton
+          title="출석하기"
+          handleClick={handleAttendanceCheck}
+          isEnable={true}
+        ></MainButton>
       </div>
       <nav>{sideBarItems}</nav>
     </div>
