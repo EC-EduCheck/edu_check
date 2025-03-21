@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface MeetingRoomReservationRepository extends JpaRepository<MeetingRoomReservation, Long> {
 
@@ -20,6 +21,12 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
                                          @Param("date") LocalDate data,
                                          @Param("startTime") LocalDateTime startTime,
                                          @Param("endTime") LocalDateTime endTime);
+
+    @Query("SELECT r FROM MeetingRoomReservation r " +
+            "JOIN FETCH r.member m " +
+            "JOIN FETCH r.meetingRoom mr " +
+            "WHERE r.id = :reservationId")
+    Optional<MeetingRoomReservation> findByIdWithDetails(@Param("reservationId") Long reservationId);
 
 
 }

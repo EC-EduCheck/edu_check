@@ -95,7 +95,7 @@ public class MeetingRoomReservationService {
     }
 
     public MeetingRoomReservationResponseDto getMeetingRoomReservationById(Long reservationId) {
-        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findById(reservationId)
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findByIdWithDetails(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
 
         return MeetingRoomReservationResponseDto.from(meetingRoomReservation);
