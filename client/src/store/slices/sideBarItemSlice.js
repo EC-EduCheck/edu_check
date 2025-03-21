@@ -23,22 +23,18 @@ const initialState = {
   sidebarIconList: [],
   tabContentsList: [],
   role: null,
-  path: '',
+  path: '/',
 };
 
 const sideBarItemSlice = createSlice({
   name: 'sideBarItem',
   initialState,
   reducers: {
-    // updateTab: (state, action) => {
-    //   state.tab = action.payload;
-    // },
     setRole: (state, action) => {
       state.nav = action.payload;
       state.sidebarItemList = action.payload;
       state.sidebarIconList = action.payload;
       state.tabContentsList = action.payload;
-      state.path = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -54,6 +50,10 @@ const sideBarItemSlice = createSlice({
         state.sidebarIconList = role === 'STUDENT' ? studentSideBarIconList : staffSideBarIconList;
         state.tabContentsList =
           role === 'STUDENT' ? getStudentTabContent(state.nav) : getStaffTabContent(state.nav);
+        state.path =
+          state.role === 'STUDENT'
+            ? getStudentPath(state.nav, state.tab)
+            : getStaffPath(state.nav, state.tab);
       })
       .addCase(logout, (state) => {
         state.role = null;
@@ -65,10 +65,15 @@ const sideBarItemSlice = createSlice({
       .addCase(updateNav, (state, action) => {
         if (state.role) {
           state.nav = action.payload;
+          state.tab = 0;
           state.tabContentsList =
             state.role === 'STUDENT'
               ? getStudentTabContent(state.nav)
               : getStaffTabContent(state.nav);
+          state.path =
+            state.role === 'STUDENT'
+              ? getStudentPath(state.nav, state.tab)
+              : getStaffPath(state.nav, state.tab);
         }
       })
       .addCase(updateTab, (state, action) => {

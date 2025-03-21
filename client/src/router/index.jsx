@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import RootLayout from '../layout/RootLayout';
 
 import NotFound from '../pages/error/NotFound';
@@ -17,6 +17,8 @@ import StaffAttendanceDetail from '../pages/staffAttendanceDetail/StaffAttendanc
 import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttendanceAbsence';
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
+
+import NavigationHandler from '../handler/NavigationHandler';
 
 const router = createBrowserRouter([
   {
@@ -81,6 +83,14 @@ const router = createBrowserRouter([
             element: <StaffRoomReservation />,
           },
         ],
+      },
+      {
+        path: '/notfound',
+        element: <NotFound />,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/notfound" replace />,
       },
     ],
   },
