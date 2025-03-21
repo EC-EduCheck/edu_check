@@ -7,7 +7,6 @@ import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoo
 import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.service.MeetingRoomReservationService;
 import org.example.educheck.global.common.dto.ApiResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,8 +44,13 @@ public class MeetingRoomReservationController {
     public ResponseEntity<ApiResponse<Object>> cancelReservation(@AuthenticationPrincipal UserDetails userDetails,
                                                                  @PathVariable Long meetingRoomReservationId) {
         meetingRoomReservationService.cancelReservation(userDetails, meetingRoomReservationId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse.ok("예약 취소 성공", "NO_CONTENT", null));
-    }
 
+        return ResponseEntity.ok(
+                ApiResponse.ok(
+                        "회의실 예약 취소 성공",
+                        "OK",
+                        null
+                )
+        );
+    }
 }

@@ -114,7 +114,7 @@ public class MeetingRoomReservationService {
     @Transactional
     public void cancelReservation(UserDetails userDetails, Long meetingRoomReservationId) {
 
-        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findById(meetingRoomReservationId)
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findByStatusAndById(meetingRoomReservationId, ReservationStatus.ACTIVE)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
 
         Member authenticatedMember = getAuthenticatedMember(userDetails);

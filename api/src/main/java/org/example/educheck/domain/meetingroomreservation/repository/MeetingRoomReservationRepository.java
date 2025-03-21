@@ -31,5 +31,10 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
             "WHERE r.id = :reservationId")
     Optional<MeetingRoomReservation> findByIdWithDetails(@Param("reservationId") Long reservationId);
 
+    @Query("SELECT r FROM MeetingRoomReservation r " +
+            "WHERE r.status = :status " +
+            "AND r.id = :reservationId")
+    Optional<MeetingRoomReservation> findByStatusAndById(@Param("reservationId") Long reservationId,
+                                                         @Param("status") ReservationStatus status);
 
 }
