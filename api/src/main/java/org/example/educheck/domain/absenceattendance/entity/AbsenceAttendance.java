@@ -38,7 +38,7 @@ public class AbsenceAttendance {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private char isApprove;
+    private Character isApprove;
     private LocalDateTime approveDate;
     private String reason;
 }
