@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
+import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
@@ -91,5 +92,14 @@ public class MeetingRoomReservationService {
         if (!campusId.equals(meetingRoom.getCampusId())) {
             throw new ResourceMismatchException("해당 회의실은 캠퍼스내 회의실이 아닙니다.");
         }
+    }
+
+    public MeetingRoomReservationResponseDto getMeetingRoomReservationById(Long reservationId) {
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
+
+        return MeetingRoomReservationResponseDto.from(meetingRoomReservation);
+
+
     }
 }
