@@ -6,7 +6,7 @@ import { authApi } from '../../api/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-
+import { setRole } from '../../store/slices/sideBarItemSlice';
 export default function Login() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ export default function Login() {
           ...response.data.data,
           accessToken: accessToken,
         }),
+        setRole(response.data.data),
       );
       navigate('/', { replace: true });
     } catch (error) {
@@ -82,7 +83,6 @@ export default function Login() {
           title="로그인"
           isEnable={isLoginButtonEnable}
         ></MainButton>
-
       </div>
     </div>
   );

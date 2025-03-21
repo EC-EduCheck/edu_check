@@ -35,7 +35,7 @@ public class Member implements UserDetails {
     @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Student student;
 
     @Builder

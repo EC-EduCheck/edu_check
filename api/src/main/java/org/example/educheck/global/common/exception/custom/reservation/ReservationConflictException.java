@@ -9,6 +9,10 @@ public class ReservationConflictException extends GlobalException {
     }
 
     public ReservationConflictException() {
-        super(ErrorCode.RESERVATION_CONFLICT, ErrorCode.RESERVATION_CONFLICT.getMessage());
+        super(ErrorCode.RESERVATION_CONFLICT);
+    }
+
+    public ReservationConflictException(String customMessage) {
+        super(ErrorCode.RESERVATION_CONFLICT, customMessage);
     }
 }

@@ -1,5 +1,6 @@
 package org.example.educheck.domain.member.controller;
 
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,12 @@ public class AuthController {
             @CookieValue(value = "refresh_token", required = true) String refreshToken,
             HttpServletResponse response) {
 
-        String email = jwtTokenUtil.getEmail(refreshToken);
+        String email;
+        try {
+            email = jwtTokenUtil.getEmail(refreshToken);
+        } catch (SignatureException ex) {
+            throw new LoginValidationException();
+        }
         LoginResponseDto loginResponseDto = authService.refreshTokenRotation(response, email);
 
         return ResponseEntity.status(HttpStatus.OK)

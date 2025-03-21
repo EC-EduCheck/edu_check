@@ -33,7 +33,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/api/auth/login", "/api/auth/signup").permitAll()
+                                .anyRequest().authenticated()
                         // TODO: 인증 엔드포인트 수정
                 )
                 // TODO: 비밀번호 예외처리

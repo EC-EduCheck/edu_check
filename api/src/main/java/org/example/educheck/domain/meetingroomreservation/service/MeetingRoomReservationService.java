@@ -1,18 +1,19 @@
 package org.example.educheck.domain.meetingroomreservation.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
-import org.example.educheck.domain.meetingroomreservation.TimeSlot;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
+import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
+import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.common.ResourceOwnerMismatchException;
 import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
-@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -33,12 +31,17 @@ public class MeetingRoomReservationService {
     private final MeetingRoomReservationRepository meetingRoomReservationRepository;
     private final MemberRepository memberRepository;
     private final MeetingRoomRepository meetingRoomRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+
+    private static void validateResourceOwner(Member authenticatedMember, MeetingRoomReservation meetingRoomReservation) {
+        if (!authenticatedMember.getId().equals(meetingRoomReservation.getMember().getId())) {
+            throw new ResourceOwnerMismatchException();
+        }
+    }
 
     @Transactional
     public void createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
 
-        Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 사용자입니다."));
+        Member findMember = getAuthenticatedMember(user);
 
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회의실이 존재하지 않습니다."));
@@ -47,48 +50,17 @@ public class MeetingRoomReservationService {
 
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
-        TimeSlot timeSlot = TimeSlot.from(requestDto);
 
-        //신버전
-        if (!isAvailable(meetingRoom.getId(), timeSlot)) {
-            throw new ReservationConflictException();
-        }
+        validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
-        //RDB에 예약 -> Redis 슬롯 처리
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
-
-        updateRedisSlots(meetingRoom.getId(), timeSlot, true);
-
-        log.info("createReservation 메서드, 예약 성공");
     }
 
-    private void updateRedisSlots(Long roomId, TimeSlot timeSlot, boolean isReserved) {
-
-        String redisKey = generateSlotKey(roomId, timeSlot.getDate());
-
-        Boolean[] slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
-
-        if (slots == null) {
-            initDailyReservationsSlots(timeSlot.getDate());
-            slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
-        }
-
-        int startSlotIndex = calculateSlotIndex(timeSlot.getStartTime());
-        int endSlotIndex = calculateSlotIndex(timeSlot.getEndTime());
-
-        for (int i = startSlotIndex; i <= endSlotIndex; i++) {
-            slots[i] = isReserved;
-        }
-
-        redisTemplate.opsForValue().set(redisKey, slots);
-
+    private Member getAuthenticatedMember(UserDetails user) {
+        return memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
     }
 
-
-    /**
-     * 예약은 9시부터 22시까지 가능
-     */
     private void validateReservationTime(LocalDateTime startTime, LocalDateTime endTime) {
 
         LocalTime startOfDay = LocalTime.of(9, 0);
@@ -96,84 +68,59 @@ public class MeetingRoomReservationService {
 
 
         if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
+            throw new ReservationConflictException("시작 시간이 종료 시간보다 늦을 수 없습니다.");
         }
 
         if (startTime.isAfter(endTime)) {
-            throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠를 수 없습니다.");
+            throw new ReservationConflictException("종료 시간이 시작 시간보다 빠를 수 없습니다.");
         }
 
         if (ChronoUnit.MINUTES.between(startTime, endTime) < 15) {
-            throw new IllegalArgumentException("최소 예약 시간은 15분입니다.");
+            throw new ReservationConflictException("최소 예약 시간은 15분입니다.");
         }
 
         if (startTime.toLocalTime().isBefore(startOfDay) || endTime.toLocalTime().isAfter(endOfDay)) {
-            throw new IllegalArgumentException("예약 가능 시간은 오전 9시부터 오후 10시까지입니다.");
+            throw new ReservationConflictException("예약 가능 시간은 오전 9시부터 오후 10시까지입니다.");
         }
 
     }
 
+    private void validateReservableTime(MeetingRoom meetingRoom, LocalDateTime startTime, LocalDateTime endTime) {
+        LocalDate date = startTime.toLocalDate();
+        boolean result = meetingRoomReservationRepository.existsOverlappingReservation(meetingRoom,
+                date, startTime, endTime, ReservationStatus.ACTIVE);
 
-    //TODO: 쿼리 발생하는거 확인 후, FETCH JOIN 처리 등 고려 하기
+        if (result) {
+            throw new ReservationConflictException();
+        }
+    }
+
     private void validateUserCampusMatchMeetingRoom(Long campusId, MeetingRoom meetingRoom) {
 
         if (!campusId.equals(meetingRoom.getCampusId())) {
-            throw new IllegalArgumentException("해당 회의실은 캠퍼스내 회의실이 아닙니다.");
+            throw new ResourceMismatchException("해당 회의실은 캠퍼스내 회의실이 아닙니다.");
         }
     }
 
-    private String generateSlotKey(Long roomId, LocalDate date) {
-        return String.format("mettingRoom:%d:date:%s", roomId, date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    public MeetingRoomReservationResponseDto getMeetingRoomReservationById(Long reservationId) {
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findByIdWithDetails(reservationId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
+
+        return MeetingRoomReservationResponseDto.from(meetingRoomReservation);
+
+
     }
 
-    private int calculateSlots(int startHour, int endHour, int slotDurationMinutes) {
-        int totalMinutes = (endHour - startHour) * 60;
-        return totalMinutes / slotDurationMinutes;
+    @Transactional
+    public void cancelReservation(UserDetails userDetails, Long meetingRoomReservationId) {
 
-    }
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findByStatusAndById(meetingRoomReservationId, ReservationStatus.ACTIVE)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
 
-    private void initDailyReservationsSlots(LocalDate date) {
-        List<MeetingRoom> roomList = meetingRoomRepository.findAll();
+        Member authenticatedMember = getAuthenticatedMember(userDetails);
+        validateResourceOwner(authenticatedMember, meetingRoomReservation);
 
-        for (MeetingRoom room : roomList) {
-            String redisKey = generateSlotKey(room.getId(), date);
-
-            int slotsCount = calculateSlots(9, 22, 15);
-            Boolean[] slots = new Boolean[slotsCount];
-            for (int i = 0; i < slotsCount; i++) {
-                slots[i] = false;
-            }
-
-            redisTemplate.opsForValue().set(redisKey, slots);
-        }
-    }
-
-    public boolean isAvailable(Long meetingRoomId, TimeSlot timeSlot) {
-        String redisKey = generateSlotKey(meetingRoomId, timeSlot.getDate());
-        Boolean[] slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
-
-        if (slots == null) {
-            initDailyReservationsSlots(timeSlot.getDate());
-            slots = (Boolean[]) redisTemplate.opsForValue().get(redisKey);
-        }
-
-        int startSlotIndex = calculateSlotIndex(timeSlot.getStartTime());
-        int endSlotIndex = calculateSlotIndex(timeSlot.getStartTime());
-
-        for (int i = startSlotIndex; i <= endSlotIndex; i++) {
-            if (slots[i]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private int calculateSlotIndex(LocalTime localTime) {
-        int hour = localTime.getHour();
-        int minute = localTime.getMinute();
-
-        return (hour - 9) * 4 + (minute / 15);
-
+        meetingRoomReservation.cancelReservation();
+        meetingRoomReservationRepository.save(meetingRoomReservation);
     }
 }
