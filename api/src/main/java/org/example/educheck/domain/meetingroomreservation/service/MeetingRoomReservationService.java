@@ -11,6 +11,7 @@ import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.common.ResourceOwnerMismatchException;
 import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,16 @@ public class MeetingRoomReservationService {
     private final MemberRepository memberRepository;
     private final MeetingRoomRepository meetingRoomRepository;
 
+    private static void validateResourceOwner(Member authenticatedMember, MeetingRoomReservation meetingRoomReservation) {
+        if (!authenticatedMember.getId().equals(meetingRoomReservation.getMember().getId())) {
+            throw new ResourceOwnerMismatchException();
+        }
+    }
+
     @Transactional
     public void createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
 
-        Member findMember = memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
+        Member findMember = getAuthenticatedMember(user);
 
         MeetingRoom meetingRoom = meetingRoomRepository.findById(requestDto.getMeetingRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("해당 회의실이 존재하지 않습니다."));
@@ -47,6 +54,10 @@ public class MeetingRoomReservationService {
 
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    private Member getAuthenticatedMember(UserDetails user) {
+        return memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
     }
 
     /**
@@ -101,5 +112,19 @@ public class MeetingRoomReservationService {
         return MeetingRoomReservationResponseDto.from(meetingRoomReservation);
 
 
+    }
+
+    @Transactional
+    public void cancelReservation(UserDetails userDetails, Long meetingRoomReservationId) {
+
+        MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findById(meetingRoomReservationId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
+
+        // 예약자와 취소 신청자 일치하는지 유효성 검사
+        Member authenticatedMember = getAuthenticatedMember(userDetails);
+        validateResourceOwner(authenticatedMember, meetingRoomReservation);
+        // 예약 취소 처리 (소프트 딜리트)
+        meetingRoomReservation.cancelReservation();
+        meetingRoomReservationRepository.save(meetingRoomReservation);
     }
 }

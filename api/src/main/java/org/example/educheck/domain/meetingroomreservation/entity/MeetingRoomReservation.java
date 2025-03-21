@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingRoomReservation extends BaseTimeEntity {
 
+    private static final Logger log = LoggerFactory.getLogger(MeetingRoomReservation.class);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,5 +51,9 @@ public class MeetingRoomReservation extends BaseTimeEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = ReservationStatus.ACTIVE;
+    }
+
+    public void cancelReservation() {
+        this.status = ReservationStatus.CANCELED;
     }
 }

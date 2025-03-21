@@ -21,6 +21,7 @@ public enum ErrorCode {
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "4000", "입력값이 올바르지 않습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다."),
     MISMATCHED_RESOURCE(HttpStatus.BAD_REQUEST, "4008", "요청한 리소스가 일치하지 않습니다."),
+    NOT_OWNER(HttpStatus.FORBIDDEN, "4003", "본인만 수정 및 삭제 가능합니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "4010", "인증에 실패했습니다.");
 
     private final HttpStatus status;

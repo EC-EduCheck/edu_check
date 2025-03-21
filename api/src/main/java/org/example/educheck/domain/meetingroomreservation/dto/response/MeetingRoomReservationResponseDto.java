@@ -3,6 +3,7 @@ package org.example.educheck.domain.meetingroomreservation.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
+import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class MeetingRoomReservationResponseDto {
     private LocalDateTime endDateTime;
     private Long meetingRoomId;
     private String meetingRoomName;
+    private ReservationStatus status;
 
     public static MeetingRoomReservationResponseDto from(MeetingRoomReservation reservation) {
         return MeetingRoomReservationResponseDto.builder()
@@ -24,6 +26,7 @@ public class MeetingRoomReservationResponseDto {
                 .endDateTime(reservation.getEndTime())
                 .meetingRoomId(reservation.getMeetingRoom().getId())
                 .meetingRoomName(reservation.getMeetingRoom().getName())
+                .status(reservation.getStatus())
                 .build();
     }
 
