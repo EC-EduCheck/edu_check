@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import styles from './SideBar.module.css';
-import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
-import { roleList } from '../../utils/dashBoardList';
 
 import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
@@ -11,10 +9,10 @@ import MainButton from '../buttons/mainButton/MainButton';
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [itemList, setItemList] = useState([]);
-  const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
+  const { name, courseName, phoneNumber, birthDate, email } = useSelector(
     (state) => state.auth.user,
   );
+  const { sidebarItemList } = useSelector((state) => state.sideBarItem);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -29,15 +27,7 @@ export default function SideBar() {
     };
   }, []);
 
-  useEffect(() => {
-    if (role === roleList[0]) {
-      setItemList(studentSideBarList);
-    } else {
-      setItemList(staffSideBarList);
-    }
-  }, [role]);
-
-  const sideBarItems = itemList.map((item, index) => {
+  const sideBarItems = sidebarItemList.map((item, index) => {
     return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
   });
 

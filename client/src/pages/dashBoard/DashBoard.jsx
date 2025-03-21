@@ -4,7 +4,6 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 import styles from './DashBoard.module.css';
 import { roleList } from '../../utils/dashBoardList';
-import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
 import {
   studentNavList,
   getStudentTabList,
@@ -19,12 +18,12 @@ import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 export default function DashBoard() {
   const navigate = useNavigate();
   const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
-  const { nav, tab } = useSelector((state) => state.sideBarItem);
+  const { nav, tab, sidebarItemList } = useSelector((state) => state.sideBarItem);
   const { role } = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (role === roleList[0]) {
-      const navIndex = studentSideBarList.indexOf(nav);
+      const navIndex = sidebarItemList.indexOf(nav);
 
       if (tab > 0) {
         const tabList = getStudentTabList(nav, tab);
@@ -33,7 +32,7 @@ export default function DashBoard() {
         navigate(`${studentNavList[navIndex]}`);
       }
     } else {
-      const navIndex = staffSideBarList.indexOf(nav);
+      const navIndex = sidebarItemList.indexOf(nav);
 
       if (tab > 0) {
         const tabList = getStaffTabList(nav, tab);

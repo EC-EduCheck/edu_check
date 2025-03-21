@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import styles from './Login.module.css';
+import { authApi } from '../../api/authApi';
+import { login } from '../../store/slices/authSlice';
+import { setRole } from '../../store/slices/sideBarItemSlice';
+
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
-import { authApi } from '../../api/authApi';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../store/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { setRole } from '../../store/slices/sideBarItemSlice';
+
 export default function Login() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
