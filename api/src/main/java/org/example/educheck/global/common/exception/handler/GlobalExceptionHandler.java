@@ -7,6 +7,7 @@ import org.example.educheck.global.common.exception.custom.common.GlobalExceptio
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -48,5 +49,13 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.INVALID_INPUT.getStatus())
                 .body(ApiResponse.error(errorMessage,
                         ErrorCode.INVALID_INPUT.getCode()));
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<ApiResponse<Object>> missingRequestCookieException(MissingRequestCookieException ex) {
+        return ResponseEntity
+                .status(ErrorCode.UNAUTHORIZED.getStatus())
+                .body(ApiResponse.error(ErrorCode.UNAUTHORIZED.getMessage(),
+                        ErrorCode.UNAUTHORIZED.getCode()));
     }
 }

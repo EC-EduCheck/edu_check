@@ -134,7 +134,7 @@ public class AuthService {
 
         Member member = memberRepository.findByEmail(email).orElse(null);
         return memberRepository.findLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(() -> new LoginValidationException());
+                .orElseThrow(LoginValidationException::new);
 
 
     }
