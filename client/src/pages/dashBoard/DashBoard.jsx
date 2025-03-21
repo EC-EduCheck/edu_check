@@ -1,47 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 import styles from './DashBoard.module.css';
-import { roleList } from '../../utils/dashBoardList';
-import {
-  studentNavList,
-  getStudentTabList,
-  staffNavList,
-  getStaffTabList,
-} from '../../utils/dashBoardList';
 
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 
 export default function DashBoard() {
-  const navigate = useNavigate();
-  const { nav, tab, sidebarItemList } = useSelector((state) => state.sideBarItem);
-  const { role } = useSelector((state) => state.auth.user);
-
-  useEffect(() => {
-    if (role === roleList[0]) {
-      const navIndex = sidebarItemList.indexOf(nav);
-
-      if (tab > 0) {
-        const tabList = getStudentTabList(nav, tab);
-        navigate(`${studentNavList[navIndex]}/${tabList}`);
-      } else {
-        navigate(`${studentNavList[navIndex]}`);
-      }
-    } else {
-      const navIndex = sidebarItemList.indexOf(nav);
-
-      if (tab > 0) {
-        const tabList = getStaffTabList(nav, tab);
-        navigate(`${staffNavList[navIndex]}/${tabList}`);
-      } else {
-        navigate(`${staffNavList[navIndex]}`);
-      }
-    }
-  }, [role, nav, tab]);
-
   return (
     <div className={`container ${styles.dashBoard}`}>
       <SideBar />

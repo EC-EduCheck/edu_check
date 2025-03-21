@@ -11,7 +11,10 @@ import {
   getStaffTabContent,
 } from '../../utils/sideBarList';
 
+import { getStudentPath, getStaffPath } from '../../utils/dashBoardList';
+
 export const updateNav = createAction('sideBarItem/updateNav');
+export const updateTab = createAction('sideBarItem/updateTab');
 
 const initialState = {
   nav: '',
@@ -20,20 +23,22 @@ const initialState = {
   sidebarIconList: [],
   tabContentsList: [],
   role: null,
+  path: '',
 };
 
 const sideBarItemSlice = createSlice({
   name: 'sideBarItem',
   initialState,
   reducers: {
-    updateTab: (state, action) => {
-      state.tab = action.payload;
-    },
+    // updateTab: (state, action) => {
+    //   state.tab = action.payload;
+    // },
     setRole: (state, action) => {
       state.nav = action.payload;
       state.sidebarItemList = action.payload;
       state.sidebarIconList = action.payload;
       state.tabContentsList = action.payload;
+      state.path = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -65,9 +70,18 @@ const sideBarItemSlice = createSlice({
               ? getStudentTabContent(state.nav)
               : getStaffTabContent(state.nav);
         }
+      })
+      .addCase(updateTab, (state, action) => {
+        if (state.role) {
+          state.tab = action.payload;
+          state.path =
+            state.role === 'STUDENT'
+              ? getStudentPath(state.nav, state.tab)
+              : getStaffPath(state.nav, state.tab);
+        }
       });
   },
 });
 
-export const { updateTab, setRole } = sideBarItemSlice.actions;
+export const { setRole } = sideBarItemSlice.actions;
 export default sideBarItemSlice.reducer;

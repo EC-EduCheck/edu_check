@@ -3,34 +3,26 @@ export const roleList = ['STUDENT', 'STAFF'];
 const studentBaseUrl = '/dashBoard/student';
 const staffBaseUrl = '/dashBoard/staff';
 
-export const studentNavList = [
-  `${studentBaseUrl}/attendance`,
-  `${studentBaseUrl}/reservation`,
-  `${studentBaseUrl}/setting`,
-];
-
-export const getStudentTabList = (nav, tab) => {
-  switch (nav) {
-    case '출석':
-      if (tab == 1) {
-        return 'absence';
-      }
-  }
+const studentRoutes = {
+  출석: [`${studentBaseUrl}/attendance`, `${studentBaseUrl}/attendance/absence`],
+  '회의실 예약': [`${studentBaseUrl}/reservation`],
+  설정: [`${studentBaseUrl}/setting`],
 };
 
-export const staffNavList = [
-  `${staffBaseUrl}/attendance`,
-  `${staffBaseUrl}/studentManage`,
-  `${staffBaseUrl}/reservation`,
-];
+export const getStudentPath = (nav, tab) => {
+  return studentRoutes[nav]?.[tab] || `${studentBaseUrl}/attendance`;
+};
 
-export const getStaffTabList = (nav, tab) => {
-  switch (nav) {
-    case '출결':
-      if (tab == 1) {
-        return 'detail';
-      } else if (tab == 2) {
-        return 'absence';
-      }
-  }
+const staffRoutes = {
+  출결: [
+    `${staffBaseUrl}/attendance`,
+    `${staffBaseUrl}/attendance/detail`,
+    `${staffBaseUrl}/attendance/absence`,
+  ],
+  '학습자 관리': [`${staffBaseUrl}/studentManage`],
+  '회의실 예약': [`${staffBaseUrl}/reservation`],
+};
+
+export const getStaffPath = (nav, tab) => {
+  return staffRoutes[nav]?.[tab] || `${staffBaseUrl}/attendance`;
 };
