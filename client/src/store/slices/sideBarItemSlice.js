@@ -2,12 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 import { login, logout } from './authSlice';
 import { jwtDecode } from 'jwt-decode';
 
-import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
+import {
+  studentSideBarList,
+  staffSideBarList,
+  studentSideBarIconList,
+  staffSideBarIconList,
+} from '../../utils/sideBarList';
 
 const initialState = {
   nav: '',
   tab: 0,
   sidebarItemList: [],
+  sidebarIconList: [],
 };
 
 const sideBarItemSlice = createSlice({
@@ -24,6 +30,7 @@ const sideBarItemSlice = createSlice({
     setRole: (state, action) => {
       state.nav = action.payload;
       state.sidebarItemList = action.payload;
+      state.sidebarIconList = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -35,6 +42,7 @@ const sideBarItemSlice = createSlice({
 
         state.nav = role === 'STUDENT' ? '출석' : '출결';
         state.sidebarItemList = role === 'STUDENT' ? studentSideBarList : staffSideBarList;
+        state.sidebarIconList = role === 'STUDENT' ? studentSideBarIconList : staffSideBarIconList;
       })
       .addCase(logout, (state) => {
         state.nav = '';
