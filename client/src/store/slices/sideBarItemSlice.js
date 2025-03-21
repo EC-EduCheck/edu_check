@@ -7,9 +7,9 @@ import {
   staffSideBarList,
   studentSideBarIconList,
   staffSideBarIconList,
+  getStudentTabContent,
+  getStaffTabContent,
 } from '../../utils/sideBarList';
-
-import { getStudentTabContent, getStaffTabContent } from '../../utils/tabContentList';
 
 export const updateNav = createAction('sideBarItem/updateNav');
 
