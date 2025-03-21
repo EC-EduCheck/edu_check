@@ -7,6 +7,5 @@ import Login from '../login/Login';
 export default function Home() {
   const { isLoggedIn } = useSelector((state) => state.auth);
 
-  // return isLoggedIn ? <DashBoard /> : <Login />;
-  return <DashBoard></DashBoard>;
+  return isLoggedIn ? <DashBoard /> : <Login />;
 }
