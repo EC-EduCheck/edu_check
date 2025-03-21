@@ -8,6 +8,8 @@
   border: 1px solid var(--text-300);
   border-radius: var(--border-radius-5);
   margin: 6px 0;
+  box-sizing: border-box;
+
 }
 
 .inputBox::placeholder {
@@ -29,4 +31,8 @@
 .inputContainer .label span {
   font-size: var(--font-size-12);
   padding-left: 6px;
+}
+
+.label{
+  text-wrap-mode: nowrap;
 }

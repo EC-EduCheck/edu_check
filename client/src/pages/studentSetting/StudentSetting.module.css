@@ -1,0 +1,24 @@
+.studentSetting {
+  height: var(--height-full);
+  width: 350px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.smallInputBox {
+  width: 260px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  flex-direction: row;
+  box-sizing: border-box;
+  gap: 10px;
+} 
+
+.noneInputBox p span {
+  display: none;
+}
