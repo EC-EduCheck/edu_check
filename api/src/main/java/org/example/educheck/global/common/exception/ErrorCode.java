@@ -18,7 +18,8 @@ public enum ErrorCode {
 
     //4000 5000 공통
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "4000", "입력값이 올바르지 않습니다."),
-    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다.");
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "4010", "인증에 실패했습니다.");
 
     private final HttpStatus status;
     private final String code;
