@@ -1,9 +1,10 @@
 package org.example.educheck.global.common.exception.custom;
 
-import org.springframework.security.core.AuthenticationException;
+import org.example.educheck.global.common.exception.ErrorCode;
+import org.example.educheck.global.common.exception.custom.common.GlobalException;
 
-public class LoginValidationException extends AuthenticationException {
+public class LoginValidationException extends GlobalException {
     public LoginValidationException() {
-        super("로그인에 실패했습니다.");
+        super(ErrorCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.getMessage());
     }
 }

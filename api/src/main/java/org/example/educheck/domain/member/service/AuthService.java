@@ -16,6 +16,7 @@ import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.example.educheck.global.security.CustomUserDetailsService;
 import org.example.educheck.global.security.jwt.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -133,7 +134,7 @@ public class AuthService {
 
         Member member = memberRepository.findByEmail(email).orElse(null);
         return memberRepository.findLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new LoginValidationException());
 
 
     }
