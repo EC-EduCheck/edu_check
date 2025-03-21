@@ -6,6 +6,7 @@ import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
 import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
+import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
@@ -90,7 +91,7 @@ public class MeetingRoomReservationService {
     private void validateReservableTime(MeetingRoom meetingRoom, LocalDateTime startTime, LocalDateTime endTime) {
         LocalDate date = startTime.toLocalDate();
         boolean result = meetingRoomReservationRepository.existsOverlappingReservation(meetingRoom,
-                date, startTime, endTime);
+                date, startTime, endTime, ReservationStatus.ACTIVE);
 
         if (result) {
             throw new ReservationConflictException();
