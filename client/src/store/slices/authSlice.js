@@ -5,7 +5,7 @@ const initialState = {
   isLoggedIn: false,
   user: {
     name: '홍길동',
-    role: 'STUDENT',
+    role: 'STAFF',
     courseId: '1',
     courseName: '클라우드 기반 JAVA 풀스택 웹개발',
     phoneNumber: '010-1234-1234',

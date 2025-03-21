@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { login, logout } from './authSlice';
 
 const initialState = {
-  nav: '출석',
+  nav: '출결',
   tab: 0,
 };
 
@@ -16,8 +17,20 @@ const sideBarItemSlice = createSlice({
     updateTab: (state, action) => {
       state.tab = action.payload;
     },
+    setRole: (state, action) => {
+      state.nav = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login, (state, action) => {
+        state.nav = action.payload.role === 'STUDENT' ? '출석' : '출결';
+      })
+      .addCase(logout, (state) => {
+        state.nav = '';
+      });
   },
 });
 
-export const { updateNav, updateTab } = sideBarItemSlice.actions;
+export const { updateNav, updateTab, setRole } = sideBarItemSlice.actions;
 export default sideBarItemSlice.reducer;
