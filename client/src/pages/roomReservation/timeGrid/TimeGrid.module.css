@@ -1,0 +1,10 @@
+.container {
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto; /* 내용이 넘치는 경우에만 스크롤 생성 */
+  border-radius: 10px;
+  border: 1px solid var(--border-100);
+  margin: 30px;
+}

@@ -1,7 +1,6 @@
-package org.example.educheck.global.common.exception.custom;
+package org.example.educheck.global.common.exception.custom.common;
 
 import org.example.educheck.global.common.exception.ErrorCode;
-import org.example.educheck.global.common.exception.GlobalException;
 
 public class ResourceNotFoundException extends GlobalException {
     public ResourceNotFoundException(ErrorCode errorCode) {

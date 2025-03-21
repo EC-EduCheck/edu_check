@@ -33,4 +33,10 @@ public class Attendance extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
 
+    public Attendance updateStatus(Status status) {
+        this.status = status;
+
+        return this;
+    };
+
 }

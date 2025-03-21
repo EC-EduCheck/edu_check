@@ -2,8 +2,8 @@ package org.example.educheck.global.common.exception.handler;
 
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.example.educheck.global.common.exception.ErrorCode;
-import org.example.educheck.global.common.exception.GlobalException;
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
+import org.example.educheck.global.common.exception.custom.common.GlobalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

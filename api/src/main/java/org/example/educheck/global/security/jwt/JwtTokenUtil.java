@@ -21,12 +21,12 @@ import java.util.Date;
 @Component
 public class JwtTokenUtil {
 
-    private final long tokenValidityMilliSeconds = 1000L * 60 * 60 * 24;
     @Value("${jwt.secret}")
     private String secretKey;
 
     @PostConstruct
     protected void init() {
+
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] keyBytes = digest.digest(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -36,7 +36,7 @@ public class JwtTokenUtil {
         }
     }
 
-    public String createToken(Authentication authentication) {
+    private String createToken(Authentication authentication, long validityMilliSeconds) {
 
         String email = null;
         try {
@@ -54,7 +54,7 @@ public class JwtTokenUtil {
                 .toList());
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + tokenValidityMilliSeconds);
+        Date validity = new Date(now.getTime() + validityMilliSeconds);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -62,6 +62,18 @@ public class JwtTokenUtil {
                 .setExpiration(validity)
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String createRefreshToken(Authentication authentication) {
+        final long refreshTokenValidityMilliSeconds = 1000L * 60 * 60 * 24 * 30;
+
+        return createToken(authentication, refreshTokenValidityMilliSeconds);
+    }
+
+    public String createAccessToken(Authentication authentication) {
+        long accessTokenValidityMilliSeconds = 1000L * 60 * 60;
+
+        return createToken(authentication, accessTokenValidityMilliSeconds);
     }
 
     public boolean validateToken(String token) {

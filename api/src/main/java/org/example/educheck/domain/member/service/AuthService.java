@@ -1,5 +1,6 @@
 package org.example.educheck.domain.member.service;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
@@ -15,10 +16,12 @@ import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.global.security.CustomUserDetailsService;
 import org.example.educheck.global.security.jwt.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +40,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional
     public Member signUp(SignUpRequestDto requestDto) {
@@ -79,9 +83,17 @@ public class AuthService {
         );
 
 
-        String accessToken = jwtTokenUtil.createToken(authenticate);
+        String accessToken = jwtTokenUtil.createAccessToken(authenticate);
         response.setHeader("Authorization", "Bearer " + accessToken);
-//        response.addCookie(리프래시토큰); // TODO
+
+        String refreshToken = jwtTokenUtil.createRefreshToken(authenticate);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+
 
         Member member = memberRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
@@ -100,4 +112,30 @@ public class AuthService {
 
         return new EmailCheckResponseDto(!memberRepository.existsByEmail(email));
     }
+
+
+    public LoginResponseDto refreshTokenRotation(HttpServletResponse response, String email) {
+
+        UserDetails userDetails = customUserDetailsService.loadUserByEmail(email);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+
+        String accessToken = jwtTokenUtil.createAccessToken(authentication);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+
+        String refreshToken = jwtTokenUtil.createRefreshToken(authentication);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        return memberRepository.findLoginResponseDtoByMemberId(member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+
+    }
+
 }

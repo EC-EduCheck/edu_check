@@ -1,7 +1,7 @@
-package org.example.educheck.global.common.exception.custom;
+package org.example.educheck.global.common.exception.custom.reservation;
 
 import org.example.educheck.global.common.exception.ErrorCode;
-import org.example.educheck.global.common.exception.GlobalException;
+import org.example.educheck.global.common.exception.custom.common.GlobalException;
 
 public class ReservationConflictException extends GlobalException {
     public ReservationConflictException(ErrorCode errorCode) {

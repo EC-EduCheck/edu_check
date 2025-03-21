@@ -8,11 +8,15 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    RESERVATION_CONFLICT(HttpStatus.CONFLICT, "6000", "해당 시간에는 이미 예약이 있습니다."),
+    //0000 회원
+    //1000 예약
+    //2000 
 
+    //예시 2개
+    RESERVATION_CONFLICT(HttpStatus.CONFLICT, "6000", "해당 시간에는 이미 예약이 있습니다."),
     MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "3000", "회의실을 찾을 수 없습니다."),
 
-
+    //4000 5000 공통
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "4000", "입력값이 올바르지 않습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다.");
 
