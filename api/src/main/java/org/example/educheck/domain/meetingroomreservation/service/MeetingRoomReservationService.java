@@ -61,9 +61,6 @@ public class MeetingRoomReservationService {
         return memberRepository.findByEmail(user.getUsername()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 member입니다."));
     }
 
-    /**
-     * 예약은 9시부터 22시까지 가능
-     */
     private void validateReservationTime(LocalDateTime startTime, LocalDateTime endTime) {
 
         LocalTime startOfDay = LocalTime.of(9, 0);
@@ -98,7 +95,6 @@ public class MeetingRoomReservationService {
         }
     }
 
-    //TODO: 쿼리 발생하는거 확인 후, FETCH JOIN 처리 등 고려 하기
     private void validateUserCampusMatchMeetingRoom(Long campusId, MeetingRoom meetingRoom) {
 
         if (!campusId.equals(meetingRoom.getCampusId())) {
@@ -121,10 +117,9 @@ public class MeetingRoomReservationService {
         MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findById(meetingRoomReservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
 
-        // 예약자와 취소 신청자 일치하는지 유효성 검사
         Member authenticatedMember = getAuthenticatedMember(userDetails);
         validateResourceOwner(authenticatedMember, meetingRoomReservation);
-        // 예약 취소 처리 (소프트 딜리트)
+
         meetingRoomReservation.cancelReservation();
         meetingRoomReservationRepository.save(meetingRoomReservation);
     }
