@@ -35,9 +35,10 @@ public class Student {
     private List<Registration> registrations = new ArrayList<>();
 
     @Builder
-    public Student(Member member, Status status, char courseParticipationStatus) {
+    public Student(Member member, Status status, char courseParticipationStatus, List<Registration> registrations) {
         this.member = member;
         this.status = status;
         this.courseParticipationStatus = courseParticipationStatus;
+        this.registrations = registrations;
     }
 }

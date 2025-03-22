@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  * isApprove : T 승인 F 반려 null 대기
  */
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AbsenceAttendance {
@@ -36,7 +38,7 @@ public class AbsenceAttendance {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private char isApprove;
+    private Character isApprove;
     private LocalDateTime approveDate;
     private String reason;
 }

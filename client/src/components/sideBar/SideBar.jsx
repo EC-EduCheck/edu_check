@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { checkIn, completeAttendance } from '../../store/slices/authSlice';
 
 import styles from './SideBar.module.css';
-import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
-import { roleList } from '../../utils/dashBoardList';
 
 import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
@@ -121,6 +119,7 @@ export default function SideBar() {
   const buttonClassName = `${styles.attendanceButton} ${
     isCheckedIn && isAttendanceToday && !isCompleted ? styles.checkInButton : ''
   } ${!buttonProps.isEnable ? styles.disabledButton : ''}`;
+  const { sidebarItemList } = useSelector((state) => state.sideBarItem);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -135,15 +134,7 @@ export default function SideBar() {
     };
   }, []);
 
-  useEffect(() => {
-    if (role === roleList[0]) {
-      setItemList(studentSideBarList);
-    } else {
-      setItemList(staffSideBarList);
-    }
-  }, [role]);
-
-  const sideBarItems = itemList.map((item, index) => {
+  const sideBarItems = sidebarItemList.map((item, index) => {
     return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
   });
 

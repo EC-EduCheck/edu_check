@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +46,7 @@ public class JwtTokenUtil {
             field.setAccessible(true);
             email = field.get(principal).toString();
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new LoginValidationException();
         }
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", authentication.getAuthorities()
