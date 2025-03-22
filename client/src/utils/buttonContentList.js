@@ -1,7 +1,7 @@
 // MainButton
-export const activeTitle = ['퇴근', '로그인'];
+export const activeTitle = ['퇴근', '로그인', '퇴실하기'];
 
-export const fullWidthTitle = ['퇴근', '출석하기', '로그인'];
+export const fullWidthTitle = ['퇴근', '출석하기', '로그인', '퇴실하기', '퇴실 완료'];
 
 // Tag
 export const tagList = ['수강중', '수료', '수강 중단'];
