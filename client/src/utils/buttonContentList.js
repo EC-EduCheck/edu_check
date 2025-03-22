@@ -6,28 +6,25 @@ export const fullWidthTitle = ['퇴근', '출석하기', '로그인'];
 // Tag
 export const tagList = ['수강중', '수료', '수강 중단'];
 
+const tagColors = {
+  green: ['출석', '수강중'],
+  yellow: ['지각', '조퇴', '수료'],
+  red: ['결석', '수강 중단'],
+};
+
 export const getTagColors = (menuType) => {
-  switch (true) {
-    case ['출석', '수강중'].includes(menuType):
-      return 'green';
-    case ['지각', '조퇴', '수료'].includes(menuType):
-      return 'yellow';
-    case ['결석', '수강 중단'].includes(menuType):
-      return 'red';
-    default:
-      return false;
-  }
+  return Object.entries(tagColors).find(([color, types]) => types.includes(menuType))?.[0] || false;
+};
+
+const clickableList = {
+  false: ['출석', '지각', '조퇴', '결석'],
+  true: ['수강중', '수료', '수강 중단'],
 };
 
 export const getIsClickable = (menuType) => {
-  switch (true) {
-    case ['출석', '지각', '조퇴', '결석'].includes(menuType):
-      return false;
-    case ['수강중', '수료', '수강 중단'].includes(menuType):
-      return true;
-    default:
-      return false;
-  }
+  return (
+    Object.entries(clickableList).find(([click, types]) => types.includes(menuType))?.[0] || false
+  );
 };
 
 // LeftLineListItem
