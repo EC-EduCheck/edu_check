@@ -30,15 +30,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus;
-        // student가 null인 경우 처리
-        if (user == null) {
-            // 테스트용으로 ID 인 학생 사용
-            attendanceStatus = attendanceService.checkIn(3L, requestDto);
-        } else {
-            String email = user.getUsername();
-            attendanceStatus = attendanceService.checkInByEmail(email, requestDto);
-        }
+        Status attendanceStatus = attendanceService.checkIn(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
@@ -67,7 +59,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user
     ) {
         return ResponseEntity.ok(ApiResponse.ok(
-            "특정 학생 세부 출결 현황 조회 성공",
+                "특정 학생 세부 출결 현황 조회 성공",
                 "OK",
                 attendanceService.getStudentAttendances(courseId, studentId, user)
         ));
@@ -80,12 +72,12 @@ public class AttendanceController {
             @PathVariable Long studentId,
             @RequestBody AttendanceUpdateRequestDto requestDto,
             @AuthenticationPrincipal UserDetails user
-            ) {
-                attendanceService.updateStudentAttendance(courseId, studentId, requestDto, user);
+    ) {
+        attendanceService.updateStudentAttendance(courseId, studentId, requestDto, user);
         return ResponseEntity.ok(ApiResponse.ok(
                 "특정 학생 출결 수정 성공",
                 "OK",
-                    null
-                ));
+                null
+        ));
     }
 }
