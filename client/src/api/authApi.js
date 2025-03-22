@@ -1,8 +1,9 @@
 import apiInstance from './apiInstance';
+import authInstance from './authInstance';
 
 export const authApi = {
   login: async (email, password) => {
-    const response = await apiInstance.post(
+    const response = await authInstance.post(
       '/auth/login',
       {
         email: email,

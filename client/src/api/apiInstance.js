@@ -1,16 +1,17 @@
 import axios from 'axios';
+import store from '../store/store'
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// apiInstance.interceptors.request.use((config) => {
-//   const accessToken = store.getState().auth.accessToken;
-//   if (accessToken) {
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
-//   return config;
-// });
+apiInstance.interceptors.request.use((config) => {
+  const accessToken = store.getState().auth.accessToken;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
 // apiInstance.interceptors.response.use(
 //   (response) => {
