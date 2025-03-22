@@ -49,14 +49,24 @@ public class AttendanceService {
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
 
-    private static final double LOCATION_TOLERANCE = 0.001;
-    // 출석 인정 마감 시간
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(23, 30);
+    private static final double LOCATION_TOLERANCE = 0.05;
+    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
 
     @Transactional
-    public Status checkIn(Long studentId, AttendanceCheckinRequestDto requestDto) {
-        Student student = studentRepository.findById(studentId)
+    public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
+        if (user == null) {
+            throw new IllegalArgumentException("인증된 사용자 정보가 없습니다.");
+        }
+
+        String userEmail = user.getUsername();
+
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        Student student = studentRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+
+        Long studentId = student.getId();
 
         if (student.getCourseParticipationStatus() != 'T') {
             throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
@@ -65,7 +75,6 @@ public class AttendanceService {
         Registration currentRegistration = registrationRepository.findByStudentIdAndStatus(
                         studentId, org.example.educheck.domain.registration.entity.Status.PROGRESS)
                 .orElseThrow(() -> new IllegalArgumentException("현재 진행 중인 과정 등록이 없습니다."));
-
         Course currentCourse = currentRegistration.getCourse();
 
         LocalDate today = LocalDate.now();
@@ -101,22 +110,9 @@ public class AttendanceService {
     }
 
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        return Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
+        boolean isWithin = Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
                 Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
-    }
-
-    @Transactional
-    public Status checkInByEmail(String email, AttendanceCheckinRequestDto requestDto) {
-        // 이메일로 Member 찾기
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
-
-        // Member로 Student 찾기 (StudentRepository에 메소드 추가 필요)
-        Student student = studentRepository.findByMemberId(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
-
-        // 기존 checkIn 메소드 호출
-        return checkIn(student.getId(), requestDto);
+        return isWithin;
     }
 
     public AttendanceListResponseDto getTodayAttendances(Long courseId, UserDetails user) {
