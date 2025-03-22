@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { checkIn, completeAttendance } from '../../store/slices/authSlice';
 
 import styles from './SideBar.module.css';
 import { studentSideBarList, staffSideBarList } from '../../utils/sideBarList';
@@ -14,10 +15,19 @@ export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
+  const dispatch = useDispatch();
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
     (state) => state.auth.user,
   );
-  const { coords, isGeolocationAvailable, isGeolocationEnabled, error, getPosition } =
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isCheckedIn, attendanceDate, isCompleted } = useSelector(
+    (state) => state.auth.attendanceStatus,
+  );
+
+  const today = new Date().toISOString().split('T')[0];
+  const isAttendanceToday = attendanceDate === today;
+
+  const { coords, isGeolocationAvailable,  error, getPosition } =
     useGeolocated({
       positionOptions: {
         enableHighAccuracy: true,
@@ -30,8 +40,15 @@ export default function SideBar() {
       isOptimisticGeolocationEnabled: false,
     });
 
-    
   const handleAttendanceCheck = () => {
+    if (isCheckedIn && isAttendanceToday && !isCompleted) {
+      handleCompleteAttendance();
+    } else if (!isCheckedIn || !isAttendanceToday) {
+      handleCheckIn();
+    }
+  };
+
+  const handleCheckIn = () => {
     if (!isGeolocationAvailable) {
       alert('브라우저가 위치 정보를 지원하지 않습니다.');
       return;
@@ -51,6 +68,21 @@ export default function SideBar() {
         getPosition();
       });
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      const storedDate = attendanceDate;
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      if (storedDate && storedDate !== currentDate) {
+        dispatch(resetAttendanceStatus());
+      }
+    }
+  }, [isLoggedIn, attendanceDate, dispatch]);
+  const handleCompleteAttendance = () => {
+    // todo:퇴실 api
+    alert('퇴실 처리되었습니다.');
+    dispatch(completeAttendance());
+  };
 
   useEffect(() => {
     if (coords) {
@@ -67,11 +99,28 @@ export default function SideBar() {
       const data = await attendanceApi.submitAttendance(latitude, longitude);
       alert(data.message);
       console.log(data);
+      dispatch(checkIn());
     } catch (error) {
       console.error('출석 체크 오류:', error);
       alert('출석 체크에 실패했습니다: ' + (error.response?.data?.message || error.message));
     }
   };
+
+  const getButtonProps = () => {
+    if (isCompleted && isAttendanceToday) {
+      return { title: '퇴실 완료', isEnable: false };
+    } else if (isCheckedIn && isAttendanceToday) {
+      return { title: '퇴실하기', isEnable: true };
+    } else {
+      return { title: '출석하기', isEnable: true };
+    }
+  };
+
+  const buttonProps = getButtonProps();
+
+  const buttonClassName = `${styles.attendanceButton} ${
+    isCheckedIn && isAttendanceToday && !isCompleted ? styles.checkInButton : ''
+  } ${!buttonProps.isEnable ? styles.disabledButton : ''}`;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -133,10 +182,10 @@ export default function SideBar() {
       <div>
         {error && <div>위치 정보를 가져오는 데 실패했습니다: {error.message}</div>}
         <MainButton
-          title="출석하기"
+          title={buttonProps.title}
           handleClick={handleAttendanceCheck}
-          isEnable={true}
-        ></MainButton>
+          isEnable={buttonProps.isEnable}
+        />
       </div>
       <nav>{sideBarItems}</nav>
     </div>
