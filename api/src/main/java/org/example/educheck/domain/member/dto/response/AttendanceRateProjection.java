@@ -1,23 +1,32 @@
 package org.example.educheck.domain.member.dto.response;
 
-import java.math.BigDecimal;
-
 public interface AttendanceRateProjection {
-    Long getStudentId();
 
     Long getMemberId();
 
-    BigDecimal getTotalAttendance();
+    Long getStudentId();
 
-    BigDecimal getAttendanceCount();
+    Integer getProgressingCount();
 
-    BigDecimal getLateCount();
+    Integer getTotalAttendanceCount();
 
-    BigDecimal getEarlyLeaveCount();
+    Integer getPresentCount();
 
-    BigDecimal getAbsenceCount();
+    Integer getLateCount();
 
-    BigDecimal getAdjustedAbsenceCount();
+    Integer getEarlyLeaveCount();
 
-    BigDecimal getAttendanceRate();
+    Integer getAdjustedAbsenceCount();
+
+    Integer getAbsenceCount();
+
+    Integer getTotalAbsenceCount();
+
+    Integer getRecognizedAttendanceCount();
+
+    Double getTodayAttendanceRate();
+
+    Double getOverallAttendanceRate();
+
+    Double getCourseProgressRate();
 }

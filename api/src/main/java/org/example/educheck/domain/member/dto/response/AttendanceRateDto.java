@@ -11,42 +11,38 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AttendanceRateDto {
 
-    private final Long studentId;
     private final Long memberId;
-    private final BigDecimal totalAttendance;
-    private final BigDecimal attendanceCount;
-    private final BigDecimal lateCount;
-    private final BigDecimal earlyLeaveCount;
-    private final BigDecimal absenceCount;
-    private final BigDecimal adjustedAbsenceCount;
-    private final BigDecimal attendanceRate;
+    private final Long studentId;
+    private final Integer progressingCount;
+    private final Integer totalAttendanceCount;
+    private final Integer presentCount;
+    private final Integer lateCount;
+    private final Integer earlyLeaveCount;
+    private final Integer adjustedAbsenceCount;
+    private final Integer absenceCount;
+    private final Integer totalAbsenceCount;
+    private final Integer recognizedAttendanceCount;
+    private final BigDecimal todayAttendanceRate;
+    private final BigDecimal overallAttendanceRate;
+    private final BigDecimal courseProgressRate;
 
     public static AttendanceRateDto from(AttendanceRateProjection projection) {
         return AttendanceRateDto.builder()
-                .studentId(projection.getStudentId())
                 .memberId(projection.getMemberId())
-                .totalAttendance(projection.getTotalAttendance())
-                .attendanceCount(projection.getAttendanceCount())
+                .studentId(projection.getStudentId())
+                .progressingCount(projection.getProgressingCount())
+                .totalAttendanceCount(projection.getTotalAttendanceCount())
+                .presentCount(projection.getPresentCount())
                 .lateCount(projection.getLateCount())
                 .earlyLeaveCount(projection.getEarlyLeaveCount())
-                .absenceCount(projection.getAbsenceCount())
                 .adjustedAbsenceCount(projection.getAdjustedAbsenceCount())
-                .attendanceRate(projection.getAttendanceRate())
+                .absenceCount(projection.getAbsenceCount())
+                .totalAbsenceCount(projection.getTotalAbsenceCount())
+                .recognizedAttendanceCount(projection.getRecognizedAttendanceCount())
+                .todayAttendanceRate(BigDecimal.valueOf(projection.getTodayAttendanceRate()))
+                .overallAttendanceRate(BigDecimal.valueOf(projection.getOverallAttendanceRate()))
+                .courseProgressRate(BigDecimal.valueOf(projection.getCourseProgressRate()))
                 .build();
     }
 
-    @Override
-    public String toString() {
-        return "AttendanceRateDto{" +
-                "studentId=" + studentId +
-                ", memberId=" + memberId +
-                ", totalAttendance=" + totalAttendance +
-                ", attendanceCount=" + attendanceCount +
-                ", lateCount=" + lateCount +
-                ", earlyLeaveCount=" + earlyLeaveCount +
-                ", absenceCount=" + absenceCount +
-                ", adjustedAbsenceCount=" + adjustedAbsenceCount +
-                ", attendanceRate=" + attendanceRate +
-                '}';
-    }
 }

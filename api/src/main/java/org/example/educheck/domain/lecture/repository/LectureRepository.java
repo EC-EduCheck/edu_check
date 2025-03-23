@@ -30,46 +30,31 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
     List<Lecture> findAllByCourseId(Long courseId);
 
     @Query(value = """
-             SELECT
-                s.id AS studentId,
-                m.id AS memberId,
-                COUNT(a.id) AS totalAttendance,
-                COUNT(CASE WHEN a.status = 'ATTENDANCE' THEN 1 END) AS attendanceCount,
-                COUNT(CASE WHEN a.status = 'LATE' THEN 1 END) AS lateCount,
-                COUNT(CASE WHEN a.status = 'EARLY_LEAVE' THEN 1 END) AS earlyLeaveCount,
-                (COUNT(l.id) - COUNT(a.id)) AS absenceCount,
-                FLOOR(
-                        (COUNT(CASE WHEN a.status = 'LATE' THEN 1 END)
-                            + COUNT(CASE WHEN a.status = 'EARLY_LEAVE' THEN 1 END)) / 3
-                ) AS adjustedAbsenceCount,
-                (
-                    (COUNT(l.id) - COUNT(a.id)) +
-                    FLOOR(
-                            (COUNT(CASE WHEN a.status = 'LATE' THEN 1 END)
-                                + COUNT(CASE WHEN a.status = 'EARLY_LEAVE' THEN 1 END)) / 3
-                    )
-                ) AS totalAbsenceCount,
-                ROUND(
-                    (
-                        COUNT(l.id) -
-                        (
-                            (COUNT(l.id) - COUNT(a.id)) +
-                            FLOOR(
-                                    (COUNT(CASE WHEN a.status = 'LATE' THEN 1 END) +
-                                     COUNT(CASE WHEN a.status = 'EARLY_LEAVE' THEN 1 END)) / 3
-                            )
-                        )
-                    ) / COUNT(l.id) * 100
-                )    AS attendanceRate
-            FROM lecture l
-                     LEFT JOIN attendance a
-                               ON DATE(l.date) = DATE(a.check_in_timestamp)
-                     LEFT JOIN student s
-                               ON a.student_id = s.id
-                     LEFT JOIN member m
-                               ON s.member_id = m.id
-             WHERE l.course_id = :courseId
-             AND s.member_id = :memberId
+            SELECT
+                member_id AS memberId,
+                student_id AS studentId,
+                progressingCount,
+                COUNT(attendanceId) AS totalAttendanceCount,
+                COUNT(CASE WHEN attendanceStatus = 'ATTENDANCE' THEN 1 END) AS presentCount,
+                COUNT(CASE WHEN attendanceStatus = 'LATE' THEN 1 END) AS lateCount,
+                COUNT(CASE WHEN attendanceStatus = 'EARLY_LEAVE' THEN 1 END) AS earlyLeaveCount,
+                ROUND((COUNT(CASE WHEN attendanceStatus = 'LATE' THEN 1 END) +
+                    COUNT(CASE WHEN attendanceStatus = 'EARLY_LEAVE' THEN 1 END)) / 3) AS adjustedAbsenceCount,
+                progressingCount - COUNT(attendanceId) AS absenceCount,
+                progressingCount - COUNT(attendanceId) +
+                    ROUND((COUNT(CASE WHEN attendanceStatus = 'LATE' THEN 1 END) +
+                           COUNT(CASE WHEN attendanceStatus = 'EARLY_LEAVE' THEN 1 END)) / 3) AS totalAbsenceCount,
+                COUNT(attendanceId) -
+                    ROUND((COUNT(CASE WHEN attendanceStatus = 'LATE' THEN 1 END) +
+                           COUNT(CASE WHEN attendanceStatus = 'EARLY_LEAVE' THEN 1 END)) / 3) AS recognizedAttendanceCount,
+                (COUNT(attendanceId) -
+                    ROUND((COUNT(CASE WHEN attendanceStatus = 'LATE' THEN 1 END) +
+                           COUNT(CASE WHEN attendanceStatus = 'EARLY_LEAVE' THEN 1 END)) / 3)) / progressingCount * 100 AS todayAttendanceRate,
+                count(lecture_id) / totalLectureCount * 100 AS overallAttendanceRate,
+                progressingCount / totalLectureCount * 100 AS courseProgressRate
+            FROM lecture_attendance
+            WHERE course_id = :courseId AND member_id = :memberId
+            group by student_id
             """, nativeQuery = true)
     AttendanceRateProjection findAttendanceRateByCourse(@Param("courseId") Long courseId,
                                                         @Param("memberId") Long memberId);
