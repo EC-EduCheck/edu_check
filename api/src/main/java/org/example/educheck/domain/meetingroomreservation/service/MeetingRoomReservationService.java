@@ -1,15 +1,17 @@
 package org.example.educheck.domain.meetingroomreservation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
-import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
+import org.example.educheck.domain.meetingroomreservation.dto.response.*;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
 import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.example.educheck.global.common.exception.custom.common.ResourceOwnerMismatchException;
@@ -22,7 +24,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -50,11 +57,19 @@ public class MeetingRoomReservationService {
 
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
+        validateDailyReservationLimit(findMember.getId());
 
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    private void validateDailyReservationLimit(Long memberId) {
+        int totalReservationMinutesForMember = meetingRoomReservationRepository.getTotalReservationMinutesForMember(memberId);
+        if (totalReservationMinutesForMember > 120) {
+            throw new InvalidRequestException("하루에 총 2시간까지 예약할 수 있습니다.");
+        }
     }
 
     private Member getAuthenticatedMember(UserDetails user) {
@@ -122,5 +137,32 @@ public class MeetingRoomReservationService {
 
         meetingRoomReservation.cancelReservation();
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    public CampusMeetingRoomsDto getMeetingRoomReservations(Long campusId) {
+
+        List<MeetingRoomReservationsProjections> reservationsByCampus = meetingRoomReservationRepository.findByCampusId(campusId);
+
+        Map<Long, MeetingRoomDto> meetingRoomDtoMap = new LinkedHashMap<>();
+
+        for (MeetingRoomReservationsProjections reservation : reservationsByCampus) {
+            Long meetingRoomId = reservation.getMeetingRoomId();
+            String meetingRoomName = reservation.getMeetingRoomName();
+
+            meetingRoomDtoMap.putIfAbsent(meetingRoomId, new MeetingRoomDto(meetingRoomId, meetingRoomName, new ArrayList<>()));
+
+            if (reservation.getMeetingRoomReservationId() != null) {
+                meetingRoomDtoMap.get(meetingRoomId).getReservations().add(
+                        new ReservationDto(reservation.getMeetingRoomReservationId(),
+                                reservation.getMemberId(),
+                                reservation.getMemberName(),
+                                reservation.getStartTime(),
+                                reservation.getEndTime())
+                );
+            }
+
+        }
+
+        return new CampusMeetingRoomsDto(campusId, LocalDate.now(), new ArrayList<>(meetingRoomDtoMap.values()));
     }
 }
