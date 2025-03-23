@@ -16,8 +16,6 @@ import org.example.educheck.global.common.exception.custom.common.ResourceMismat
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.example.educheck.global.common.exception.custom.common.ResourceOwnerMismatchException;
 import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +35,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MeetingRoomReservationService {
 
-    private static final Logger log = LoggerFactory.getLogger(MeetingRoomReservationService.class);
     private final MeetingRoomReservationRepository meetingRoomReservationRepository;
     private final MemberRepository memberRepository;
     private final MeetingRoomRepository meetingRoomRepository;
