@@ -121,9 +121,6 @@ export default function SideBar() {
 
   const buttonProps = getButtonProps();
 
-  const buttonClassName = `${styles.attendanceButton} ${
-    isCheckedIn && isAttendanceToday && !isCompleted ? styles.checkInButton : ''
-  } ${!buttonProps.isEnable ? styles.disabledButton : ''}`;
   const { sidebarItemList } = useSelector((state) => state.sideBarItem);
 
   useEffect(() => {
