@@ -1,6 +1,7 @@
 package org.example.educheck.domain.meetingroomreservation.repository;
 
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
+import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
 import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface MeetingRoomReservationRepository extends JpaRepository<MeetingRoomReservation, Long> {
@@ -36,5 +38,15 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
             "AND r.id = :reservationId")
     Optional<MeetingRoomReservation> findByStatusAndById(@Param("reservationId") Long reservationId,
                                                          @Param("status") ReservationStatus status);
+
+    @Query("SELECT new org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto(m.id, m.name, r.startTime, me.name) " +
+            "FROM MeetingRoom m " +
+            "LEFT JOIN MeetingRoomReservation r " +
+            "ON r.meetingRoom = m " +
+            "LEFT JOIN r.member me " +
+            "WHERE m.campus.id = :campusId " +
+            "AND (r.startTime IS NULL OR DATE(r.startTime) = CURRENT_DATE)")
+    List<MeetingRoomReservationResponseDto> findByCampusId(@Param("campusId") Long campusId);
+
 
 }

@@ -1,12 +1,16 @@
 package org.example.educheck.domain.meetingroomreservation.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
 import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Getter
 public class MeetingRoomReservationResponseDto {

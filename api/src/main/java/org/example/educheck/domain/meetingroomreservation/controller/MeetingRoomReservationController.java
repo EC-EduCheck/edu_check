@@ -40,6 +40,14 @@ public class MeetingRoomReservationController {
 
     }
 
+    @GetMapping
+    public void getReservations(@AuthenticationPrincipal UserDetails userDetails,
+                                @PathVariable Long campusId) {
+
+        meetingRoomReservationService.getMeetingRoomReservations(campusId);
+    }
+
+
     @DeleteMapping("/{meetingRoomReservationId}")
     public ResponseEntity<ApiResponse<Object>> cancelReservation(@AuthenticationPrincipal UserDetails userDetails,
                                                                  @PathVariable Long meetingRoomReservationId) {

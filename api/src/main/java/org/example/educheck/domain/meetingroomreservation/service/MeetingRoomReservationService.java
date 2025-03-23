@@ -1,6 +1,7 @@
 package org.example.educheck.domain.meetingroomreservation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
 import org.example.educheck.domain.meetingroom.repository.MeetingRoomRepository;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
@@ -22,7 +23,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -122,5 +125,18 @@ public class MeetingRoomReservationService {
 
         meetingRoomReservation.cancelReservation();
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    public void getMeetingRoomReservations(Long campusId) {
+        List<MeetingRoomReservationResponseDto> byCampusId = meetingRoomReservationRepository.findByCampusId(campusId);
+
+        // 각 항목을 로그로 출력
+        for (MeetingRoomReservationResponseDto reservation : byCampusId) {
+            log.info("Reservation: MeetingRoomId={}, MeetingRoomName={}, StartTime={}, MemberName={}",
+                    reservation.getMeetingRoomId(),
+                    reservation.getMeetingRoomName(),
+                    reservation.getStartDateTime(),
+                    reservation.getReserverName());
+        }
     }
 }
