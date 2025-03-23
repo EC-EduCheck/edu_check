@@ -80,4 +80,17 @@ public class AttendanceController {
                 null
         ));
     }
+
+    @PatchMapping("/checkout")
+    public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkOut(@AuthenticationPrincipal UserDetails user) {
+        Status attendanceStatus = attendanceService.checkOut(user);
+
+        AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(
+                "퇴실 성공",
+                "OK",
+                responseDto
+        ));
+    }
 }
