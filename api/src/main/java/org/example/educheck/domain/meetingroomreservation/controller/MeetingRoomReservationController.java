@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.meetingroomreservation.dto.request.MeetingRoomReservationRequestDto;
+import org.example.educheck.domain.meetingroomreservation.dto.response.CampusMeetingRoomsDto;
 import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
 import org.example.educheck.domain.meetingroomreservation.service.MeetingRoomReservationService;
 import org.example.educheck.global.common.dto.ApiResponse;
@@ -41,10 +42,16 @@ public class MeetingRoomReservationController {
     }
 
     @GetMapping
-    public void getReservations(@AuthenticationPrincipal UserDetails userDetails,
-                                @PathVariable Long campusId) {
+    public ResponseEntity<ApiResponse<CampusMeetingRoomsDto>> getReservations(@AuthenticationPrincipal UserDetails userDetails,
+                                                                              @PathVariable Long campusId) {
 
-        meetingRoomReservationService.getMeetingRoomReservations(campusId);
+        return ResponseEntity.ok(
+                ApiResponse.ok(
+                        "회의실 예약 내역 조회 성공",
+                        "OK",
+                        meetingRoomReservationService.getMeetingRoomReservations(campusId)
+                )
+        );
     }
 
 

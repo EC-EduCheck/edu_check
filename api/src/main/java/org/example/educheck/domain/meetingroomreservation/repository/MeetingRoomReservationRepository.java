@@ -1,7 +1,7 @@
 package org.example.educheck.domain.meetingroomreservation.repository;
 
 import org.example.educheck.domain.meetingroom.entity.MeetingRoom;
-import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto;
+import org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationsProjections;
 import org.example.educheck.domain.meetingroomreservation.entity.MeetingRoomReservation;
 import org.example.educheck.domain.meetingroomreservation.entity.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,14 +39,28 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
     Optional<MeetingRoomReservation> findByStatusAndById(@Param("reservationId") Long reservationId,
                                                          @Param("status") ReservationStatus status);
 
-    @Query("SELECT new org.example.educheck.domain.meetingroomreservation.dto.response.MeetingRoomReservationResponseDto(m.id, m.name, r.startTime, me.name) " +
-            "FROM MeetingRoom m " +
-            "LEFT JOIN MeetingRoomReservation r " +
-            "ON r.meetingRoom = m " +
-            "LEFT JOIN r.member me " +
-            "WHERE m.campus.id = :campusId " +
-            "AND (r.startTime IS NULL OR DATE(r.startTime) = CURRENT_DATE)")
-    List<MeetingRoomReservationResponseDto> findByCampusId(@Param("campusId") Long campusId);
+    @Query(value = """
+                SELECT
+                    m.id AS meetingRoomId,
+                    m.name AS meetingRoomName,
+                    m.campus_id AS campusId,
+                    r.id AS meetingRoomReservationId,
+                    me.id AS memberId,
+                    me.name AS memberName,
+                    r.status AS reservationStatus,
+                    r.start_time AS startTime,
+                    r.end_time AS endTime
+                FROM meeting_room m
+                LEFT JOIN meeting_room_reservation r
+                    ON m.id = r.meeting_room_id
+                LEFT JOIN member me
+                    ON r.memeber_id = me.id
+                WHERE m.campus_id = :campusId
+                 AND (DATE(r.start_time) = DATE(NOW()) OR r.start_time IS NULL)
+                 AND (r.status = 'ACTIVE' OR r.status IS NULL)
+                ORDER BY r.start_time
+            """, nativeQuery = true)
+    List<MeetingRoomReservationsProjections> findByCampusId(@Param("campusId") Long campusId);
 
 
 }
