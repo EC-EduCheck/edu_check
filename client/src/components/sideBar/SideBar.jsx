@@ -76,10 +76,15 @@ export default function SideBar() {
       }
     }
   }, [isLoggedIn, attendanceDate, dispatch]);
-  const handleCompleteAttendance = () => {
-    // todo:퇴실 api
-    alert('퇴실 처리되었습니다.');
-    dispatch(completeAttendance());
+  const handleCompleteAttendance = async () => {
+    try {
+      const data = await attendanceApi.submitCheckOut();
+      alert(data.message || '퇴실 처리되었습니다.');
+      dispatch(completeAttendance());
+    } catch (error) {
+      console.error('퇴실 처리 오류:', error);
+      alert('퇴실 처리에 실패했습니다: ' + (error.response?.data?.message || error.message));
+    }
   };
 
   useEffect(() => {

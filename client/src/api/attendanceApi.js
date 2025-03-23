@@ -15,4 +15,14 @@ export const attendanceApi = {
     console.log(response);
     return response.data;
   },
+  submitCheckOut: async () => {
+    const response = await apiInstance.patch(
+      '/checkout',
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
 };
