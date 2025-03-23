@@ -10,10 +10,13 @@ import org.example.educheck.domain.meetingroomreservation.entity.ReservationStat
 import org.example.educheck.domain.meetingroomreservation.repository.MeetingRoomReservationRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.example.educheck.global.common.exception.custom.common.ResourceOwnerMismatchException;
 import org.example.educheck.global.common.exception.custom.reservation.ReservationConflictException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class MeetingRoomReservationService {
 
+    private static final Logger log = LoggerFactory.getLogger(MeetingRoomReservationService.class);
     private final MeetingRoomReservationRepository meetingRoomReservationRepository;
     private final MemberRepository memberRepository;
     private final MeetingRoomRepository meetingRoomRepository;
@@ -50,11 +54,19 @@ public class MeetingRoomReservationService {
 
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
+        validateDailyReservationLimit(findMember.getId());
 
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    private void validateDailyReservationLimit(Long memberId) {
+        int totalReservationMinutesForMember = meetingRoomReservationRepository.getTotalReservationMinutesForMember(memberId);
+        if (totalReservationMinutesForMember > 120) {
+            throw new InvalidRequestException("하루에 총 2시간까지 예약할 수 있습니다.");
+        }
     }
 
     private Member getAuthenticatedMember(UserDetails user) {

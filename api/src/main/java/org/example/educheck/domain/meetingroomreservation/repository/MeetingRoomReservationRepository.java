@@ -37,4 +37,14 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
     Optional<MeetingRoomReservation> findByStatusAndById(@Param("reservationId") Long reservationId,
                                                          @Param("status") ReservationStatus status);
 
+    @Query(value = """
+                    SELECT
+                    COALESCE(SUM(TIMESTAMPDIFF(MINUTE , r.end_time, r.start_time)),0)
+                    FROM meeting_room_reservation r
+                    WHERE r.memeber_id = :memberId
+                    AND r.status = 'ACTIVE'
+                    AND DATE(r.start_time) = DATE(NOW())
+            """, nativeQuery = true)
+    int getTotalReservationMinutesForMember(@Param("memberId") Long memberId);
+
 }
