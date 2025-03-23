@@ -203,4 +203,42 @@ public class AttendanceService {
         staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
     }
+
+    @Transactional
+    public Status checkOut(UserDetails user) {
+        String email = user.getUsername();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
+
+        Student student = studentRepository.findByMemberId(member.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("학생 정보를 찾을 수 없습니다."));
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+
+        Attendance attendance = attendanceRepository.findByStudentIdAndCheckInTimestampBetween(
+                        student.getId(), startOfDay, endOfDay)
+                .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
+
+        if (attendance.getCheckOutTimestamp() != null) {
+            throw new IllegalStateException("이미 퇴실 처리되었습니다.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        attendance.setCheckOutTimestamp(now);
+
+        LocalTime earlyLeaveTime = LocalTime.of(17, 0);
+        if (attendance.getStatus() == Status.LATE) {
+            attendance.setStatus(Status.LATE);
+        } else if (now.toLocalTime().isBefore(earlyLeaveTime)) {
+            attendance.setStatus(Status.EARLY_LEAVE);
+        } else {
+            attendance.setStatus(Status.ATTENDANCE);
+        }
+
+        attendanceRepository.save(attendance);
+        return attendance.getStatus();
+    }
+
 }
