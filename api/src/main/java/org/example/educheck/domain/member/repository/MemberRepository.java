@@ -25,7 +25,20 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
                 LEFT JOIN Campus c ON cr.campus.id = c.id
                 WHERE m.id = :memberId
             """)
-    Optional<LoginResponseDto> findLoginResponseDtoByMemberId(@Param("memberId") Long memberId);
+    Optional<LoginResponseDto> studentLoginResponseDtoByMemberId(@Param("memberId") Long memberId);
+
+    @Query("""
+            select new org.example.educheck.domain.member.dto.LoginResponseDto(
+                 m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
+            )
+            from Member m
+            LEFT JOIN Staff st ON st.member.id = m.id
+            LEFT JOIN StaffCourse sc ON sc.staff.id = st.id
+            LEFT JOIN Course cr ON sc.course.id = cr.id AND NOW() BETWEEN cr.startDate AND cr.endDate
+            LEFT JOIN Campus c ON cr.campus.id = c.id
+            WHERE m.id = :memberId
+            """)
+    Optional<LoginResponseDto> staffLoginResponseDtoByMemberId(@Param("memberId") Long memberId);
 
 
 }

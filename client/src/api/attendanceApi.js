@@ -1,4 +1,4 @@
-import apiInstance from './apiInstance';
+import apiInstance from './instance/apiInstance';
 
 export const attendanceApi = {
   submitAttendance: async (latitude, longitude) => {

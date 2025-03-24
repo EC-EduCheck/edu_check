@@ -22,7 +22,7 @@ export default function App() {
           setRole(response.data.data),
         );
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 
