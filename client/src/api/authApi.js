@@ -19,7 +19,7 @@ export const authApi = {
 
   reissue: async () => {
     const response = await apiInstance.post(
-      '/auth/reissue',
+      '/auth/refresh',
       {},
       {
         withCredentials: true,
