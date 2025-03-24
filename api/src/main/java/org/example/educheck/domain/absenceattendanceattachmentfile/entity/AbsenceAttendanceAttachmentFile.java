@@ -21,6 +21,7 @@ public class AbsenceAttendanceAttachmentFile extends BaseTimeEntity {
     @JoinColumn(name = "absence_attendance_id")
     private AbsenceAttendance absenceAttendance;
 
+    @Column(columnDefinition = "TEXT")
     private String url;
     private String mime;
     private String originalName;
