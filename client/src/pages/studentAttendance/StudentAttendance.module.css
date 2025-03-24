@@ -25,6 +25,15 @@
 
 .attendanceRatio > div {
   height: 100%;
+  position: relative;
+}
+
+.progressBarBottom {
+  position: absolute;
+  bottom: 0;
+  left: var(--padding-medium);
+  right: var(--padding-medium);
+  width: auto; 
 }
 
 .attendanceCurrent {

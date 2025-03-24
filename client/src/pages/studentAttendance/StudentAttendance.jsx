@@ -2,13 +2,32 @@ import React from 'react'
 import styles from "./StudentAttendance.module.css"
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import DataBoard from '../../components/dataBoard/DataBoard';
-
+import ProgressBar from '../../components/progressBar/ProgressBar';
+import Calendar from '../../components/calendar/calendar';
 export default function StudentAttendance() {
   const attendanceRatio = 56;
   const lateCount = 3;
   const earlyLeaveCount = 0;
   const absenceCount = 0;
   const cumulativeAbsenceCount = 1;
+  const value = 84;
+  const startDate = '2024-10-07';
+  const endDate = '2025-04-04';
+  const attendanceData = [
+    { date: '2025-03-04', status: 'ABSENCE' },
+    { date: '2025-03-05', status: 'EARlY_LEAVE' },
+    { date: '2025-03-06', status: 'LATE' },
+    { date: '2025-03-07', status: 'ABSENCE' },
+    { date: '2025-03-10', status: 'ABSENCE' },
+    { date: '2025-03-13', status: 'LATE' },
+    { date: '2025-03-17', status: 'ABSENCE' },
+    { date: '2025-03-20', status: 'LATE' },
+    { date: '2025-03-21', status: 'LATE' },
+    { date: '2025-03-19', status: 'EARlY_LEAVE' },
+    { date: '2025-03-25', status: 'EARlY_LEAVE' },
+    { date: '2025-03-28', status: 'EARlY_LEAVE' },
+    { date: '2025-03-14', status: 'EARlY_LEAVE' },
+  ];
   return (
     <>
       <div className={styles.dashBoardItemDiv}>
@@ -16,6 +35,14 @@ export default function StudentAttendance() {
           <div className={styles.attendanceRatio}>
             <DashBoardItem width={'100%'}>
               <p className={styles.headingText}>출석률 {attendanceRatio}%</p>
+              <div className={styles.progressBarBottom}>
+                <ProgressBar
+                  value={value}
+                  max={100}
+                  startDate={startDate}
+                  endDate={endDate}
+                ></ProgressBar>
+              </div>
             </DashBoardItem>
           </div>
           <div className={styles.attendanceCurrent}>
@@ -31,7 +58,9 @@ export default function StudentAttendance() {
           </div>
         </div>
         <div className={styles.attendanceCalendar}>
-          <DashBoardItem width={'100%'}></DashBoardItem>
+          <DashBoardItem width={'100%'}>
+            <Calendar attendanceData={attendanceData}></Calendar>
+          </DashBoardItem>
         </div>
       </div>
     </>
