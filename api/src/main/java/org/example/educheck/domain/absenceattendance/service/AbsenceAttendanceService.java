@@ -2,6 +2,7 @@ package org.example.educheck.domain.absenceattendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
@@ -13,6 +14,7 @@ import org.example.educheck.global.common.exception.custom.common.ResourceNotFou
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -49,5 +51,14 @@ public class AbsenceAttendanceService {
                         )
                         .toUpperCase().charAt(0)
         );
+    }
+
+    public void createAbsenceAttendance(Member member, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile file) {
+        String fileUrl = null;
+
+        if (file != null && !file.isEmpty()) {
+            fileUrl = fileService.saveFile(file);
+        }
+
     }
 }
