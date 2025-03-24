@@ -12,7 +12,7 @@ export const staffSideBarList = ['출결', '학습자 관리', '회의실 예약
 export const staffSideBarIconList = [
   '../../assets/calender-icon.png',
   '../../assets/check-icon.png',
-  '../../assets/setting-icon.png',
+  '../../assets/alarm-icon.png',
 ];
 
 // tab
