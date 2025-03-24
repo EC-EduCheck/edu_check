@@ -5,7 +5,6 @@ import styles from './DashBoard.module.css';
 
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
-import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,10 +22,9 @@ export default function DashBoard() {
       <div className={styles.dashBoardBox}>
         <Tab />
 
-        {/* TODO : dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
+        {/* TODO : 각 페이지 내부에 DashBoardItem 사용 */}
         <div className={styles.dashBoardContent}>
           <Outlet></Outlet>
-          <DashBoardItem width="100%"></DashBoardItem>
         </div>
       </div>
     </div>
