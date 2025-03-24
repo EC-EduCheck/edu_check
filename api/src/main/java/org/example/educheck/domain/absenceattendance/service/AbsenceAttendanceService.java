@@ -6,11 +6,12 @@ import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAt
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
+import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
+import org.example.educheck.domain.absenceattendanceattachmentfile.repository.AbsenceAttendanceAttachmentFileRepository;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
-import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.example.educheck.global.common.s3.S3Service;
@@ -32,7 +33,7 @@ public class AbsenceAttendanceService {
     private final StaffRepository staffRepository;
     private final S3Service s3Service;
     private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository;
+    private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
@@ -71,27 +72,38 @@ public class AbsenceAttendanceService {
         AbsenceAttendance absenceAttendance = AbsenceAttendance.builder()
                 .course(courseRepository.findById(courseId)
                         .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다.")))
-                //1 : 1 관계니까 양쪽에서 걸어버릴까?
-                .student(studentRepository.findByMemberId(member.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException("해당 학생을 찾을 수 없습니다.")))
+                .student(member.getStudent())
                 .startTime(requestDto.getStartDate())
                 .endTime(requestDto.getEndDate())
                 .reason(requestDto.getResean())
                 .category(requestDto.getCategory())
                 .build();
 
-        absenceAttendanceRepository.save(absenceAttendance);
-
-
-        String fileUrl = null;
+        AbsenceAttendance savedAbsenceAttendance = absenceAttendanceRepository.save(absenceAttendance);
 
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
             // fileUrl, s3Key가 List로
             for (Map<String, String> result : uploadedResults) {
-                
+                for (MultipartFile file : files) {
+
+                    String originalName = file.getOriginalFilename();
+                    String mimeType = file.getContentType();
+
+                    AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
+                            .absenceAttendance(savedAbsenceAttendance)
+                            .url(result.get("fileUrl"))
+                            .s3Key(result.get("s3Key"))
+                            .originalName(originalName)
+                            .mime(mimeType)
+                            .build();
+
+                    absenceAttendanceAttachmentFileRepository.save(attachmentFile);
+                }
+
             }
         }
+
 
     }
 }
