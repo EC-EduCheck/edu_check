@@ -91,8 +91,17 @@ public class AttendanceService {
         }
 
         Campus campus = currentCourse.getCampus();
+
         if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
             throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
+        }
+
+        Attendance attendance = attendanceRepository.findByStudentIdAndCheckInTimestampBetween(
+                        student.getId(), startOfDay, endOfDay)
+                .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
+
+        if (attendance.getCheckInTimestamp() != null) {
+            throw new IllegalStateException("이미 출석 처리되었습니다.");
         }
 
         createAttendanceRecord(student, todayLecture, Status.ATTENDANCE);
@@ -205,13 +214,24 @@ public class AttendanceService {
     }
 
     @Transactional
-    public Status checkOut(UserDetails user) {
+    public Status checkOut(UserDetails user, AttendanceCheckinRequestDto requestDto) {
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
 
         Student student = studentRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("학생 정보를 찾을 수 없습니다."));
+
+        Long studentId = student.getId();
+
+        if (student.getCourseParticipationStatus() != 'T') {
+            throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
+        }
+
+        Registration currentRegistration = registrationRepository.findByStudentIdAndStatus(
+                        studentId, org.example.educheck.domain.registration.entity.Status.PROGRESS)
+                .orElseThrow(() -> new IllegalArgumentException("현재 진행 중인 과정 등록이 없습니다."));
+        Course currentCourse = currentRegistration.getCourse();
 
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
@@ -221,6 +241,12 @@ public class AttendanceService {
                         student.getId(), startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
 
+        Campus campus = currentCourse.getCampus();
+
+        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
+            throw new IllegalArgumentException("퇴실 가능한 위치가 아닙니다.");
+        }
+
         if (attendance.getCheckOutTimestamp() != null) {
             throw new IllegalStateException("이미 퇴실 처리되었습니다.");
         }
@@ -228,12 +254,12 @@ public class AttendanceService {
         LocalDateTime now = LocalDateTime.now();
         attendance.setCheckOutTimestamp(now);
 
-        LocalTime earlyLeaveTime = LocalTime.of(17, 0);
-        if (attendance.getStatus() == Status.LATE) {
-            attendance.setStatus(Status.LATE);
-        } else if (now.toLocalTime().isBefore(earlyLeaveTime)) {
+        LocalTime earlyLeaveTime = LocalTime.of(10, 0);
+        if (now.toLocalTime().isBefore(earlyLeaveTime)) {
             attendance.setStatus(Status.EARLY_LEAVE);
-        } else {
+        } else if (attendance.getStatus() == Status.LATE) {
+            attendance.setStatus(Status.LATE);
+        } else{
             attendance.setStatus(Status.ATTENDANCE);
         }
 
