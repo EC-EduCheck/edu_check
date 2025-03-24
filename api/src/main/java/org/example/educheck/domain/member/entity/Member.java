@@ -2,6 +2,7 @@ package org.example.educheck.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,8 +36,13 @@ public class Member implements UserDetails {
     @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
     private Student student;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
 
     @Builder
     public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, Role role) {
