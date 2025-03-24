@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
@@ -63,7 +64,7 @@ public class AbsenceAttendanceService {
     }
 
     @Transactional
-    public void createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+    public CreateAbsenceAttendacneReponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         //신청자가 해당 course를 수강중인지 확인
 
@@ -98,11 +99,15 @@ public class AbsenceAttendanceService {
                             .mime(mimeType)
                             .build();
 
+                    log.info(attachmentFile.getUrl());
+
                     absenceAttendanceAttachmentFileRepository.save(attachmentFile);
                 }
 
             }
         }
+
+        return CreateAbsenceAttendacneReponseDto.from(savedAbsenceAttendance);
 
 
     }

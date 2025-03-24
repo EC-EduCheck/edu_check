@@ -2,10 +2,13 @@ package org.example.educheck.domain.absenceattendance.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@Setter
 @Getter
 public class CreateAbsenceAttendacneRequestDto {
 
@@ -17,5 +20,4 @@ public class CreateAbsenceAttendacneRequestDto {
     private LocalDate endDate;
     @NotEmpty
     private String category;
-    private MultipartFile file;
 }

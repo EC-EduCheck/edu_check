@@ -3,6 +3,7 @@ package org.example.educheck.domain.absenceattendance.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
@@ -31,12 +32,16 @@ public class AbsenceAttendanceController {
 
 
     @PostMapping
-    public void applyAttendanceAbsence(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long courseId,
-                                       @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
-                                       @RequestPart(value = "files", required = false) MultipartFile[] files
+    public ResponseEntity<ApiResponse<CreateAbsenceAttendacneReponseDto>> applyAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                                                                                 @PathVariable Long courseId,
+                                                                                                 @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
+                                                                                                 @RequestPart(value = "files", required = false) MultipartFile[] files
 
     ) {
-        absenceAttendanceService.createAbsenceAttendance(member, courseId, requestDto, files);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok("유고 결석 신청 성공",
+                        "CREATED",
+                        absenceAttendanceService.createAbsenceAttendance(member, courseId, requestDto, files)))
+                ;
     }
 }
