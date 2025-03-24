@@ -1,8 +1,8 @@
 .calendarContainer {
-  height: var(--height-half);
+  height: 85%;
+  width: 90%;
   margin: var(--margin-medium);
   border-radius: var(--border-radius-10);
-  box-shadow: var(--box-shadow-basic);
   padding: var(--padding-medium);
 }
 
