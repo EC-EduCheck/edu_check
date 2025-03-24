@@ -18,7 +18,9 @@ import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttenda
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 
+
 import NavigationHandler from '../handler/NavigationHandler';
+import MeetingRoomTimeline from '../pages/roomReservation/MeetingRoomTimeline';
 
 const router = createBrowserRouter([
   {
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/dashBoard/student/reservation',
-            element: <RoomReservation />,
+            element: <MeetingRoomTimeline />,
           },
           {
             path: '/dashBoard/student/setting',
@@ -80,7 +82,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/dashBoard/staff/reservation',
-            element: <StaffRoomReservation />,
+            element: <MeetingRoomTimeline />,
           },
         ],
       },
