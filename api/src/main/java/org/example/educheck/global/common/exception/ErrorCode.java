@@ -22,7 +22,11 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다."),
     MISMATCHED_RESOURCE(HttpStatus.BAD_REQUEST, "4008", "요청한 리소스가 일치하지 않습니다."),
     NOT_OWNER(HttpStatus.FORBIDDEN, "4003", "본인만 수정 및 삭제 가능합니다."),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "4010", "인증에 실패했습니다.");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "4010", "인증에 실패했습니다."),
+
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5000", "서버 내부에서 오류가 발생했습니다."),
+    FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5001", "파일 업로드 중 오류가 발생했습니다."),
+    FILE_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "5002", "파일 삭제 중 오류가 발생했습니다");
 
     private final HttpStatus status;
     private final String code;
