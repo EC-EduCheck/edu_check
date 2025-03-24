@@ -19,8 +19,11 @@ import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 
 
+
 import NavigationHandler from '../handler/NavigationHandler';
 import MeetingRoomTimeline from '../pages/roomReservation/MeetingRoomTimeline';
+import VisTimeline from '../pages/roomReservation/VisTimeline';
+import TimelineComponent from '../pages/roomReservation/TimelineComponent';
 
 const router = createBrowserRouter([
   {
@@ -54,7 +57,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/dashBoard/student/reservation',
-            element: <MeetingRoomTimeline />,
+            element: <TimelineComponent />,
           },
           {
             path: '/dashBoard/student/setting',
