@@ -1,0 +1,44 @@
+.dashBoardItemDiv {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.attendanceStatistics {
+  width: 50%;
+  margin-right: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.attendanceRatio {
+  height: 50%;
+}
+
+.attendanceRatio > div {
+  height: 100%;
+}
+
+.attendanceCurrent {
+  height: 50%;
+}
+.attendanceCurrent > div {
+  height: 100%;
+}
+
+.attendanceCalendar {
+  width: 50%;
+}
+.attendanceCalendar > div {
+  height: 100%;
+}
+
+.AttendanceType {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  height: 100%;
+}
