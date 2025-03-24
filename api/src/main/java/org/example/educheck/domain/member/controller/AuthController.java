@@ -79,4 +79,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok("토큰 재발급 성공", "OK", loginResponseDto));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+
+        return authService.logout(response);
+    }
 }

@@ -19,6 +19,8 @@ import org.example.educheck.domain.registration.repository.RegistrationRepositor
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.example.educheck.global.security.CustomUserDetailsService;
 import org.example.educheck.global.security.jwt.JwtTokenUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -139,4 +141,16 @@ public class AuthService {
 
     }
 
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("refresh_token", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }
