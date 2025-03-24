@@ -5,8 +5,9 @@ import FilterButton from '../../components/buttons/filterButton/FilterButton';
 
 export default function StaffAttendance() {
   const list = ['출석', '조퇴', '지각', '결석'];
-
   const [isActiveIndex, setIsActiveIndex] = useState(false);
+
+  // TODO : Click 이벤트 추가
   const handleActiveFilter = (index) => {
     if (index === isActiveIndex) {
       setIsActiveIndex(false);
@@ -15,6 +16,7 @@ export default function StaffAttendance() {
     }
   };
 
+  // TODO : API 받아와 content 받아오기
   const filterButtons = list.map((item, index) => {
     return (
       <FilterButton
