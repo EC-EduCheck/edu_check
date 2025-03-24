@@ -1,0 +1,112 @@
+.calendarContainer {
+  height: var(--height-half);
+  margin: var(--margin-medium);
+  border-radius: var(--border-radius-10);
+  box-shadow: var(--box-shadow-basic);
+  padding: var(--padding-medium);
+}
+
+.absenceDay,
+.earlyLeaveDay,
+.lateDay {
+  position: relative;
+}
+
+.absenceDay:after,
+.earlyLeaveDay:after,
+.lateDay:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: var(--border-radius-30);
+  z-index: 1;
+}
+
+.absenceDay:after {
+  background-color: var(--border-100);
+}
+
+.earlyLeaveDay:after {
+  background-color: var(--primary-100);
+}
+
+.lateDay:after {
+  background-color: var(--primary-200);
+}
+
+.holidayHeader {
+  color: var(--primary-300) !important;
+  font-weight: bold;
+}
+
+.holidayDay {
+  background-color: var(--accent-100) !important;
+  color: var(--primary-300) !important;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--margin-medium);
+  padding: var(--padding-basic);
+}
+
+.toolbar button {
+  background: none;
+  border: none;
+  font-size: var(--font-size-18);
+  cursor: pointer;
+}
+
+.toolbar span {
+  font-size: var(--font-size-18);
+  font-weight: bold;
+}
+
+.sundayHeader {
+  color: var(--primary-300);
+}
+
+.saturdayHeader {
+  color: #acc4ff;
+}
+
+.absenceIndicator {
+  background-color: var(--border-100);
+}
+
+.earlyLeaveIndicator {
+  background-color: var(--primary-100);
+}
+
+.lateIndicator {
+  background-color: var(--primary-200);
+}
+
+:global(.rbc-month-view) {
+  border-radius: var(--border-radius-10);
+}
+
+:global(.rbc-header) {
+  padding: var(--padding-small);
+  font-weight: normal;
+  color: var(--text-200);
+}
+
+:global(.rbc-date-cell) {
+  padding: var(--padding-small);
+  text-align: center;
+}
+
+:global(.rbc-off-range-bg) {
+  background-color: var(--bg-100);
+}
+
+:global(.rbc-today) {
+  background-color: transparent;
+}
