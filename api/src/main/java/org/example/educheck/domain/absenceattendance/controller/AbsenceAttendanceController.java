@@ -26,4 +26,5 @@ public class AbsenceAttendanceController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok("유고 결석 처리 성공", "OK", null));
     }
+    
 }
