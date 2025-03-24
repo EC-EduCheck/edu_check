@@ -26,7 +26,6 @@ export default function DashBoard() {
         {/* TODO : dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
         <div className={styles.dashBoardContent}>
           <Outlet></Outlet>
-          <DashBoardItem width="100%"></DashBoardItem>
         </div>
       </div>
     </div>
