@@ -1,3 +1,9 @@
+.headingText {
+  font-size: var(--font-size-28);
+  font-weight: bolder;
+  margin-bottom: 10px;
+}
+
 .dashBoardItemDiv {
   display: flex;
   justify-content: space-between;
@@ -26,6 +32,8 @@
 }
 .attendanceCurrent > div {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .attendanceCalendar {
@@ -35,10 +43,10 @@
   height: 100%;
 }
 
-.AttendanceType {
+.attendanceType {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 20px;
-  height: 100%;
+  gap: 15px;
+  flex: 1;
 }
