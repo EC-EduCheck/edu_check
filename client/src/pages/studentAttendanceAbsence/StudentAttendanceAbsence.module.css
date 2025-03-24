@@ -1,0 +1,33 @@
+.LeftLineListItemDisplay {
+  display: flex;
+  flex-direction: row;
+}
+
+.absenceLeftLineListItem {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 60%;
+  gap: 0.5rem;
+  padding: 2rem;
+}
+
+.absenceDashBoardItem {
+  width: 50%;
+  height: 100%;
+  padding: 3rem 2rem;
+}
+
+.InputBox {
+  width: 50%;
+  height: 50%;
+}
+
+.roundButton {
+  padding: 0rem 1rem;
+}
+
+.mainButton {
+  padding: 10px 200px;
+}
+
