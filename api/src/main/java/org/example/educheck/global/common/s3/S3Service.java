@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,10 +32,9 @@ public class S3Service {
     @Value("${REGION}")
     private String region;
 
-    //다중 업로드 중, 하나라도 실패시 -> 롤백 처리
-    //병렬 스트림 또는 비동기 처리 -> 성능 최적화
     public List<Map<String, String>> uploadFiles(MultipartFile[] files) {
         List<Map<String, String>> uploadedFiles = new ArrayList<>();
+
 
         for (MultipartFile file : files) {
             Map<String, String> fileInfo = uploadFile(file);
@@ -44,17 +44,13 @@ public class S3Service {
         return uploadedFiles;
     }
 
-    //파일을 S3에 업로드하고 URL과 객체키를 반환한다.
     private Map<String, String> uploadFile(MultipartFile file) {
         String s3Key = FILE_PATH_PREFIX + UUID.randomUUID() + "_" + file + file.getOriginalFilename();
 
-        //file을 S3Key 경로(고유 식별자)에 업로드한다.
         uploadFileToS3(file, s3Key);
 
-        //접근 가능한 url 생성
         String fileUrl = String.format(IMAGE_URL_FORMAT, bucketName, region, s3Key);
 
-        //URL과 S3Key를 Map으로 반환한다.
         return Map.of(
                 "fileUrl", fileUrl,
                 "s3Key", s3Key
@@ -73,7 +69,10 @@ public class S3Service {
 
             s3Client.putObject(putObjectRequest,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-        } catch (IOException e) {
+        } catch (IOException | S3Exception e) {
+            log.error(e.getMessage());
+            throw new ServerErrorException(ErrorCode.FILE_UPLOAD_ERROR);
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new ServerErrorException(ErrorCode.FILE_UPLOAD_ERROR);
         }
