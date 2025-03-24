@@ -5,11 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
+import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 @Getter
 @Entity(name = "absence_attendacne_attachment_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbsenceAttendanceAttachmentFile {
+public class AbsenceAttendanceAttachmentFile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,10 @@ public class AbsenceAttendanceAttachmentFile {
     private String url;
     private String mime;
     private String originalName;
+    //버킷 내 고유 식별자, 전체 경로 포함
     private String s3Key;
+
+    public AbsenceAttendanceAttachmentFile(AbsenceAttendance absenceAttendance, String url, String originalName, String s3Key) {
+    }
 
 }

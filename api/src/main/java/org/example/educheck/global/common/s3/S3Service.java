@@ -12,6 +12,8 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,8 +31,21 @@ public class S3Service {
     @Value("${REGION}")
     private String region;
 
+    //다중 업로드 중, 하나라도 실패시 -> 롤백 처리
+    //병렬 스트림 또는 비동기 처리 -> 성능 최적화
+    public List<Map<String, String>> uploadFiles(MultipartFile[] files) {
+        List<Map<String, String>> uploadedFiles = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            Map<String, String> fileInfo = uploadFile(file);
+            uploadedFiles.add(fileInfo);
+
+        }
+        return uploadedFiles;
+    }
+
     //파일을 S3에 업로드하고 URL과 객체키를 반환한다.
-    public Map<String, String> uploadFile(MultipartFile file) {
+    private Map<String, String> uploadFile(MultipartFile file) {
         String s3Key = FILE_PATH_PREFIX + UUID.randomUUID() + "_" + file + file.getOriginalFilename();
 
         //file을 S3Key 경로(고유 식별자)에 업로드한다.

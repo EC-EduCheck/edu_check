@@ -6,17 +6,22 @@ import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAt
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
+import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
+import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,9 @@ import java.time.LocalDateTime;
 public class AbsenceAttendanceService {
     private final AbsenceAttendanceRepository absenceAttendanceRepository;
     private final StaffRepository staffRepository;
+    private final S3Service s3Service;
+    private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
@@ -53,11 +61,36 @@ public class AbsenceAttendanceService {
         );
     }
 
-    public void createAbsenceAttendance(Member member, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile file) {
+    @Transactional
+    public void createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+
+        //신청자가 해당 course를 수강중인지 확인
+
+
+        //먼저, 신청내역부터 저장 (순서상 + 연관관계 생성을 위해)
+        AbsenceAttendance absenceAttendance = AbsenceAttendance.builder()
+                .course(courseRepository.findById(courseId)
+                        .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다.")))
+                //1 : 1 관계니까 양쪽에서 걸어버릴까?
+                .student(studentRepository.findByMemberId(member.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("해당 학생을 찾을 수 없습니다.")))
+                .startTime(requestDto.getStartDate())
+                .endTime(requestDto.getEndDate())
+                .reason(requestDto.getResean())
+                .category(requestDto.getCategory())
+                .build();
+
+        absenceAttendanceRepository.save(absenceAttendance);
+
+
         String fileUrl = null;
 
-        if (file != null && !file.isEmpty()) {
-            fileUrl = fileService.saveFile(file);
+        if (files != null && files.length > 0) {
+            List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
+            // fileUrl, s3Key가 List로
+            for (Map<String, String> result : uploadedResults) {
+                
+            }
         }
 
     }

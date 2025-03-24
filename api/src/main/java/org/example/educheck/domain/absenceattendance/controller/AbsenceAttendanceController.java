@@ -1,6 +1,7 @@
 package org.example.educheck.domain.absenceattendance.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
 import org.example.educheck.domain.member.entity.Member;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +28,15 @@ public class AbsenceAttendanceController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok("유고 결석 처리 성공", "OK", null));
     }
-    
+
+
+    @PostMapping
+    public void applyAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                       @PathVariable Long courseId,
+                                       @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
+                                       @RequestPart(value = "files", required = false) MultipartFile[] files
+
+    ) {
+        absenceAttendanceService.createAbsenceAttendance(member, courseId, requestDto, files);
+    }
 }
