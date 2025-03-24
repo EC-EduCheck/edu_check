@@ -14,7 +14,6 @@ export default function App() {
       try {
         const response = await authApi.reissue();
         const accessToken = response.headers?.authorization ?? '';
-        console.log(response);
         dispatch(
           login({
             ...response.data.data,
