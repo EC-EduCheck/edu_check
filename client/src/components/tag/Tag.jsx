@@ -8,19 +8,19 @@ export default function Tag({ title }) {
   const isClickable = getIsClickable(title);
 
   // TODO : 관리자 페이지의 학습자 관리 tag에만 사용
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // const handleOpenDropBox = () => {
-  //   setIsOpen(true);
-  // };
+  const handleOpenDropBox = () => {
+    setIsOpen(true);
+  };
 
-  // const handleCloseDropBox = () => {
-  //   setIsOpen(false);
-  // };
+  const handleCloseDropBox = () => {
+    setIsOpen(false);
+  };
 
-  // const dropBoxButtonList = tagList.map((item, index) => {
-  //   return <DropBoxButton key={index} title={item}></DropBoxButton>;
-  // });
+  const dropBoxButtonList = tagList.map((item, index) => {
+    return <DropBoxButton key={index} title={item}></DropBoxButton>;
+  });
 
   return (
     <div className={styles.tagBox}>
@@ -34,14 +34,14 @@ export default function Tag({ title }) {
       </button>
 
       {/* TODO : 관리자 페이지의 학습자 관리 tag에만 사용 */}
-      {/* <div
+      <div
         style={
           isClickable ? (isOpen ? { display: 'block' } : { display: 'none' }) : { display: 'none' }
         }
         className={styles.dropBox}
       >
         {dropBoxButtonList}
-      </div> */}
+      </div>
     </div>
   );
 }
