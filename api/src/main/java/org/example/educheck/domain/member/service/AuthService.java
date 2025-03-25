@@ -144,9 +144,10 @@ public class AuthService {
         cookie.setPath("/api/auth/refresh");
         response.addCookie(cookie);
 
-        Member member = memberRepository.findByEmail(email).orElse(null);
-        return memberRepository.studentLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(LoginValidationException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                LoginValidationException::new);
+
+        return roleBasedLogin(member);
 
 
     }
