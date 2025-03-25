@@ -11,7 +11,7 @@ const NO_TOKEN_REQUIRED = ['/api/auth/login', '/api/auth/signup', '/api/auth/ref
 apiInstance.interceptors.request.use((config) => {
   console.log(config);
   const accessToken = store.getState().auth.accessToken;
-  const isRequiredTokenUrl = NO_TOKEN_REQUIRED.includes(config.url);
+  const isRequiredTokenUrl = !NO_TOKEN_REQUIRED.includes(config.url);
 
   if (isRequiredTokenUrl) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
