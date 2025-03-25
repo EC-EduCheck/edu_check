@@ -7,7 +7,14 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 
 export default function StaffAttendance() {
   const [isActiveIndex, setIsActiveIndex] = useState(false);
-  const [dataList, setDataList] = useState([]);
+  const [dataList, setDataList] = useState(
+    setDataList([
+      { label: '출석', value: 0 },
+      { label: '조퇴', value: 0 },
+      { label: '지각', value: 0 },
+      { label: '결석', value: 0 },
+    ]),
+  );
   // TODO : UI 구현을 위한 예시 students
   const [students, setStudents] = useState([
     {
@@ -35,10 +42,6 @@ export default function StaffAttendance() {
   // const { courseId } = useSelector((state) => state.auth.user);
   const courseId = 11;
 
-  useEffect(() => {
-    getAttendances();
-  }, [isActiveIndex]);
-
   const getAttendances = async () => {
     try {
       const response = await attendanceApi.getTodayAttendances(courseId);
@@ -55,6 +58,10 @@ export default function StaffAttendance() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getAttendances();
+  }, [isActiveIndex]);
 
   // TODO : click 시 필터링 이벤트 추가
   const handleActiveFilter = (index) => {
