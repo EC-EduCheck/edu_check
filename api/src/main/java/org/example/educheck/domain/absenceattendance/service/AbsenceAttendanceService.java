@@ -9,6 +9,7 @@ import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanc
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
+import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 public class AbsenceAttendanceService {
     private final AbsenceAttendanceRepository absenceAttendanceRepository;
     private final StaffRepository staffRepository;
+    private final StaffCourseRepository staffCourseRepository;
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
@@ -56,6 +58,14 @@ public class AbsenceAttendanceService {
 
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
     public GetAbsenceAttendancesResponseDto getAbsenceAttendances(Long courseId, Pageable pageable, Member member) {
+
+        // TODO
+//        Staff staff =
+//                staffRepository.findByMember(member)
+//                        .orElseThrow(() -> new ResourceNotFoundException("회원 정보를 찾을 수 없습니다."));
+//
+//        staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
+//                .orElseThrow(ForbiddenException::new);
 
         Page<AbsenceAttendance> attendances = absenceAttendanceRepository.findByCourseId(courseId, pageable);
 
