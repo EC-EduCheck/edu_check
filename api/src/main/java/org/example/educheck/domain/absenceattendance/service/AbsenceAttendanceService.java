@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +43,17 @@ public class AbsenceAttendanceService {
 
     private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
 
-        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
+//        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
+        Student student1 = member.getStudent();
+//        log.info("test : {}", member.getStudent().getId());
+        Student student2 = absenceAttendance.getStudent();
+//        log.info("student2: {}", student2);
+//        log.info(student1.toString());
+//        log.info(student2.toString());
+        if (!student2.equals(student1)) {
             throw new NotOwnerException();
         }
+
     }
 
     @Transactional
@@ -139,7 +146,6 @@ public class AbsenceAttendanceService {
 
         AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
-
         validateIsApplicant(member, absenceAttendance);
 
         List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();

@@ -47,6 +47,12 @@ public class AbsenceAttendanceController {
                 ;
     }
 
+//    @PostMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+//    public void modifyAttendanceAbsence(@AuthenticationPrincipal Member member,
+//                                        @PathVariable Long absenceAttendancesId,
+//                                        @RequestPart(value = "data") ModifyAbsenceAttendacneRequestDto requestDto,
+//                                        @RequestPart(value = "files", required = false) MultipartFile[] files)
+
     @DeleteMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
     public ResponseEntity<ApiResponse<Object>> cancelAttendanceAbsence(@AuthenticationPrincipal Member member,
                                                                        @PathVariable Long absenceAttendancesId) {
