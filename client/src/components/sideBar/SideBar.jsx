@@ -144,7 +144,7 @@ export default function SideBar() {
     <div className={styles.sideBar}>
       <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
         <div className={styles.memberInfoImg}>
-          <img src="../../assets/logo.png" alt="user image" />
+          <img src="/assets/logo.png" alt="user image" />
         </div>
 
         <div className={styles.memberInfoDetail}>
