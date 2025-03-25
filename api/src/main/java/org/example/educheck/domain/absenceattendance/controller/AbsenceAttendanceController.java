@@ -64,6 +64,7 @@ public class AbsenceAttendanceController {
         absenceAttendanceService.updateAttendanceAbsence(member, absenceAttendancesId, requestDto, files);
     }
 
+    @PreAuthorize("hasAuthority('STUDENT')")
     @DeleteMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
     public ResponseEntity<ApiResponse<Object>> cancelAttendanceAbsence(@AuthenticationPrincipal Member member,
                                                                        @PathVariable Long absenceAttendancesId) {
