@@ -5,6 +5,7 @@
   height: 100%;
 }
 
+/* attendanceStatistics */
 .attendanceStatistics {
   width: 50%;
   margin-right: var(--margin-basic);
@@ -29,12 +30,14 @@
 .attendanceCurrent {
   height: 50%;
 }
+
 .attendanceCurrent > div {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
+/* attendanceCalendar */
 .attendanceCalendar {
   width: 50%;
   height: 100%;
