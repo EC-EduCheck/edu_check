@@ -68,6 +68,10 @@
   font-weight: bold;
 }
 
+.arrowNext {
+  transform: rotate(180deg);
+}
+
 .sundayHeader {
   color: var(--primary-300);
 }

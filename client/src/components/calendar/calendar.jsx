@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import styles from './Calendar.module.css';
+import styles from './calendar.module.css';
 import { fetchHolidays } from '../../api/holidayApi';
 
 const localizer = momentLocalizer(moment);
@@ -10,6 +10,7 @@ const localizer = momentLocalizer(moment);
 export default function Calendar({ attendanceData }) {
   const [holidays, setHolidays] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [view, setView] = useState('month');
 
   // 공휴일 데이터 가져오기
   useEffect(() => {
@@ -31,32 +32,21 @@ export default function Calendar({ attendanceData }) {
         <button
           onClick={() => {
             onNavigate('PREV');
-            setCurrentDate((prevDate) => {
-              const newDate = new Date(prevDate);
-              newDate.setMonth(newDate.getMonth() - 1);
-              return newDate;
-            });
           }}
         >
-          &lt;
+          <img src="../../assets/arrowBackIcon.svg" alt="arrowPrev" />
         </button>
         <span>{moment(date).format('YYYY.MM')}</span>
         <button
           onClick={() => {
             onNavigate('NEXT');
-            setCurrentDate((prevDate) => {
-              const newDate = new Date(prevDate);
-              newDate.setMonth(newDate.getMonth() + 1);
-              return newDate;
-            });
           }}
         >
-          &gt;
+          <img src="../../assets/arrowBackIcon.svg" alt="arrowNext" className={styles.arrowNext} />
         </button>
       </div>
     );
   };
-
   // 커스텀 날짜 헤더 컴포넌트
   const CustomDateHeader = ({ label, date }) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
@@ -100,7 +90,12 @@ export default function Calendar({ attendanceData }) {
     end: new Date(holiday.date),
     allDay: true,
   }));
-
+  const formats = {
+    monthHeaderFormat: 'YYYY MMMM',
+    dayHeaderFormat: 'dddd',
+    dayRangeHeaderFormat: ({ start, end }) =>
+      `${moment(start).format('YYYY.MM.DD')} - ${moment(end).format('YYYY.MM.DD')}`,
+  };
   return (
     <div className={styles.calendarContainer}>
       <BigCalendar
@@ -109,13 +104,18 @@ export default function Calendar({ attendanceData }) {
         startAccessor="start"
         endAccessor="end"
         defaultView="month"
-        defaultDate={currentDate}
+        date={currentDate}
+        onNavigate={(date) => {
+          setCurrentDate(date);
+        }}
         dayPropGetter={customDayPropGetter}
         components={{
           toolbar: CustomToolbar,
           dateHeader: CustomDateHeader,
         }}
-        views={['month']}
+        view={view}
+        onView={setView}
+        formats={formats}
       />
     </div>
   );
