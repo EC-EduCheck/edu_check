@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.member.entity.Member;
+import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Getter
@@ -35,8 +35,8 @@ public class GetAbsenceAttendancesResponseDto {
                 .userId(member.getId())
                 .courseId(Optional.ofNullable(absenceAttendances.getContent())
                         .filter(lis -> !lis.isEmpty())
-                        .map(list -> list.getFirst().getCourse().getId())
-                        .orElseThrow(NoSuchElementException::new))
+                        .map(lis -> lis.getFirst().getCourse().getId())
+                        .orElseThrow(ResourceNotFoundException::new))
                 .absenceAttendances(absenceAttendances.getContent().stream().map(AbsenceAttendancesDto::from).toList())
                 .totalPages(absenceAttendances.getTotalPages())
                 .hasNext(absenceAttendances.hasNext())
