@@ -25,9 +25,9 @@ export default function Tag({ title }) {
   return (
     <div className={styles.tagBox}>
       <button
-        disabled={!isClickable}
-        onClick={handleOpenDropBox}
-        onBlur={handleCloseDropBox}
+        disabled={isClickable}
+        // onClick={handleOpenDropBox}
+        // onBlur={handleCloseDropBox}
         className={`${styles.tag} ${tagColors ? styles[tagColors] : ''}`}
       >
         {title}

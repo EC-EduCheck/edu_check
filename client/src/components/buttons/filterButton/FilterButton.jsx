@@ -18,7 +18,7 @@ export default function FilterButton({ index, isActiveIndex, title, content, han
       onClick={() => handleActiveFilter(index)}
     >
       <p>{title}</p>
-      <p>{content}</p>
+      <p>{content}명</p>
     </button>
   );
 }
