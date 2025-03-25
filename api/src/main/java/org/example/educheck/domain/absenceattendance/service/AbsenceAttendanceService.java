@@ -16,6 +16,7 @@ import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.example.educheck.global.common.s3.S3Service;
@@ -123,6 +124,27 @@ public class AbsenceAttendanceService {
 
         if (registration == null) {
             throw new ResourceMismatchException();
+        }
+    }
+
+    public void cancelAttendanceAbsence(Member member, Long absenceAttendancesId) {
+
+        AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
+
+        validateIsApplicant(member, absenceAttendance);
+
+        //해당 첨부파일 삭제? -> 삭제 처리 -> 양방향 필요
+//        absenceAttendance.
+
+        //신청 내역 소프트 딜리트 처리
+        absenceAttendanceRepository.
+    }
+
+    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
+        //member랑 신청자가 일치하는지 확인
+        if (!member.getStudent().equals(absenceAttendance.getStudent())) {
+            throw new NotOwnerException();
         }
     }
 }

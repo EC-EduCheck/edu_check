@@ -47,4 +47,11 @@ public class AbsenceAttendanceController {
                 ;
     }
 
+    @DeleteMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+    public void cancelAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                        @PathVariable Long absenceAttendancesId) {
+        absenceAttendanceService.cancelAttendanceAbsence(member, absenceAttendancesId);
+
+    }
+
 }

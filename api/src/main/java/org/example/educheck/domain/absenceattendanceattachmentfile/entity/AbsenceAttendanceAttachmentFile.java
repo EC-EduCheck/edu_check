@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity(name = "absence_attendacne_attachment_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +29,8 @@ public class AbsenceAttendanceAttachmentFile extends BaseTimeEntity {
     private String originalName;
     //버킷 내 고유 식별자, 전체 경로 포함
     private String s3Key;
+
+    private LocalDateTime deletionRequestedAt;
 
     @Builder
     public AbsenceAttendanceAttachmentFile(AbsenceAttendance absenceAttendance, String url, String originalName, String s3Key, String mime) {

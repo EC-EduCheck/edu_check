@@ -5,6 +5,7 @@ import lombok.*;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
+import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbsenceAttendance {
+public class AbsenceAttendance extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +41,8 @@ public class AbsenceAttendance {
     private LocalDateTime approveDate;
     private String reason;
     private String category;
+
+    private LocalDateTime deletionRequestedAt;
 
     @Builder
     public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDate, String reason, String category) {
