@@ -133,6 +133,7 @@ public class AbsenceAttendanceService {
     }
 
     private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
+        log.info("첨부파일 저장 로직 동작");
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
             for (Map<String, String> result : uploadedResults) {
@@ -196,8 +197,9 @@ public class AbsenceAttendanceService {
         requestDto.updateEntity(absenceAttendance);
         absenceAttendanceRepository.save(absenceAttendance);
 
-
-        saveAttachementFiles(files, absenceAttendance);
+        if (files != null) {
+            saveAttachementFiles(files, absenceAttendance);
+        }
 
     }
 
