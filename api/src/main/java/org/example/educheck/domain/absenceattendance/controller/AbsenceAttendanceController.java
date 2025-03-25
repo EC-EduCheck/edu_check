@@ -3,9 +3,11 @@ package org.example.educheck.domain.absenceattendance.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
+import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 public class AbsenceAttendanceController {
     private final AbsenceAttendanceService absenceAttendanceService;
+    private final AttendanceService attendanceService;
 
 
     @PatchMapping("/course/{courseId}/absence-attendances/{absesnceAttendancesId}")
@@ -51,11 +54,15 @@ public class AbsenceAttendanceController {
                 ;
     }
 
-//    @PostMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-//    public void modifyAttendanceAbsence(@AuthenticationPrincipal Member member,
-//                                        @PathVariable Long absenceAttendancesId,
-//                                        @RequestPart(value = "data") ModifyAbsenceAttendacneRequestDto requestDto,
-//                                        @RequestPart(value = "files", required = false) MultipartFile[] files)
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @PutMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+    public void updateAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                        @PathVariable Long absenceAttendancesId,
+                                        @RequestPart(value = "data") UpdateAbsenceAttendacneRequestDto requestDto,
+                                        @RequestPart(value = "files", required = false) MultipartFile[] files) {
+
+        absenceAttendanceService.updateAttendanceAbsence(member, absenceAttendancesId, requestDto, files);
+    }
 
     @DeleteMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
     public ResponseEntity<ApiResponse<Object>> cancelAttendanceAbsence(@AuthenticationPrincipal Member member,

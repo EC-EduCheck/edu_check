@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
@@ -14,16 +15,17 @@ import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
-import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +49,22 @@ public class AbsenceAttendanceService {
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
     private final RegistrationRepository registrationRepository;
 
-    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
+    private static void validateMatchApplicant(Member member, AbsenceAttendance absenceAttendance) {
 
-//        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
-        Student student1 = member.getStudent();
-//        log.info("test : {}", member.getStudent().getId());
-        Student student2 = absenceAttendance.getStudent();
-//        log.info("student2: {}", student2);
-//        log.info(student1.toString());
-//        log.info(student2.toString());
-        if (!student2.equals(student1)) {
+        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
             throw new NotOwnerException();
         }
+    }
 
+    private static void validateModifiable(AbsenceAttendance absenceAttendance) {
+
+        if (absenceAttendance.getDeletionRequestedAt() != null) {
+            throw new InvalidRequestException("이미 취소 요청한 유고 결석 신청입니다.");
+        }
+
+        if (absenceAttendance.getIsApprove() != null || absenceAttendance.getApproveDate() != null) {
+            throw new InvalidRequestException("처리 이전에만 수정 가능합니다.");
+        }
     }
 
     @Transactional
@@ -165,9 +171,8 @@ public class AbsenceAttendanceService {
     @Transactional
     public void cancelAttendanceAbsence(Member member, Long absenceAttendancesId) {
 
-        AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
-        validateIsApplicant(member, absenceAttendance);
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+        validateMatchApplicant(member, absenceAttendance);
 
         List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
         for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
@@ -177,5 +182,26 @@ public class AbsenceAttendanceService {
 
         absenceAttendance.markDeletionRequested();
         absenceAttendanceRepository.save(absenceAttendance);
+    }
+
+    @Transactional
+    public void updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+
+        //유효성 검증
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+        validateMatchApplicant(member, absenceAttendance);
+        validateModifiable(absenceAttendance);
+
+        requestDto.updateEntity(absenceAttendance);
+        absenceAttendanceRepository.save(absenceAttendance);
+
+        //변경된 첨부 파일부터 저장
+        saveAttachementFiles(files, absenceAttendance);
+
+    }
+
+    private AbsenceAttendance getAbsenceAttendance(Long absenceAttendancesId) {
+        return absenceAttendanceRepository.findById(absenceAttendancesId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
     }
 }

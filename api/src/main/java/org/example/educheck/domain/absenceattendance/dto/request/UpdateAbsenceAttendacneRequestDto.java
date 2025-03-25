@@ -4,13 +4,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Setter
 @NoArgsConstructor
-public class ModifyAbsenceAttendacneRequestDto {
+public class UpdateAbsenceAttendacneRequestDto {
 
     @NotEmpty
     private String resean;
@@ -21,5 +21,11 @@ public class ModifyAbsenceAttendacneRequestDto {
     @NotEmpty
     private String category;
 
-    private List<String> deleteFileS3Keys;
+    public void updateEntity(AbsenceAttendance entity) {
+        entity.setReason(resean);
+        entity.setStartTime(startDate);
+        entity.setEndTime(endDate);
+        entity.setCategory(category);
+    }
+
 }
