@@ -4,17 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class GetAbsenceAttendancesResponseDto {
     private Long userId;
     private Long courseId;
@@ -29,7 +33,10 @@ public class GetAbsenceAttendancesResponseDto {
 
         return GetAbsenceAttendancesResponseDto.builder()
                 .userId(member.getId())
-                .courseId(absenceAttendances.getContent().getFirst().getCourse().getId())
+                .courseId(Optional.ofNullable(absenceAttendances.getContent())
+                        .filter(lis -> !lis.isEmpty())
+                        .map(list -> list.getFirst().getCourse().getId())
+                        .orElseThrow(NoSuchElementException::new))
                 .absenceAttendances(absenceAttendances.getContent().stream().map(AbsenceAttendancesDto::from).toList())
                 .totalPages(absenceAttendances.getTotalPages())
                 .hasNext(absenceAttendances.hasNext())

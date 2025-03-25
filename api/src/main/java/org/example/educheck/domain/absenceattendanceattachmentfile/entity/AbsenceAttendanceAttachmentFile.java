@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity(name = "absence_attendacne_attachment_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,5 +25,5 @@ public class AbsenceAttendanceAttachmentFile {
     private String mime;
     private String originalName;
     private String s3Key;
-
+    private LocalDateTime deletionRequestedAt;
 }

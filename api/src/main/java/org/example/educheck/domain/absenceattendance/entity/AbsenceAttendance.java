@@ -35,7 +35,7 @@ public class AbsenceAttendance {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
     private Student student;
 
@@ -47,4 +47,6 @@ public class AbsenceAttendance {
     private Character isApprove;
     private LocalDateTime approveDate;
     private String reason;
+
+    private LocalDateTime deletionRequestedAt;
 }

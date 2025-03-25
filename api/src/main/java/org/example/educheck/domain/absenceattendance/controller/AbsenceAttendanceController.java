@@ -2,9 +2,11 @@ package org.example.educheck.domain.absenceattendance.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +30,13 @@ public class AbsenceAttendanceController {
     }
 
     @GetMapping
-    public T getAbsenceAttendances(Long courseId) {
-        return absenceAttendanceService.getAbsenceAttendances(courseId);
+    public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(@PathVariable Long courseId, Pageable pageable, @AuthenticationPrincipal Member member) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(
+                                "특정 교육 과정 유고 결석 내역 조회 성공",
+                                "OK", absenceAttendanceService.getAbsenceAttendances(courseId, pageable, member)
+                        )
+                );
     }
 }

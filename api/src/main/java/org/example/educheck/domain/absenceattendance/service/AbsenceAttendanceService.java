@@ -3,6 +3,7 @@ package org.example.educheck.domain.absenceattendance.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.member.entity.Member;
@@ -10,6 +11,8 @@ import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,5 +52,12 @@ public class AbsenceAttendanceService {
                         )
                         .toUpperCase().charAt(0)
         );
+    }
+
+    public GetAbsenceAttendancesResponseDto getAbsenceAttendances(Long courseId, Pageable pageable, Member member) {
+
+        Page<AbsenceAttendance> attendances = absenceAttendanceRepository.findByCourseId(courseId, pageable);
+
+        return GetAbsenceAttendancesResponseDto.from(attendances, member);
     }
 }
