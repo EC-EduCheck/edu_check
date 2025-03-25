@@ -19,6 +19,8 @@ import org.example.educheck.domain.registration.repository.RegistrationRepositor
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.example.educheck.global.security.CustomUserDetailsService;
 import org.example.educheck.global.security.jwt.JwtTokenUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -100,13 +102,23 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
                 );
 
-        LoginResponseDto loginResponseDto = memberRepository.findLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        LoginResponseDto loginResponseDto = roleBasedLogin(member);
 
 
         member.setLastLoginDate(LocalDateTime.now());
 
         return loginResponseDto;
+    }
+
+    private LoginResponseDto roleBasedLogin(Member member) {
+
+        return switch (member.getRole()) {
+            case STUDENT -> memberRepository.studentLoginResponseDtoByMemberId(member.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이다."));
+            case MIDDLE_ADMIN -> memberRepository.staffLoginResponseDtoByMemberId(member.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이다."));
+            default -> throw new IllegalArgumentException("존재하지 않는 회원이다.");
+        };
     }
 
     public EmailCheckResponseDto emailCheck(String email) {
@@ -133,10 +145,22 @@ public class AuthService {
         response.addCookie(cookie);
 
         Member member = memberRepository.findByEmail(email).orElse(null);
-        return memberRepository.findLoginResponseDtoByMemberId(member.getId())
+        return memberRepository.studentLoginResponseDtoByMemberId(member.getId())
                 .orElseThrow(LoginValidationException::new);
 
 
     }
 
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("refresh_token", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
+    }
 }

@@ -1,15 +1,17 @@
 package org.example.educheck.domain.absenceattendance.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
+import org.example.educheck.global.common.entity.BaseTimeEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * isApprove : T 승인 F 반려 null 대기
@@ -18,11 +20,11 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbsenceAttendance {
+public class AbsenceAttendance extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "approver_id")
@@ -36,9 +38,34 @@ public class AbsenceAttendance {
     @JoinColumn(name = "student_id")
     private Student student;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startTime;
+    private LocalDate endTime;
     private Character isApprove;
     private LocalDateTime approveDate;
     private String reason;
+    private String category;
+
+    @OneToMany(mappedBy = "absenceAttendance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AbsenceAttendanceAttachmentFile> absenceAttendanceAttachmentFiles = new ArrayList<>();
+
+    private LocalDateTime deletionRequestedAt;
+
+    @Builder
+    public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDate, String reason, String category) {
+        this.staff = staff;
+        this.course = course;
+        this.student = student;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isApprove = isApprove;
+        this.approveDate = approveDate;
+        this.reason = reason;
+        this.category = category;
+    }
+
+    public void markDeletionRequested() {
+        this.deletionRequestedAt = LocalDateTime.now();
+    }
+
+
 }

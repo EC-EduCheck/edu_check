@@ -19,11 +19,14 @@ export default function Login() {
     password: '',
   });
   const [isLoginButtonEnable, setIsLoginButtonEnable] = useState(false);
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleInputChange = (event) => {
+    const { name, value } = event.target;
     setInputData((prev) => ({
       ...prev,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
   };
 

@@ -21,8 +21,7 @@ export default function DashBoard() {
       <SideBar />
       <div className={styles.dashBoardBox}>
         <Tab />
-
-        {/* TODO : 각 페이지 내부에 DashBoardItem 사용 */}
+        {/* TODO : dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
         <div className={styles.dashBoardContent}>
           <Outlet></Outlet>
         </div>

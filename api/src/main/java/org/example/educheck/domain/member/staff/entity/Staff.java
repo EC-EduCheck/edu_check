@@ -12,8 +12,7 @@ public class Staff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
+    @OneToOne(mappedBy = "staff", fetch = FetchType.LAZY)
     private Member member;
 
     @Enumerated(EnumType.STRING)

@@ -35,7 +35,11 @@ public class AttendanceController {
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("출석 성공", "OK", responseDto));
+                .body(ApiResponse.ok(
+                        "출석 성공",
+                        "OK",
+                        responseDto
+                ));
     }
 
     // 수강생 금일 출결 현황 조회
@@ -82,10 +86,14 @@ public class AttendanceController {
     }
 
     @PatchMapping("/checkout")
-    public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkOut(@AuthenticationPrincipal UserDetails user) {
-        Status attendanceStatus = attendanceService.checkOut(user);
+    public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkOut(
+            @AuthenticationPrincipal UserDetails user,
+            @Valid @RequestBody AttendanceCheckinRequestDto requestDto
+    ) {
+        Status attendanceStatus = attendanceService.checkOut(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(
                 "퇴실 성공",

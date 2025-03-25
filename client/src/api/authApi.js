@@ -1,9 +1,8 @@
-import apiInstance from './apiInstance';
-import authInstance from './authInstance';
+import apiInstance from './instance/apiInstance';
 
 export const authApi = {
   login: async (email, password) => {
-    const response = await authInstance.post(
+    const response = await apiInstance.post(
       '/auth/login',
       {
         email: email,
@@ -19,7 +18,7 @@ export const authApi = {
 
   reissue: async () => {
     const response = await apiInstance.post(
-      '/auth/reissue',
+      '/auth/refresh',
       {},
       {
         withCredentials: true,
