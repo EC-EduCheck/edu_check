@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import styles from './StaffAttendance.module.css';
+import { attendanceApi } from '../../api/attendanceApi';
+
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import FilterButton from '../../components/buttons/filterButton/FilterButton';
-import { attendanceApi } from '../../api/attendanceApi';
 import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 
 export default function StaffAttendance() {
   const [isActiveIndex, setIsActiveIndex] = useState(false);
   const [dataList, setDataList] = useState([]);
+  const { courseId } = useSelector((state) => state.auth.user);
   // TODO : UI 구현을 위한 예시 students
   const [students, setStudents] = useState([
     {
@@ -31,9 +35,6 @@ export default function StaffAttendance() {
       status: 'ATTENDANCE',
     },
   ]);
-  // TODO : 관리자 로그인 시 courseId 받아오는 로직 추가할 경우 주석 풀기
-  // const { courseId } = useSelector((state) => state.auth.user);
-  const courseId = 11;
 
   const getAttendances = async () => {
     try {
@@ -56,7 +57,6 @@ export default function StaffAttendance() {
     getAttendances();
   }, [isActiveIndex]);
 
-  // TODO : click 시 필터링 이벤트 추가
   const handleActiveFilter = (index) => {
     if (index === isActiveIndex) {
       setIsActiveIndex(false);
@@ -104,7 +104,7 @@ export default function StaffAttendance() {
       <DashBoardItem width="100%">
         <>
           <h2 className="subTitle">출결 현황</h2>
-          <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>{filterButtons}</div>
+          <div className={styles.filterButtonBox}>{filterButtons}</div>
         </>
       </DashBoardItem>
 
