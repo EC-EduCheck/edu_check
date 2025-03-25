@@ -5,11 +5,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * isApprove : T 승인 F 반려 null 대기
@@ -35,6 +38,9 @@ public class AbsenceAttendance {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Student student;
+
+    @OneToMany(mappedBy = "absenceAttendance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AbsenceAttendanceAttachmentFile> absenceAttendanceAttachmentFiles = new ArrayList<>();
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
