@@ -9,18 +9,19 @@ import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/course/{courseId}/absence-attendances")
+@RequestMapping("/api")
 public class AbsenceAttendanceController {
     private final AbsenceAttendanceService absenceAttendanceService;
 
 
-    @PatchMapping("/{absesnceAttendancesId}")
+    @PatchMapping("/course/{courseId}/absence-attendances/{absesnceAttendancesId}")
     public ResponseEntity<ApiResponse<Void>> processAbsenceAttendanceService(@PathVariable Long courseId, @PathVariable Long absesnceAttendancesId,
                                                                              @RequestBody ProcessAbsenceAttendanceRequestDto requestDto,
                                                                              @AuthenticationPrincipal Member member) {
@@ -31,7 +32,8 @@ public class AbsenceAttendanceController {
     }
 
 
-    @PostMapping
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @PostMapping("/my/course/{courseId}/absence-attendances")
     public ResponseEntity<ApiResponse<CreateAbsenceAttendacneReponseDto>> applyAttendanceAbsence(@AuthenticationPrincipal Member member,
                                                                                                  @PathVariable Long courseId,
                                                                                                  @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
@@ -44,5 +46,5 @@ public class AbsenceAttendanceController {
                         absenceAttendanceService.createAbsenceAttendance(member, courseId, requestDto, files)))
                 ;
     }
-    
+
 }

@@ -13,6 +13,7 @@ import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
+import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
@@ -114,6 +115,9 @@ public class AbsenceAttendanceService {
     }
 
     private void validateRegistrationCourse(Member member, Long courseId) {
+        log.info("memberId: " + member.getId() + " courseId: " + courseId);
+        Student student = member.getStudent();
+        log.info("studentId : {}", student.getId());
         Registration registration = registrationRepository.findByStudentIdAndCourseId(member.getStudent().getId(), courseId)
                 .orElseThrow(ResourceNotFoundException::new);
 
