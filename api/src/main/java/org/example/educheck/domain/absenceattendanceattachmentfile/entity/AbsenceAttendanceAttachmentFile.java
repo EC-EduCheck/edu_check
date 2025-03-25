@@ -45,5 +45,16 @@ public class AbsenceAttendanceAttachmentFile extends BaseTimeEntity {
         this.deletionRequestedAt = LocalDateTime.now();
     }
 
-
+    @Override
+    public String toString() {
+        return "AbsenceAttendanceAttachmentFile{" +
+                "id=" + id +
+                ", absenceAttendance=" + absenceAttendance +
+                ", url='" + url + '\'' +
+                ", mime='" + mime + '\'' +
+                ", originalName='" + originalName + '\'' +
+                ", s3Key='" + s3Key + '\'' +
+                ", deletionRequestedAt=" + deletionRequestedAt +
+                '}';
+    }
 }

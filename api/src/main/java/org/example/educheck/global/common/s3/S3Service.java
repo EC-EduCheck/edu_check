@@ -81,6 +81,7 @@ public class S3Service {
     }
 
     public void deleteFile(String s3Key) {
+        log.info("동작");
         try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)
@@ -92,6 +93,7 @@ public class S3Service {
             throw new ServerErrorException(ErrorCode.FILE_DELETE_ERROR);
         }
     }
+
 
 }
 
