@@ -209,7 +209,7 @@ public class AbsenceAttendanceService {
     }
 
     private void markAttachementFilesForDeletion(AbsenceAttendance absenceAttendance) {
-        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getActiveFiles();
         for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
             attachmentFile.markDeletionRequested();
             absenceAttendanceAttachmentFileRepository.save(attachmentFile);
