@@ -6,6 +6,7 @@ import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceA
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
 import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.domain.member.entity.Member;
@@ -56,12 +57,16 @@ public class AbsenceAttendanceController {
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @PutMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public void updateAttendanceAbsence(@AuthenticationPrincipal Member member,
-                                        @PathVariable Long absenceAttendancesId,
-                                        @RequestPart(value = "data") UpdateAbsenceAttendacneRequestDto requestDto,
-                                        @RequestPart(value = "files", required = false) MultipartFile[] files) {
+    public ResponseEntity<ApiResponse<UpdateAbsenceAttendacneReponseDto>> updateAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                                                                                  @PathVariable Long absenceAttendancesId,
+                                                                                                  @RequestPart(value = "data") UpdateAbsenceAttendacneRequestDto requestDto,
+                                                                                                  @RequestPart(value = "files", required = false) MultipartFile[] files) {
 
-        absenceAttendanceService.updateAttendanceAbsence(member, absenceAttendancesId, requestDto, files);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("유고 결석 신청 수정 성공",
+                        "OK",
+                        absenceAttendanceService.updateAttendanceAbsence(member, absenceAttendancesId, requestDto, files)));
     }
 
     @PreAuthorize("hasAuthority('STUDENT')")

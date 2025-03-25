@@ -7,6 +7,7 @@ import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceA
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
@@ -183,7 +184,7 @@ public class AbsenceAttendanceService {
 
 
     @Transactional
-    public void updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+    public UpdateAbsenceAttendacneReponseDto updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
         validateMatchApplicant(member, absenceAttendance);
@@ -200,6 +201,8 @@ public class AbsenceAttendanceService {
         if (files != null) {
             saveAttachementFiles(files, absenceAttendance);
         }
+
+        return UpdateAbsenceAttendacneReponseDto.from(absenceAttendance);
 
     }
 
