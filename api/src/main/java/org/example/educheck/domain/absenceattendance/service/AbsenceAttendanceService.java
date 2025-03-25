@@ -54,6 +54,7 @@ public class AbsenceAttendanceService {
         );
     }
 
+    @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
     public GetAbsenceAttendancesResponseDto getAbsenceAttendances(Long courseId, Pageable pageable, Member member) {
 
         Page<AbsenceAttendance> attendances = absenceAttendanceRepository.findByCourseId(courseId, pageable);
