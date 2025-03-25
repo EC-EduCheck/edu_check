@@ -174,7 +174,7 @@ public class AbsenceAttendanceService {
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
         validateMatchApplicant(member, absenceAttendance);
 
-        markAttachementsForDeletion(absenceAttendance);
+        markAttachementFilesForDeletion(absenceAttendance);
 
         absenceAttendance.markDeletionRequested();
         absenceAttendanceRepository.save(absenceAttendance);
@@ -187,8 +187,11 @@ public class AbsenceAttendanceService {
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
         validateMatchApplicant(member, absenceAttendance);
         validateModifiable(absenceAttendance);
+        if (requestDto.getStartDate().isAfter(requestDto.getEndDate())) {
+            throw new InvalidRequestException("시작일은 종료일 이후일 수 없습니다.");
+        }
 
-        markAttachementsForDeletion(absenceAttendance);
+        markAttachementFilesForDeletion(absenceAttendance);
 
         requestDto.updateEntity(absenceAttendance);
         absenceAttendanceRepository.save(absenceAttendance);
@@ -203,7 +206,7 @@ public class AbsenceAttendanceService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
     }
 
-    private void markAttachementsForDeletion(AbsenceAttendance absenceAttendance) {
+    private void markAttachementFilesForDeletion(AbsenceAttendance absenceAttendance) {
         List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
         for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
             attachmentFile.markDeletionRequested();
