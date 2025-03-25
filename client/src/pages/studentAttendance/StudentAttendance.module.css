@@ -7,17 +7,13 @@
 
 .attendanceStatistics {
   width: 50%;
-  margin-right: 25px;
+  margin-right: var(--margin-basic);
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.attendanceRatio {
-  height: 50%;
-}
-
-.attendanceRatio > div {
+.attendanceStatistics > div {
   height: 100%;
   position: relative;
 }
@@ -64,21 +60,21 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 15px;
+  gap: 1rem;
   flex: 1;
 }
 
 .legend {
   display: flex;
   justify-content: flex-start;
-  padding-left: 15px;
+  padding-left: var(--padding-basic);
 }
 
 .legendItem {
   display: flex;
   align-items: center;
   margin-right: 15px;
-  font-size: 14px;
+  font-size: var(--font-size-14);
 }
 
 .earlyLeaveIndicator,
