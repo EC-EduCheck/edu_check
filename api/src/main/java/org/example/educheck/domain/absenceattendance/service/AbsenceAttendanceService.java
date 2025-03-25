@@ -2,23 +2,37 @@ package org.example.educheck.domain.absenceattendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
+import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
+import org.example.educheck.domain.absenceattendanceattachmentfile.repository.AbsenceAttendanceAttachmentFileRepository;
+import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.domain.member.student.entity.Student;
+import org.example.educheck.domain.registration.entity.Registration;
+import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +42,17 @@ public class AbsenceAttendanceService {
     private final AbsenceAttendanceRepository absenceAttendanceRepository;
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
+    private final S3Service s3Service;
+    private final CourseRepository courseRepository;
+    private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
+    private final RegistrationRepository registrationRepository;
+
+    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
+
+        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
+            throw new NotOwnerException();
+        }
+    }
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
@@ -70,5 +95,81 @@ public class AbsenceAttendanceService {
         Page<AbsenceAttendance> attendances = absenceAttendanceRepository.findByCourseId(courseId, pageable);
 
         return GetAbsenceAttendancesResponseDto.from(attendances, member);
+    }
+
+    @Transactional
+    public CreateAbsenceAttendacneReponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+
+        validateRegistrationCourse(member, courseId);
+
+        AbsenceAttendance absenceAttendance = AbsenceAttendance.builder()
+                .course(courseRepository.findById(courseId)
+                        .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다.")))
+                .student(member.getStudent())
+                .startTime(requestDto.getStartDate())
+                .endTime(requestDto.getEndDate())
+                .reason(requestDto.getResean())
+                .category(requestDto.getCategory())
+                .build();
+
+        AbsenceAttendance savedAbsenceAttendance = absenceAttendanceRepository.save(absenceAttendance);
+
+        saveAttachementFiles(files, savedAbsenceAttendance);
+
+        return CreateAbsenceAttendacneReponseDto.from(savedAbsenceAttendance);
+    }
+
+    private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
+        if (files != null && files.length > 0) {
+            List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
+            for (Map<String, String> result : uploadedResults) {
+                for (MultipartFile file : files) {
+
+                    String originalName = file.getOriginalFilename();
+                    String mimeType = file.getContentType();
+
+                    AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
+                            .absenceAttendance(savedAbsenceAttendance)
+                            .url(result.get("fileUrl"))
+                            .s3Key(result.get("s3Key"))
+                            .originalName(originalName)
+                            .mime(mimeType)
+                            .build();
+
+                    log.info(attachmentFile.getUrl());
+
+                    absenceAttendanceAttachmentFileRepository.save(attachmentFile);
+                }
+            }
+        }
+    }
+
+    private void validateRegistrationCourse(Member member, Long courseId) {
+        Student student = member.getStudent();
+
+        Registration registration = registrationRepository.findByStudentIdAndCourseId(member.getStudent().getId(), courseId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        if (registration == null) {
+            throw new ResourceMismatchException();
+        }
+    }
+
+    @Transactional
+    public void cancelAttendanceAbsence(Member member, Long absenceAttendancesId) {
+
+        AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
+
+        validateIsApplicant(member, absenceAttendance);
+
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
+        for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
+            attachmentFile.markDeletionRequested();
+            absenceAttendanceAttachmentFileRepository.save(attachmentFile);
+        }
+
+        absenceAttendance.markDeletionRequested();
+        absenceAttendanceRepository.save(absenceAttendance);
     }
 }

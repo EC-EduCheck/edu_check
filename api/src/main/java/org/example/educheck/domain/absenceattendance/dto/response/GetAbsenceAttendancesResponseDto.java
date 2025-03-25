@@ -66,8 +66,8 @@ public class GetAbsenceAttendancesResponseDto {
                     .studentName(absenceAttendance.getStudent().getMember().getName())
                     .status(absenceAttendance.getIsApprove() == null ? null : (absenceAttendance.getIsApprove() == 'T'))
                     .isAttached(!absenceAttendance.getAbsenceAttendanceAttachmentFiles().isEmpty())
-                    .startDate(absenceAttendance.getStartTime().toLocalDate())
-                    .endDate(absenceAttendance.getEndTime().toLocalDate())
+                    .startDate(absenceAttendance.getStartTime())
+                    .endDate(absenceAttendance.getEndTime())
                     .build();
         }
     }

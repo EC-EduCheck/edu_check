@@ -64,4 +64,8 @@ public class Member implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    public Long getStudentId() {
+        return student != null ? student.getId() : null;
+    }
 }
