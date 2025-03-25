@@ -21,7 +21,6 @@ export default function Calendar({ attendanceData }) {
       const holidayList = await fetchHolidays(year, month);
       setHolidays(holidayList);
     };
-
     getHolidays();
   }, [currentDate]);
 

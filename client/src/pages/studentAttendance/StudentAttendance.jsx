@@ -3,7 +3,7 @@ import styles from "./StudentAttendance.module.css"
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import DataBoard from '../../components/dataBoard/DataBoard';
 import ProgressBar from '../../components/progressBar/ProgressBar';
-import Calendar from '../../components/calendar/calendar';
+import Calendar from '../../components/calendar/Calendar';
 export default function StudentAttendance() {
   const attendanceRatio = 56;
   const lateCount = 3;
