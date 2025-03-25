@@ -135,9 +135,12 @@ public class AttendanceService {
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
 
         // 해당 course 에서 오늘 닐짜의 lectureId 확인하기
-        LocalDateTime today = LocalDateTime.now();
-        Lecture lecture = lectureRepository.findByCourseToday(courseId, today)
-                .orElseThrow(() -> new ResourceNotFoundException("교육 과정 중 금일 강의는 존재하지 않습니다."));
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+        Lecture lecture = lectureRepository.findByCourseIdAndDateBetween(
+                        courseId, startOfDay, endOfDay)
+                .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
 
         // 해당 lectureId의 출석 리스트 가져오기
         List<Attendance> attendances = attendanceRepository.findAllByLectureId(lecture.getId());

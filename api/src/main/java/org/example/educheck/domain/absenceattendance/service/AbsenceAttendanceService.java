@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
@@ -13,12 +14,15 @@ import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
+import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,7 @@ import java.util.Map;
 public class AbsenceAttendanceService {
     private final AbsenceAttendanceRepository absenceAttendanceRepository;
     private final StaffRepository staffRepository;
+    private final StaffCourseRepository staffCourseRepository;
     private final S3Service s3Service;
     private final CourseRepository courseRepository;
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
@@ -81,6 +86,22 @@ public class AbsenceAttendanceService {
                         )
                         .toUpperCase().charAt(0)
         );
+    }
+
+    @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
+    public GetAbsenceAttendancesResponseDto getAbsenceAttendances(Long courseId, Pageable pageable, Member member) {
+
+        // TODO
+//        Staff staff =
+//                staffRepository.findByMember(member)
+//                        .orElseThrow(() -> new ResourceNotFoundException("회원 정보를 찾을 수 없습니다."));
+//
+//        staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
+//                .orElseThrow(ForbiddenException::new);
+
+        Page<AbsenceAttendance> attendances = absenceAttendanceRepository.findByCourseId(courseId, pageable);
+
+        return GetAbsenceAttendancesResponseDto.from(attendances, member);
     }
 
     @Transactional

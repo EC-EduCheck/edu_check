@@ -10,6 +10,8 @@ import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity(name = "absence_attendacne_attachment_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

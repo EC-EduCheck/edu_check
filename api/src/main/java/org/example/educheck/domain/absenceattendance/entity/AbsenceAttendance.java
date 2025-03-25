@@ -67,4 +67,5 @@ public class AbsenceAttendance extends BaseTimeEntity {
         this.deletionRequestedAt = LocalDateTime.now();
     }
 
+
 }

@@ -33,7 +33,7 @@ export default function Calendar({ attendanceData }) {
             onNavigate('PREV');
           }}
         >
-          <img src="../../assets/arrowBackIcon.svg" alt="arrowPrev" />
+          <img src="/assets/arrowBackIcon.svg" alt="arrowPrev" />
         </button>
         <span>{moment(date).format('YYYY.MM')}</span>
         <button
@@ -41,7 +41,7 @@ export default function Calendar({ attendanceData }) {
             onNavigate('NEXT');
           }}
         >
-          <img src="../../assets/arrowBackIcon.svg" alt="arrowNext" className={styles.arrowNext} />
+          <img src="/assets/arrowBackIcon.svg" alt="arrowNext" className={styles.arrowNext} />
         </button>
       </div>
     );

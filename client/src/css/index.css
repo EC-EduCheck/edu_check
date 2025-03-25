@@ -107,3 +107,9 @@ li {
 .container {
   width: var(--width-full);
 }
+
+.subTitle {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: var(--margin-basic);
+}
