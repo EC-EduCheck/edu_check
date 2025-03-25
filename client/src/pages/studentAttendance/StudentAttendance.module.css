@@ -33,7 +33,7 @@
   bottom: 0;
   left: var(--padding-medium);
   right: var(--padding-medium);
-  width: auto; 
+  width: auto;
 }
 
 .attendanceCurrent {
@@ -47,9 +47,23 @@
 
 .attendanceCalendar {
   width: 50%;
+  height: 100%;
 }
+
 .attendanceCalendar > div {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.legendContainer {
+  margin-bottom: 15px;
+  padding-top: 15px;
+}
+
+.calendarWrapper {
+  flex: 1;
+  min-height: 0;
 }
 
 .attendanceType {
@@ -58,4 +72,39 @@
   grid-template-rows: 1fr 1fr;
   gap: 15px;
   flex: 1;
+}
+
+.legend {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 15px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  font-size: 14px;
+}
+
+.earlyLeaveIndicator,
+.absentIndicator,
+.lateIndicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.earlyLeaveIndicator {
+  background-color: var(--primary-100);
+}
+
+.absentIndicator {
+  background-color: var(--border-100);
+}
+
+.lateIndicator {
+  background-color: var(--primary-200);
 }

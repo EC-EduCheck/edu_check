@@ -59,7 +59,25 @@ export default function StudentAttendance() {
         </div>
         <div className={styles.attendanceCalendar}>
           <DashBoardItem width={'100%'}>
-            <Calendar attendanceData={attendanceData}></Calendar>
+            <div className={styles.legendContainer}>
+              <div className={styles.legend}>
+                <div className={styles.legendItem}>
+                  <span className={styles.lateIndicator}></span>
+                  <span>지각</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.earlyLeaveIndicator}></span>
+                  <span>조퇴</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <span className={styles.absentIndicator}></span>
+                  <span>결석</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.calendarWrapper}>
+              <Calendar attendanceData={attendanceData}></Calendar>
+            </div>
           </DashBoardItem>
         </div>
       </div>
