@@ -10,6 +10,7 @@ import org.example.educheck.domain.registration.entity.Registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -39,5 +40,18 @@ public class Student {
         this.status = status;
         this.courseParticipationStatus = courseParticipationStatus;
         this.registrations = registrations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(id, student.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

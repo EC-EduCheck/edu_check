@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,13 @@ public class AbsenceAttendanceService {
     private final CourseRepository courseRepository;
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
     private final RegistrationRepository registrationRepository;
+
+    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
+
+        if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
+            throw new NotOwnerException();
+        }
+    }
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
@@ -116,9 +124,8 @@ public class AbsenceAttendanceService {
     }
 
     private void validateRegistrationCourse(Member member, Long courseId) {
-        log.info("memberId: " + member.getId() + " courseId: " + courseId);
         Student student = member.getStudent();
-        log.info("studentId : {}", student.getId());
+
         Registration registration = registrationRepository.findByStudentIdAndCourseId(member.getStudent().getId(), courseId)
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -127,6 +134,7 @@ public class AbsenceAttendanceService {
         }
     }
 
+    @Transactional
     public void cancelAttendanceAbsence(Member member, Long absenceAttendancesId) {
 
         AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
@@ -134,17 +142,13 @@ public class AbsenceAttendanceService {
 
         validateIsApplicant(member, absenceAttendance);
 
-        //해당 첨부파일 삭제? -> 삭제 처리 -> 양방향 필요
-//        absenceAttendance.
-
-        //신청 내역 소프트 딜리트 처리
-        absenceAttendanceRepository.
-    }
-
-    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
-        //member랑 신청자가 일치하는지 확인
-        if (!member.getStudent().equals(absenceAttendance.getStudent())) {
-            throw new NotOwnerException();
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
+        for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
+            attachmentFile.markDeletionRequested();
+            absenceAttendanceAttachmentFileRepository.save(attachmentFile);
         }
+
+        absenceAttendance.markDeletionRequested();
+        absenceAttendanceRepository.save(absenceAttendance);
     }
 }

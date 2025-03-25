@@ -2,6 +2,7 @@ package org.example.educheck.domain.absenceattendance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
@@ -9,6 +10,8 @@ import org.example.educheck.global.common.entity.BaseTimeEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * isApprove : T 승인 F 반려 null 대기
@@ -42,6 +45,9 @@ public class AbsenceAttendance extends BaseTimeEntity {
     private String reason;
     private String category;
 
+    @OneToMany(mappedBy = "absenceAttendance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AbsenceAttendanceAttachmentFile> absenceAttendanceAttachmentFiles = new ArrayList<>();
+
     private LocalDateTime deletionRequestedAt;
 
     @Builder
@@ -56,4 +62,9 @@ public class AbsenceAttendance extends BaseTimeEntity {
         this.reason = reason;
         this.category = category;
     }
+
+    public void markDeletionRequested() {
+        this.deletionRequestedAt = LocalDateTime.now();
+    }
+
 }

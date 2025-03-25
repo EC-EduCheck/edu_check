@@ -41,4 +41,9 @@ public class AbsenceAttendanceAttachmentFile extends BaseTimeEntity {
         this.mime = mime;
     }
 
+    public void markDeletionRequested() {
+        this.deletionRequestedAt = LocalDateTime.now();
+    }
+
+
 }

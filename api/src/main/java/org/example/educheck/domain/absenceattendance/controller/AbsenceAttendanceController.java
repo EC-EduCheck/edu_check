@@ -48,9 +48,13 @@ public class AbsenceAttendanceController {
     }
 
     @DeleteMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public void cancelAttendanceAbsence(@AuthenticationPrincipal Member member,
-                                        @PathVariable Long absenceAttendancesId) {
+    public ResponseEntity<ApiResponse<Object>> cancelAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                                                       @PathVariable Long absenceAttendancesId) {
         absenceAttendanceService.cancelAttendanceAbsence(member, absenceAttendancesId);
+        return ResponseEntity.ok(
+                ApiResponse.ok("유고 결석 신청 취소 성공",
+                        "OK",
+                        null));
 
     }
 
