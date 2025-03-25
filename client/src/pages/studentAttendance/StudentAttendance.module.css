@@ -1,9 +1,3 @@
-.headingText {
-  font-size: var(--font-size-28);
-  font-weight: bolder;
-  margin-bottom: 10px;
-}
-
 .dashBoardItemDiv {
   display: flex;
   justify-content: space-between;
