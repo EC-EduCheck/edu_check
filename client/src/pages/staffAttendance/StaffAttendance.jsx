@@ -7,12 +7,17 @@ import { attendanceApi } from '../../api/attendanceApi';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import FilterButton from '../../components/buttons/filterButton/FilterButton';
 import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
+import Modal from '../../components/modal/Modal';
 
 export default function StaffAttendance() {
   const [isActiveIndex, setIsActiveIndex] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const { courseId } = useSelector((state) => state.auth.user);
   const [students, setStudents] = useState([]);
+  const { courseId } = useSelector((state) => state.auth.user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({
+    content: '페이지를 확인할 수 없습니다.',
+  });
 
   const getAttendances = async () => {
     try {
@@ -25,10 +30,12 @@ export default function StaffAttendance() {
         { label: '결석', value: absence },
       ]);
       setStudents(response.data.data.students);
-      console.log(response);
     } catch (error) {
-      // TODO : 에러 처리 필요
-      console.log(error);
+      const modalData = {
+        content: error.message,
+      };
+
+      setModalData(modalData);
     }
   };
 
@@ -81,6 +88,7 @@ export default function StaffAttendance() {
 
   return (
     <div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} {...modalData}></Modal>
       <DashBoardItem width="100%">
         <>
           <h2 className="subTitle">출결 현황</h2>
