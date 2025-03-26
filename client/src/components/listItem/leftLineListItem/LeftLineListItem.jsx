@@ -9,7 +9,6 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
 
   return (
     <div
-      // TODO : 관리자의 유고 결석 관리만 handleClick 사용
       {...(isClickable ? { onClick: handleClick } : {})}
       className={`${styles.leftLineListItem} ${isClickable && `${styles.active}`} ${bgColor ? styles[bgColor] : ''}`}
     >
@@ -17,7 +16,7 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
       {status}
       {/* 출석상태 */}
       {children.attached ? '첨부' : '미첨부'}
-      {console.log(children)}
+      {children.status ? '승인' : false ? '반려' : '미승인'}
 
       {!isClickable && <MoreButton></MoreButton>}
     </div>

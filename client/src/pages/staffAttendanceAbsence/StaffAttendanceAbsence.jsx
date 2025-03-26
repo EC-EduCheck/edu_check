@@ -6,10 +6,13 @@ import { useSelector } from 'react-redux';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
+
+  const { role, courseId } = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(1);
+        const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(courseId);
         setData(response.data.data);
       } catch (error) {
         console.error(error);
@@ -17,12 +20,6 @@ export default function StaffAttendanceAbsence() {
     }
     fetchData();
   }, []);
-
-  const role= useSelector(
-    (state) => state.auth.user.role,
-  );
-
-  
 
   return (
     <div>
