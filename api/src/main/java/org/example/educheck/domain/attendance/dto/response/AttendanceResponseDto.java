@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.educheck.domain.attendance.entity.Attendance;
+import org.example.educheck.domain.attendance.entity.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;

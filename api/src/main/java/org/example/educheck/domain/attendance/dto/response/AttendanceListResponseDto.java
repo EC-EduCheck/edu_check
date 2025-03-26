@@ -24,10 +24,10 @@ public class AttendanceListResponseDto {
 
     public static AttendanceListResponseDto from(
             Long userId,
-            List<Attendance> attendances,
+            List<AttendanceResponseDto> responseDtos,
             long attence,
-            long late,
             long earlyLeave,
+            long late,
             long absence
 
     ) {
@@ -37,7 +37,8 @@ public class AttendanceListResponseDto {
                 .early(earlyLeave)
                 .late(late)
                 .absence(absence)
-                .students(attendances.stream().map(AttendanceResponseDto::from).collect(Collectors.toList()))
+                .today(LocalDateTime.now())
+                .students(responseDtos)
                 .build();
     }
 }

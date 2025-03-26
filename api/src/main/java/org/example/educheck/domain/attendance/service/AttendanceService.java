@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
-import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.*;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.repository.AttendanceRepository;
@@ -37,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -143,7 +141,7 @@ public class AttendanceService {
     }
 
     public AttendanceListResponseDto getTodayAttendances(Long courseId, UserDetails user) {
-        // 현재 관리자가 courseId를 가지고 있는지 확인하기
+        // 1-1. 현재 관리자가 courseId를 가지고 있는지 확인하기
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 관리자가 없습니다."));
@@ -152,7 +150,7 @@ public class AttendanceService {
         staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
 
-        // 해당 course 에서 오늘 닐짜의 lectureId 확인하기
+        // 1-2. 해당 course 에서 오늘 닐짜의 lectureId 확인하기
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
@@ -160,21 +158,38 @@ public class AttendanceService {
                         courseId, startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
 
-        // 해당 lectureId의 출석 리스트 가져오기
+        // 2-1. 해당 강의의 학생들 리스트 가져오기
+        List<Student> students = studentRepository.findAllByCourseId(courseId);
+
+        // 2-2. 해당 lectureId의 출석 리스트 가져오기
+        System.out.println(lecture.getId());
         List<Attendance> attendances = attendanceRepository.findAllByLectureId(lecture.getId());
 
-        Map<Status, Long> attendanceCounts = attendances.stream()
+        // 2-3. 출석 리스트를 Map<studentId, AttendanceStatus> 형태로 변환
+        Map<Long, Status> attendanceStatus = attendances.stream()
+                .filter(attendance -> attendance.getStudent() != null && attendance.getStudent().getId() != null)
+                .collect(Collectors.toMap(attendance -> attendance.getStudent().getId(), Attendance::getStatus));
+
+        // 2-4. 총 학생 해당 강의 출석 리스트 생성
+        List<AttendanceResponseDto> responseDtos = students.stream()
+                .map(student -> {
+                    String status = String.valueOf(attendanceStatus.getOrDefault(student.getId(), null));
+                    return new AttendanceResponseDto(student.getId(), student.getMember().getName(), status);
+                })
+                .toList();
+
+        Map<String, Long> attendanceCounts = responseDtos.stream()
                 .collect(Collectors.groupingBy(
-                        Attendance::getStatus,
+                        AttendanceResponseDto::getStatus,
                         Collectors.counting())
                 );
 
-        long attence = attendanceCounts.getOrDefault(Status.ATTENDANCE, 0L);
-        long late = attendanceCounts.getOrDefault(Status.LATE, 0L);
-        long earlyLeave = attendanceCounts.getOrDefault(Status.EARLY_LEAVE, 0L);
+        long attence = attendanceCounts.getOrDefault("ATTENDANCE", 0L);
+        long late = attendanceCounts.getOrDefault("LATE", 0L);
+        long earlyLeave = attendanceCounts.getOrDefault("EARLY_LEAVE", 0L);
         long absence = attendanceCounts.getOrDefault(null, 0L);
 
-        return AttendanceListResponseDto.from(staff.getId(), attendances, attence, late, earlyLeave, absence);
+        return AttendanceListResponseDto.from(staff.getId(), responseDtos, attence, late, earlyLeave, absence);
     }
 
     public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {
