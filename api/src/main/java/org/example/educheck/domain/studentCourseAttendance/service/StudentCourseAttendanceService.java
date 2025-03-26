@@ -81,7 +81,7 @@ public class StudentCourseAttendanceService {
         validateStudentRegistrationInCourse(courseId, studentId);
         validateDates(year, month);
 
-        Page<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId, pageable);
+        Page<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByStudentAndCourse(studentId, courseId, year, month, pageable);
 
         //respnseDTO로 말아서 전달하기
         List<MyAttendanceRecordResponseDto> attendances = attendanceList

@@ -53,7 +53,8 @@ public class StudentCourseAttendanceController {
                                                                                          @RequestParam(required = false) Integer year,
                                                                                          @RequestParam(required = false) Integer month,
                                                                                          @RequestParam(defaultValue = "0") int page,
-                                                                                         @RequestParam(defaultValue = "10") int size) {
+                                                                                         @RequestParam(defaultValue = "10") int size
+    ) {
 
         Pageable pageable = createPageable(page, size);
 
