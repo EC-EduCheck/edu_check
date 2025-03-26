@@ -32,31 +32,29 @@ export default function StudentAttendance() {
     <>
       <div className={styles.dashBoardItemDiv}>
         <div className={styles.attendanceStatistics}>
-          <div className={styles.attendanceRatio}>
-            <DashBoardItem width={'100%'}>
-              <p className={styles.headingText}>출석률 {attendanceRatio}%</p>
-              <div className={styles.progressBarBottom}>
-                <ProgressBar
-                  value={value}
-                  max={100}
-                  startDate={startDate}
-                  endDate={endDate}
-                ></ProgressBar>
-              </div>
-            </DashBoardItem>
-          </div>
-          <div className={styles.attendanceCurrent}>
-            <DashBoardItem width={'100%'}>
-              <p className={styles.headingText}>결석 현황</p>
-              <div className={styles.attendanceType}>
-                <DataBoard title="지각" data={`${lateCount}회`}></DataBoard>
-                <DataBoard title="조퇴" data={`${earlyLeaveCount}회`}></DataBoard>
-                <DataBoard title="결석" data={`${absenceCount}회`}></DataBoard>
-                <DataBoard title="누적 결석" data={`${cumulativeAbsenceCount}회`}></DataBoard>
-              </div>
-            </DashBoardItem>
-          </div>
+          <DashBoardItem width="100%">
+            <p className="subTitle">출석률 {attendanceRatio}%</p>
+            <div className={styles.progressBarBottom}>
+              <ProgressBar
+                value={value}
+                max={100}
+                startDate={startDate}
+                endDate={endDate}
+              ></ProgressBar>
+            </div>
+          </DashBoardItem>
+
+          <DashBoardItem width="100%">
+            <p className="subTitle">결석 현황</p>
+            <div className={styles.attendanceType}>
+              <DataBoard title="지각" data={`${lateCount}회`}></DataBoard>
+              <DataBoard title="조퇴" data={`${earlyLeaveCount}회`}></DataBoard>
+              <DataBoard title="결석" data={`${absenceCount}회`}></DataBoard>
+              <DataBoard title="누적 결석" data={`${cumulativeAbsenceCount}회`}></DataBoard>
+            </div>
+          </DashBoardItem>
         </div>
+
         <div className={styles.attendanceCalendar}>
           <DashBoardItem width={'100%'}>
             <div className={styles.legendContainer}>

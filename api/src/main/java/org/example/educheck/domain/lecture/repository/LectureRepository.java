@@ -21,11 +21,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
             @Param("endDate") LocalDateTime endDate
     );
 
-    @Query("SELECT l FROM Lecture l WHERE l.course.id = :courseId AND l.date = :today")
-    Optional<Lecture> findByCourseToday(
-            @Param("courseId")Long courseId,
-            @Param("today") LocalDateTime today
-    );
-
     List<Lecture> findAllByCourseId(Long courseId);
 }

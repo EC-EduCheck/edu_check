@@ -17,4 +17,8 @@ public class GlobalException extends RuntimeException {
         super(message);
         this.errorCode = errorCode;
     }
+
+    public GlobalException(String customMessage) {
+        super(customMessage);
+    }
 }

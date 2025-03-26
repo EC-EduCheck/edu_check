@@ -5,11 +5,11 @@
 }
 
 .dataBoard p:first-child {
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-16);
 }
 
 .dataBoard p:last-child {
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-14);
   color: var(--text-300);
-  margin-top: var(--margin-large);
+  margin-top: var(--margin-medium);
 }

@@ -67,7 +67,7 @@ export default function Login() {
   return (
     <div className={styles.login}>
       <div className={styles.logoImage}>
-        <img src="./assets/logo.png" alt="user image" />
+        <img src="/assets/logo.png" alt="user image" />
       </div>
       <InputBox
         type="email"
