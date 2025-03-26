@@ -44,6 +44,10 @@ public class StudentCourseAttendanceService {
         if (month != null && (month < 1 || month > 12)) {
             throw new InvalidRequestException("유효하지 않은 월입니다.");
         }
+
+        if (month != null && year != null) {
+            throw new InvalidRequestException("월 선택시 연도 선택은 필수입니다.");
+        }
     }
 
     public AttendanceRecordListResponseDto getStudentAttendanceRecordLists(Member member, Long studentId, Long courseId, Pageable pageable) {
