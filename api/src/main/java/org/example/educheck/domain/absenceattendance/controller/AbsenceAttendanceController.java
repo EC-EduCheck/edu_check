@@ -84,7 +84,7 @@ public class AbsenceAttendanceController {
 
     @GetMapping("/course/{courseId}/absence-attendances")
     public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
-            @PathVariable Long courseId, @PageableDefault(sort = "startTime",
+            @PathVariable Long courseId, @PageableDefault(sort = "createdAt",
             direction = Sort.Direction.DESC,
             size = 10)
     Pageable pageable, @AuthenticationPrincipal Member member) {
