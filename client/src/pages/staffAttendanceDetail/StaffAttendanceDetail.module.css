@@ -1,0 +1,100 @@
+.container {
+  display: flex;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100vh;
+}
+
+.dashboardContainer {
+  position: fixed;
+  width: 20%;
+  padding: var(--padding-large);
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  left: 20%;
+}
+
+.contentWrapper {
+  margin-left: 20%; 
+  flex: 1;
+  padding: var(--padding-large);
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.userInfoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: var(--margin-large);
+}
+
+.userInfo {
+  margin-bottom: var(--margin-basic);
+}
+
+.userName {
+  font-size: var(--font-size-28);
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.userPhone {
+  font-size: var(--font-size-18);
+  color: var(--text-3ㅂㅂ00);
+  margin: 0;
+}
+
+.databoardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-basic);
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-basic);
+}
+
+.baseListItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-basic) var(--padding-large);
+  border-radius: var(--border-radius-10);
+  border: 1px solid var(--border-100);
+  background-color: white;
+}
+
+.tag {
+  padding: var(--padding-small) var(--padding-basic);
+  border-radius: var(--border-radius-20);
+  border: none;
+  font-size: var(--font-size-14);
+  cursor: pointer;
+}
+
+.dataBoard {
+  background-color: var(--bg-100);
+  border-radius: var(--border-radius-10);
+  padding: var(--padding-basic);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dataBoard p:first-child {
+  font-size: var(--font-size-14);
+  color: var(--text-200);
+  margin: 0;
+}
+
+.dataBoard p:last-child {
+  font-size: var(--font-size-24);
+  font-weight: bold;
+  margin: 0;
+}
