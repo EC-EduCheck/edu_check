@@ -23,6 +23,8 @@ import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -51,6 +54,16 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
+
+    private static void validateDates(Integer year, Integer month) {
+        if (year != null && (year < 2000 || year > 2026)) {
+            throw new InvalidRequestException("유효하지 않은 연도입니다.");
+        }
+
+        if (month != null && (month < 1 || month > 12)) {
+            throw new InvalidRequestException("유효하지 않은 월입니다.");
+        }
+    }
 
     @Transactional
     public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
@@ -270,5 +283,25 @@ public class AttendanceService {
         return attendance.getStatus();
     }
 
+    public void getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
 
+        validateExistCourse(courseId);
+        validateStudentRegistrationInCourse(courseId, member.getStudentId());
+        validateDates(year, month);
+
+
+    }
+
+    private void validateExistCourse(Long courseId) {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            throw new ResourceNotFoundException("해당 과정이 존재하지 않습니다.");
+        }
+    }
+
+    private void validateStudentRegistrationInCourse(Long courseId, Long studentId) {
+        if (!registrationRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
+            throw new ForbiddenException("출석부 조회는 수강 중이거나 수강했던 과정에 대해서만 가능합니다.");
+        }
+    }
 }
