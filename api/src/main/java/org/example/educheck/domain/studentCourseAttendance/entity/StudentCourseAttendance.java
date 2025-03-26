@@ -26,6 +26,9 @@ public class StudentCourseAttendance {
     @Column(name = "course_id")
     private Long courseId;
 
+    @Column(name = "lecture_id")
+    private String lectureId;
+
     @Column(name = "lecture_session")
     private String lectureSession;
 
