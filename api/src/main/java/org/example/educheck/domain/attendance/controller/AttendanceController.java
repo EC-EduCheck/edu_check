@@ -58,7 +58,7 @@ public class AttendanceController {
     }
 
     // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
+    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
     public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
             @PathVariable Long courseId,
             @PathVariable Long studentId,
