@@ -2,7 +2,7 @@ package org.example.educheck.domain.studentCourseAttendance.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
 import org.example.educheck.domain.studentCourseAttendance.service.StudentCourseAttendanceService;
@@ -44,12 +44,12 @@ public class StudentCourseAttendanceController {
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @GetMapping("/my/courses/{courseId}/attendances")
-    public ResponseEntity<ApiResponse<MyAttendanceListResponseDto>> getAttendances(@AuthenticationPrincipal Member member,
-                                                                                   @PathVariable Long courseId,
-                                                                                   @RequestParam(required = false) Integer year,
-                                                                                   @RequestParam(required = false) Integer month) {
+    public ResponseEntity<ApiResponse<MyAttendanceRecordListResponseDto>> getAttendances(@AuthenticationPrincipal Member member,
+                                                                                         @PathVariable Long courseId,
+                                                                                         @RequestParam(required = false) Integer year,
+                                                                                         @RequestParam(required = false) Integer month) {
 
-        MyAttendanceListResponseDto myAttendances = studentCourseAttendanceService.getMyAttendanceRecordLists(member, courseId, year, month);
+        MyAttendanceRecordListResponseDto myAttendances = studentCourseAttendanceService.getMyAttendanceRecordLists(member, courseId, year, month);
         studentCourseAttendanceService.getMyAttendanceRecordLists(member, courseId, year, month);
         log.info("myAttendances: {}", myAttendances);
 

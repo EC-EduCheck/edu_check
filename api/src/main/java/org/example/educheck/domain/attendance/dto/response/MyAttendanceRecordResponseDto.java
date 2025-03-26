@@ -8,15 +8,15 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class MyAttendanceResponseDto {
+public class MyAttendanceRecordResponseDto {
 
     private LocalDate lectureDateTime;
     private String attendanceStatus;
     private Long lectureSession;
     private String lectureTitle;
 
-    public static MyAttendanceResponseDto from(StudentCourseAttendance entity) {
-        return MyAttendanceResponseDto.builder()
+    public static MyAttendanceRecordResponseDto from(StudentCourseAttendance entity) {
+        return MyAttendanceRecordResponseDto.builder()
                 .lectureDateTime(entity.getLectureDate())
                 .lectureTitle(entity.getLectureTitle())
                 .attendanceStatus(entity.getAttendanceStatus())

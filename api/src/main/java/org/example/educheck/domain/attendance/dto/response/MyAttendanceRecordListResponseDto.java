@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 @Builder
-public class MyAttendanceListResponseDto {
+public class MyAttendanceRecordListResponseDto {
 
     private Long userId;
     private String name;
     private String courseName;
-    private List<MyAttendanceResponseDto> attendanceList;
+    private List<MyAttendanceRecordResponseDto> attendanceList;
 
 
 }

@@ -2,8 +2,8 @@ package org.example.educheck.domain.studentCourseAttendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordResponseDto;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
@@ -74,7 +74,7 @@ public class StudentCourseAttendanceService {
                 .build();
     }
 
-    public MyAttendanceListResponseDto getMyAttendanceRecordLists(Member member, Long courseId, Integer year, Integer month) {
+    public MyAttendanceRecordListResponseDto getMyAttendanceRecordLists(Member member, Long courseId, Integer year, Integer month) {
         Long studentId = member.getStudentId();
 
         Course validCourse = getValidCourse(courseId);
@@ -84,12 +84,12 @@ public class StudentCourseAttendanceService {
         List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
 
         //respnseDTO로 말아서 전달하기
-        List<MyAttendanceResponseDto> attendances = attendanceList
+        List<MyAttendanceRecordResponseDto> attendances = attendanceList
                 .stream()
-                .map(MyAttendanceResponseDto::from)
+                .map(MyAttendanceRecordResponseDto::from)
                 .toList();
 
-        return MyAttendanceListResponseDto.builder()
+        return MyAttendanceRecordListResponseDto.builder()
                 .attendanceList(attendances)
                 .userId(member.getId())
                 .name(member.getName())
