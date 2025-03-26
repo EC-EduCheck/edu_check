@@ -1,0 +1,33 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 350px;
+  padding: 2rem 0rem;
+  gap: 0.5rem;
+}
+
+.smallInputBox {
+  width: 100%;
+  padding: var(--padding-small);
+  border: 1px solid var(--text-300);
+  border-radius: var(--border-radius-5);
+  margin: 6px 0;
+  box-sizing: border-box;
+}
+
+.smallInputBox::placeholder {
+  color: var(--text-300);
+  text-align: left;
+}
+
+.smallInputBox:focus {
+  color: var(--text-100);
+  outline-color: var(--primary-100);
+}
+
+.birthdate {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
