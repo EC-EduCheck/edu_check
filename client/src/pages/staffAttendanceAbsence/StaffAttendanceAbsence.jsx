@@ -5,12 +5,20 @@ import LeftLineListItem from '../../components/listItem/leftLineListItem/LeftLin
 import { useSelector } from 'react-redux';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import { activeTitle } from '../../utils/buttonContentList';
+import Modal from '../../components/modal/Modal';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
   const { role, courseId } = useSelector((state) => state.auth.user);
   const buttonList = ['전체', '승인', '반려', '미승인'];
   const [selected, setSelected] = useState('전체');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState();
+
+  const openModal = (item) => {
+    setModalContent(item);
+    setIsModalOpen(true);
+  };
 
   const initActiveTitle = () => {
     for (let i = activeTitle.length - 1; i >= 0; i--) {
@@ -47,8 +55,6 @@ export default function StaffAttendanceAbsence() {
     setSelected(title);
   };
 
-  console.log(selected);
-
   return (
     <>
       <div className="buttonContainer">
@@ -76,10 +82,23 @@ export default function StaffAttendanceAbsence() {
               isClickable={role === 'MIDDLE_ADMIN'}
               status={item.status}
               children={item}
-              handleClick={() => console.log(item)}
+              handleClick={() => openModal(item)}
               key={idx}
             />
           ))}
+
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          mainClick={() => console.log('반려 처리')}
+          subClick={() => console.log('승인 처리')}
+          mainText="반려"
+          subText="승인"
+          content={'content'}
+          // content={modalContent}
+        />
+      )}
     </>
   );
 }
