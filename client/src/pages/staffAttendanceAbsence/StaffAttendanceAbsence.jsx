@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './StaffAttendanceAbsence.module.css';
 import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import LeftLineListItem from '../../components/listItem/leftLineListItem/LeftLineListItem';
@@ -8,8 +8,17 @@ import { activeTitle } from '../../utils/buttonContentList';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
-
   const { role, courseId } = useSelector((state) => state.auth.user);
+  const buttonList = ['전체', '승인', '반려', '미승인'];
+  const [selected, setSelected] = useState('전체');
+
+  const initActiveTitle = () => {
+    for (let i = activeTitle.length - 1; i >= 0; i--) {
+      if (buttonList.includes(activeTitle[i])) {
+        activeTitle.splice(i, 1);
+      }
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -20,22 +29,19 @@ export default function StaffAttendanceAbsence() {
         console.error(error);
       }
     }
-    fetchData();
-    activeTitle.push('전체');
-  }, []);
 
-  const buttonList = ['전체', '승인', '미승인', '반려'];
-  const [selected, setSelected] = useState('전체');
+    fetchData();
+    setSelected('전체');
+    initActiveTitle();
+    activeTitle.push('전체');
+  }, [courseId]);
 
   const handleButtonClick = (title) => {
-    for (let i = activeTitle.length - 1; i >= 0; i--) {
-      if (buttonList.includes(activeTitle[i])) {
-        activeTitle.splice(i, 1);
-      }
-    }
+    initActiveTitle();
     activeTitle.push(title);
     setSelected(title);
   };
+
   console.log(selected);
 
   return (
