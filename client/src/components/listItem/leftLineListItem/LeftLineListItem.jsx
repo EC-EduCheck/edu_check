@@ -11,21 +11,25 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
     EARLY_LEAVE: '조퇴',
   };
 
+  const statusMapper = {
+    true: '승인',
+    false: '반려',
+    null: '미승인',
+  };
+
   const bgColor = getBackgroundColor(status);
-console.log(bgColor);
 
   return (
     <div
       {...(isClickable ? { onClick: handleClick } : {})}
       className={`${styles.leftLineListItem} ${isClickable && `${styles.active}`} ${bgColor ? styles[bgColor] : ''}`}
     >
-      
       <p>{children.studentName}</p>
       <p>{status}</p>
       <p>{categoryMapper[children.category] || ''}</p>
       <p>{children.attached ? '첨부' : '미첨부'}</p>
-      <p>{new Date(children.createdAt).toLocaleDateString()}</p>
-      <p>{children.status ? '승인' : false ? '반려' : '미승인'}</p>
+      <p>{new Date(children.createdAt).toLocaleDateString().replace(/\.$/, '')}</p>
+      <p>{statusMapper[children.status]}</p>
 
       {!isClickable && <MoreButton></MoreButton>}
     </div>

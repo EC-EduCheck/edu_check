@@ -3,6 +3,7 @@ import styles from './StaffAttendanceAbsence.module.css';
 import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import LeftLineListItem from '../../components/listItem/leftLineListItem/LeftLineListItem';
 import { useSelector } from 'react-redux';
+import MainButton from '../../components/buttons/mainButton/MainButton';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
@@ -21,8 +22,25 @@ export default function StaffAttendanceAbsence() {
     fetchData();
   }, []);
 
+  const buttonList = ['전체', '승인', '미승인', '반려'];
+  const [selected, setSelected] = useState(buttonList[0]);
+
+  const handleButtonClick = (title) => {
+    setSelected(title);
+  };
+
   return (
-    <div>
+    <>
+      <div className="buttonContainer">
+        {buttonList.map((title, idx) => (
+          <MainButton
+            key={idx}
+            title={title}
+            isActive={selected === title}
+            handleClick={() => handleButtonClick(title)}
+          />
+        ))}
+      </div>
       {data?.absenceAttendances &&
         data.absenceAttendances.map((item, idx) => (
           <LeftLineListItem
@@ -32,6 +50,6 @@ export default function StaffAttendanceAbsence() {
             key={idx}
           />
         ))}
-    </div>
+    </>
   );
 }
