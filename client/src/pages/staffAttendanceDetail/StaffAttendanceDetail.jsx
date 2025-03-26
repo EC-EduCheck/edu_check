@@ -12,17 +12,21 @@ export default function StaffAttendanceDetail() {
   };
 
   // 더미 출석 데이터
-  const [attendanceItems, setAttendanceItems] = useState([
+  const attendanceItems = [
     { id: 1, content: '2024년 01월 01일', tagTitle: '결석' },
-    { id: 2, content: '2024년 01월 01일', tagTitle: '출석' },
+    { id: 2, content: '2024년 01월 01일', tagTitle: '조퇴' },
     { id: 3, content: '2024년 01월 01일', tagTitle: '출석' },
     { id: 4, content: '2024년 01월 01일', tagTitle: '출석' },
     { id: 5, content: '2024년 01월 01일', tagTitle: '지각' },
     { id: 6, content: '2024년 01월 01일', tagTitle: '결석' },
     { id: 7, content: '2024년 01월 01일', tagTitle: '결석' },
     { id: 8, content: '2024년 01월 01일', tagTitle: '결석' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '결석' },
-  ]);
+    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 9, content: '2024년 01월 01일', tagTitle: '출석' },
+  ];
 
   return (
     <div className={styles.container}>

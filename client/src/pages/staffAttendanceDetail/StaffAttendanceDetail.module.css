@@ -18,7 +18,7 @@
 }
 
 .contentWrapper {
-  margin-left: 300px; /* 대시보드 너비만큼 마진 */
+  margin-left: 20%; 
   flex: 1;
   padding: var(--padding-large);
   box-sizing: border-box;
@@ -38,14 +38,14 @@
 }
 
 .userName {
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-28);
   font-weight: bold;
   margin: 0 0 5px 0;
 }
 
 .userPhone {
-  font-size: var(--font-size-14);
-  color: var(--text-200);
+  font-size: var(--font-size-18);
+  color: var(--text-3ㅂㅂ00);
   margin: 0;
 }
 
@@ -79,17 +79,6 @@
   border: none;
   font-size: var(--font-size-14);
   cursor: pointer;
-}
-
-.dropBox {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  border: 1px solid var(--border-100);
-  border-radius: var(--border-radius-5);
-  box-shadow: var(--box-shadow-small);
-  z-index: 10;
 }
 
 /* DataBoard.module.css 추가 스타일 */
