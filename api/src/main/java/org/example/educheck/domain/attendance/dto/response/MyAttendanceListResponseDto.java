@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class MyAttendancListResponseDto {
+public class MyAttendanceListResponseDto {
 
     private Long userId;
     private String name;

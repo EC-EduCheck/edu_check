@@ -7,6 +7,7 @@ import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinReque
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.service.AttendanceService;
@@ -105,10 +106,18 @@ public class AttendanceController {
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @GetMapping("/my/courses/{courseId}/attendances")
-    public void getAttendances(@AuthenticationPrincipal Member member,
-                               @PathVariable Long courseId,
-                               @RequestParam(required = false) Integer year,
-                               @RequestParam(required = false) Integer month) {
-        attendanceService.getMyAttendances(member, courseId, year, month);
+    public ResponseEntity<ApiResponse<MyAttendanceListResponseDto>> getAttendances(@AuthenticationPrincipal Member member,
+                                                                                   @PathVariable Long courseId,
+                                                                                   @RequestParam(required = false) Integer year,
+                                                                                   @RequestParam(required = false) Integer month) {
+
+        MyAttendanceListResponseDto myAttendances = attendanceService.getMyAttendances(member, courseId, year, month);
+        log.info("myAttendances: {}", myAttendances);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "출석부 조회 성공",
+                "OK",
+                myAttendances
+        ));
     }
 }

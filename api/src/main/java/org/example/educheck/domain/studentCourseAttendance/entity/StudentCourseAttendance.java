@@ -3,8 +3,13 @@ package org.example.educheck.domain.studentCourseAttendance.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Getter
 @Entity
 @Immutable
 public class StudentCourseAttendance {
@@ -25,10 +30,10 @@ public class StudentCourseAttendance {
     private String courseName;
 
     @Column(name = "lecture_session")
-    private String lectureSession;
+    private Long lectureSession;
 
     @Column(name = "lecture_date")
-    private String lectureDate;
+    private LocalDate lectureDate;
 
     @Column(name = "lecture_title")
     private String lectureTitle;
@@ -37,10 +42,10 @@ public class StudentCourseAttendance {
     private String attendanceStatus;
 
     @Column(name = "check_in_timestamp")
-    private String checkInTimestamp;
+    private LocalDateTime checkInTimestamp;
 
     @Column(name = "check_out_timestamp")
-    private String checkOutTimestamp;
+    private LocalDateTime checkOutTimestamp;
 
     @Override
     public String toString() {

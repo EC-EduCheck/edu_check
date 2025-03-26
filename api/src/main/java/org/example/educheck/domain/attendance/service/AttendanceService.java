@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
@@ -192,8 +194,7 @@ public class AttendanceService {
 
         // 조회한 학생의 금일 기준 출석률
         LocalDateTime today = LocalDateTime.now();
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
+        Course course = getCourse(courseId);
         Long lectureTotalCountByToday = lectureRepository.findByCourseIdAndDateBetween(courseId, course.getStartDate(), today).stream().count();
         Long attendanceTotalCountByToday = attendances.stream().filter(attendance -> attendance.getStatus() == Status.ATTENDANCE).count();
         Long attendanceRateByToday = (attendanceTotalCountByToday / lectureTotalCountByToday) * 100;
@@ -205,6 +206,12 @@ public class AttendanceService {
         Long courseProgressRate = (lectureTotalCountByToday / (long) attendances.size()) * 100;
 
         return StudentAttendanceListResponseDto.from(student, attendances, attendanceRateByToday, overallAttendanceRate, courseProgressRate);
+    }
+
+    private Course getCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
+        return course;
     }
 
     public void updateStudentAttendance(Long courseId, Long studentId, AttendanceUpdateRequestDto requestDto, UserDetails user) {
@@ -286,7 +293,7 @@ public class AttendanceService {
         return attendance.getStatus();
     }
 
-    public void getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
+    public MyAttendanceListResponseDto getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
 
         Long studentId = member.getStudentId();
 
@@ -294,11 +301,22 @@ public class AttendanceService {
         validateStudentRegistrationInCourse(courseId, studentId);
         validateDates(year, month);
 
-        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
-        for (StudentCourseAttendance attendance : attendanceList) {
-            log.info(attendance.toString());
-        }
+        Course course = getCourse(courseId);
 
+        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
+
+        //respnseDTO로 말아서 전달하기
+        List<MyAttendanceResponseDto> attendances = attendanceList
+                .stream()
+                .map(MyAttendanceResponseDto::from)
+                .toList();
+
+        return MyAttendanceListResponseDto.builder()
+                .attendanceList(attendances)
+                .userId(member.getId())
+                .name(member.getName())
+                .courseName(course.getName())
+                .build();
 
     }
 
