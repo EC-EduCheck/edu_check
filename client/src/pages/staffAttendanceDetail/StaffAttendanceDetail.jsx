@@ -5,13 +5,11 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import DataBoard from '../../components/dataBoard/DataBoard';
 
 export default function StaffAttendanceDetail() {
-  // 더미 데이터
   const dummyUser = {
     name: '홍길동',
     phone: '010-1234-5678',
   };
 
-  // 더미 출석 데이터
   const attendanceItems = [
     { id: 1, content: '2024년 01월 01일', tagTitle: '결석' },
     { id: 2, content: '2024년 01월 01일', tagTitle: '조퇴' },
