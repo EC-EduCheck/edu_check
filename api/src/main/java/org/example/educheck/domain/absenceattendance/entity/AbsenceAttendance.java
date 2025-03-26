@@ -67,5 +67,11 @@ public class AbsenceAttendance extends BaseTimeEntity {
         this.deletionRequestedAt = LocalDateTime.now();
     }
 
+    public List<AbsenceAttendanceAttachmentFile> getActiveFiles() {
+        return absenceAttendanceAttachmentFiles.stream()
+                .filter(file -> file.getDeletionRequestedAt() == null)
+                .toList();
+    }
+
 
 }

@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
@@ -14,16 +16,17 @@ import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
-import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
+import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
 import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,10 +50,21 @@ public class AbsenceAttendanceService {
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
     private final RegistrationRepository registrationRepository;
 
-    private static void validateIsApplicant(Member member, AbsenceAttendance absenceAttendance) {
+    private static void validateMatchApplicant(Member member, AbsenceAttendance absenceAttendance) {
 
         if (!Objects.equals(member.getStudentId(), absenceAttendance.getStudent().getId())) {
             throw new NotOwnerException();
+        }
+    }
+
+    private static void validateModifiable(AbsenceAttendance absenceAttendance) {
+
+        if (absenceAttendance.getDeletionRequestedAt() != null) {
+            throw new InvalidRequestException("이미 취소 요청한 유고 결석 신청입니다.");
+        }
+
+        if (absenceAttendance.getIsApprove() != null || absenceAttendance.getApproveDate() != null) {
+            throw new InvalidRequestException("처리 이전에만 수정 가능합니다.");
         }
     }
 
@@ -120,6 +134,7 @@ public class AbsenceAttendanceService {
     }
 
     private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
+        log.info("첨부파일 저장 로직 동작");
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
             for (Map<String, String> result : uploadedResults) {
@@ -158,18 +173,49 @@ public class AbsenceAttendanceService {
     @Transactional
     public void cancelAttendanceAbsence(Member member, Long absenceAttendancesId) {
 
-        AbsenceAttendance absenceAttendance = absenceAttendanceRepository.findById(absenceAttendancesId)
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+        validateMatchApplicant(member, absenceAttendance);
+
+        markAttachementFilesForDeletion(absenceAttendance);
+
+        absenceAttendance.markDeletionRequested();
+        absenceAttendanceRepository.save(absenceAttendance);
+    }
+
+
+    @Transactional
+    public UpdateAbsenceAttendacneReponseDto updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+        validateMatchApplicant(member, absenceAttendance);
+        validateModifiable(absenceAttendance);
+        if (requestDto.getStartDate().isAfter(requestDto.getEndDate())) {
+            throw new InvalidRequestException("시작일은 종료일 이후일 수 없습니다.");
+        }
+
+        markAttachementFilesForDeletion(absenceAttendance);
+
+        requestDto.updateEntity(absenceAttendance);
+        absenceAttendanceRepository.save(absenceAttendance);
+
+        if (files != null) {
+            saveAttachementFiles(files, absenceAttendance);
+        }
+
+        return UpdateAbsenceAttendacneReponseDto.from(absenceAttendance);
+
+    }
+
+    private AbsenceAttendance getAbsenceAttendance(Long absenceAttendancesId) {
+        return absenceAttendanceRepository.findById(absenceAttendancesId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 유고 결석 신청 내역이 존재하지 않습니다."));
+    }
 
-        validateIsApplicant(member, absenceAttendance);
-
-        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getAbsenceAttendanceAttachmentFiles();
+    private void markAttachementFilesForDeletion(AbsenceAttendance absenceAttendance) {
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendance.getActiveFiles();
         for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
             attachmentFile.markDeletionRequested();
             absenceAttendanceAttachmentFileRepository.save(attachmentFile);
         }
-
-        absenceAttendance.markDeletionRequested();
-        absenceAttendanceRepository.save(absenceAttendance);
     }
 }

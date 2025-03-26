@@ -9,14 +9,14 @@ import org.example.educheck.domain.attendance.dto.response.StudentAttendanceList
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.repository.AttendanceRepository;
-import org.example.educheck.domain.course.repository.CourseRepository;
-import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.campus.Campus;
 import org.example.educheck.domain.course.entity.Course;
+import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.lecture.Lecture;
 import org.example.educheck.domain.lecture.repository.LectureRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
@@ -31,7 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -40,6 +41,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
+    private static final double LOCATION_TOLERANCE = 0.05;
+    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
@@ -48,9 +51,6 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
-
-    private static final double LOCATION_TOLERANCE = 0.05;
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
 
     @Transactional
     public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
@@ -262,12 +262,13 @@ public class AttendanceService {
             attendance.setStatus(Status.EARLY_LEAVE);
         } else if (attendance.getStatus() == Status.LATE) {
             attendance.setStatus(Status.LATE);
-        } else{
+        } else {
             attendance.setStatus(Status.ATTENDANCE);
         }
 
         attendanceRepository.save(attendance);
         return attendance.getStatus();
     }
+
 
 }
