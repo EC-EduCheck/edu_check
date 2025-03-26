@@ -30,10 +30,15 @@ export default function StaffAttendanceAbsence() {
       }
     }
 
-    fetchData();
-    setSelected('전체');
     initActiveTitle();
+    setSelected('전체');
     activeTitle.push('전체');
+    fetchData();
+    return () => {
+      initActiveTitle();
+      setSelected('전체');
+      activeTitle.push('전체');
+    };
   }, [courseId]);
 
   const handleButtonClick = (title) => {
