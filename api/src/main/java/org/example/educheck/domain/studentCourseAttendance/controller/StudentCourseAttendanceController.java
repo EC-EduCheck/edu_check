@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class StudentCourseAttendanceController {
 
     private final StudentCourseAttendanceService studentCourseAttendanceService;
 
+    @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
     @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
     public ResponseEntity<ApiResponse<AttendanceRecordListResponseDto>> getStudentAttendances(
             @AuthenticationPrincipal Member member,
