@@ -82,7 +82,7 @@ public class AbsenceAttendanceController {
     }
 
 
-    @GetMapping
+    @GetMapping("/course/{courseId}/absence-attendances")
     public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
             @PathVariable Long courseId, @PageableDefault(sort = "startTime",
             direction = Sort.Direction.DESC,
