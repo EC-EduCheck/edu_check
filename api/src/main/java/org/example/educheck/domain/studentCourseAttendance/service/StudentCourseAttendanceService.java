@@ -9,6 +9,8 @@ import org.example.educheck.domain.studentCourseAttendance.dto.response.Attendan
 import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
 import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +23,18 @@ public class StudentCourseAttendanceService {
     private final StudentCourseAttendanceRepository studentCourseAttendanceRepository;
     private final MemberRepository memberRepository;
 
-    public AttendanceRecordListResponseDto getStudentAttendanceRecordLists(Member member, Long studentId, Long courseId) {
+    public AttendanceRecordListResponseDto getStudentAttendanceRecordLists(Member member, Long studentId, Long courseId, Pageable pageable) {
 
         //임시
         Member student = memberRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 학생입니다."));
 
         //TODO 유효성 검증
-        List<StudentCourseAttendance> attendanceRecordList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
+        Page<StudentCourseAttendance> attendanceRecordList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId, pageable);
 
-        String courseName = attendanceRecordList.isEmpty()
-                ? "null"  // 혹은 예외 처리
-                : attendanceRecordList.getFirst().getCourseName();
+        String courseName = attendanceRecordList.hasContent()
+                ? attendanceRecordList.getContent().getFirst().getCourseName()
+                : "null";
 
         List<AttendanceRecordResponseDto> list = attendanceRecordList
                 .stream()
@@ -48,6 +50,9 @@ public class StudentCourseAttendanceService {
                 .courseId(courseId)
                 .courseName(courseName)
                 .attendanceRecordList(list)
+                .totalPages(attendanceRecordList.getTotalPages())
+                .hasNext(attendanceRecordList.hasNext())
+                .hasPrevious(attendanceRecordList.hasPrevious())
                 .build();
     }
 

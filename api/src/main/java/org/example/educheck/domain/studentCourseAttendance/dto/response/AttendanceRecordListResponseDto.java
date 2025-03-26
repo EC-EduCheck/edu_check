@@ -18,5 +18,9 @@ public class AttendanceRecordListResponseDto {
     private String courseName;
     private List<AttendanceRecordResponseDto> attendanceRecordList;
 
+    private long totalPages;
+    private boolean hasNext;
+    private boolean hasPrevious;
+
 
 }
