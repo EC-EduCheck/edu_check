@@ -37,31 +37,38 @@ export default function StaffAttendanceAbsence() {
     setSelected(title);
   };
   console.log(selected);
-  
 
   return (
     <>
-    <div className="buttonContainer">
-      {buttonList.map((title, idx) => (
-        <MainButton
-          key={idx}
-          title={title}
-          isActive={activeTitle.includes(title)}
-          isEnable={true}
-          handleClick={() => handleButtonClick(title)}
-        />
-      ))}
-    </div>
+      <div className="buttonContainer">
+        {buttonList.map((title, idx) => (
+          <MainButton
+            key={idx}
+            title={title}
+            isActive={activeTitle.includes(title)}
+            isEnable={true}
+            handleClick={() => handleButtonClick(title)}
+          />
+        ))}
+      </div>
 
-        {data?.absenceAttendances &&
-          data.absenceAttendances.map((item, idx) => (
+      {data?.absenceAttendances &&
+        data.absenceAttendances
+          .filter((item) => {
+            if (selected === '전체') return true;
+            if (selected === '승인') return item.status === true;
+            if (selected === '반려') return item.status === false;
+            return item.status === null;
+          })
+          .map((item, idx) => (
             <LeftLineListItem
               isClickable={role === 'MIDDLE_ADMIN'}
               status={item.status}
               children={item}
+              handleClick={() => console.log(item)}
               key={idx}
             />
           ))}
-      </>
+    </>
   );
 }
