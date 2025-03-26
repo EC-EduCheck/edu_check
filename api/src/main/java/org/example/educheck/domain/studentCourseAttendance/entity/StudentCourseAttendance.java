@@ -12,9 +12,6 @@ public class StudentCourseAttendance {
     @EmbeddedId
     private StudentCourseAttendanceId id;
 
-    @Column(name = "student_id")
-    private Long studentId;
-
     @Column(name = "member_id")
     private Long memberId;
 
@@ -26,12 +23,6 @@ public class StudentCourseAttendance {
 
     @Column(name = "course_name")
     private String courseName;
-
-    @Column(name = "course_id")
-    private Long courseId;
-
-    @Column(name = "lecture_id")
-    private String lectureId;
 
     @Column(name = "lecture_session")
     private String lectureSession;
@@ -50,4 +41,21 @@ public class StudentCourseAttendance {
 
     @Column(name = "check_out_timestamp")
     private String checkOutTimestamp;
+
+    @Override
+    public String toString() {
+        return "StudentCourseAttendance{" +
+                "id=" + id +
+                ", memberId=" + memberId +
+                ", memberName='" + memberName + '\'' +
+                ", registrationStatus='" + registrationStatus + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", lectureSession='" + lectureSession + '\'' +
+                ", lectureDate='" + lectureDate + '\'' +
+                ", lectureTitle='" + lectureTitle + '\'' +
+                ", attendanceStatus='" + attendanceStatus + '\'' +
+                ", checkInTimestamp='" + checkInTimestamp + '\'' +
+                ", checkOutTimestamp='" + checkOutTimestamp + '\'' +
+                '}';
+    }
 }

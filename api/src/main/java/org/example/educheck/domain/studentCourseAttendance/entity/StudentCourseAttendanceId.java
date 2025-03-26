@@ -2,11 +2,13 @@ package org.example.educheck.domain.studentCourseAttendance.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
 public class StudentCourseAttendanceId implements Serializable {

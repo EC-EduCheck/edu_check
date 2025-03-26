@@ -23,6 +23,7 @@ import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
 import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
 import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
@@ -287,11 +288,16 @@ public class AttendanceService {
 
     public void getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
 
+        Long studentId = member.getStudentId();
+
         validateExistCourse(courseId);
-        validateStudentRegistrationInCourse(courseId, member.getStudentId());
+        validateStudentRegistrationInCourse(courseId, studentId);
         validateDates(year, month);
 
-        studentCourseAttendanceRepository.findByMemberStudentIdAndCourseId(studentId, courseId);
+        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
+        for (StudentCourseAttendance attendance : attendanceList) {
+            log.info(attendance.toString());
+        }
 
 
     }
