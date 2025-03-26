@@ -74,14 +74,14 @@ public class StudentCourseAttendanceService {
                 .build();
     }
 
-    public MyAttendanceRecordListResponseDto getMyAttendanceRecordLists(Member member, Long courseId, Integer year, Integer month) {
+    public MyAttendanceRecordListResponseDto getMyAttendanceRecordLists(Member member, Long courseId, Integer year, Integer month, Pageable pageable) {
         Long studentId = member.getStudentId();
 
         Course validCourse = getValidCourse(courseId);
         validateStudentRegistrationInCourse(courseId, studentId);
         validateDates(year, month);
 
-        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
+        Page<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId, pageable);
 
         //respnseDTO로 말아서 전달하기
         List<MyAttendanceRecordResponseDto> attendances = attendanceList
@@ -94,6 +94,9 @@ public class StudentCourseAttendanceService {
                 .userId(member.getId())
                 .name(member.getName())
                 .courseName(validCourse.getName())
+                .totalPages(attendanceList.getTotalPages())
+                .hasNext(attendanceList.hasNext())
+                .hasPrevious(attendanceList.hasPrevious())
                 .build();
 
     }
