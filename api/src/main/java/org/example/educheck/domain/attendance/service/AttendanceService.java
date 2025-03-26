@@ -23,6 +23,7 @@ import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
 import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
@@ -54,6 +55,7 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
+    private final StudentCourseAttendanceRepository studentCourseAttendanceRepository;
 
     private static void validateDates(Integer year, Integer month) {
         if (year != null && (year < 2000 || year > 2026)) {
@@ -288,6 +290,8 @@ public class AttendanceService {
         validateExistCourse(courseId);
         validateStudentRegistrationInCourse(courseId, member.getStudentId());
         validateDates(year, month);
+
+        studentCourseAttendanceRepository.findByMemberStudentIdAndCourseId(studentId, courseId);
 
 
     }

@@ -1,12 +1,16 @@
 package org.example.educheck.domain.studentCourseAttendance.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
 public class StudentCourseAttendance {
+
+    @EmbeddedId
+    private StudentCourseAttendanceId id;
 
     @Column(name = "student_id")
     private Long studentId;
