@@ -29,7 +29,7 @@ public class StaffAttendanceController {
         return ResponseEntity.ok(ApiResponse.ok(
                 "특정 학생 세부 출결 현황 조회 성공",
                 "OK",
-                staffAttendanceService.getStudentAttendances(member, courseId, studentId)
+                staffAttendanceService.getStudentAttendancList(member, courseId, studentId)
         ));
     }
 }
