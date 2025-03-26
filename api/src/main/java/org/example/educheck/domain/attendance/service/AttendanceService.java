@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
@@ -25,10 +23,6 @@ import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
-import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
-import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
-import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
-import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -39,7 +33,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -58,17 +51,7 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
-    private final StudentCourseAttendanceRepository studentCourseAttendanceRepository;
 
-    private static void validateDates(Integer year, Integer month) {
-        if (year != null && (year < 2000 || year > 2026)) {
-            throw new InvalidRequestException("유효하지 않은 연도입니다.");
-        }
-
-        if (month != null && (month < 1 || month > 12)) {
-            throw new InvalidRequestException("유효하지 않은 월입니다.");
-        }
-    }
 
     @Transactional
     public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
@@ -209,9 +192,8 @@ public class AttendanceService {
     }
 
     private Course getCourse(Long courseId) {
-        Course course = courseRepository.findById(courseId)
+        return courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
-        return course;
     }
 
     public void updateStudentAttendance(Long courseId, Long studentId, AttendanceUpdateRequestDto requestDto, UserDetails user) {
@@ -293,43 +275,5 @@ public class AttendanceService {
         return attendance.getStatus();
     }
 
-    public MyAttendanceListResponseDto getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
 
-        Long studentId = member.getStudentId();
-
-        validateExistCourse(courseId);
-        validateStudentRegistrationInCourse(courseId, studentId);
-        validateDates(year, month);
-
-        Course course = getCourse(courseId);
-
-        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
-
-        //respnseDTO로 말아서 전달하기
-        List<MyAttendanceResponseDto> attendances = attendanceList
-                .stream()
-                .map(MyAttendanceResponseDto::from)
-                .toList();
-
-        return MyAttendanceListResponseDto.builder()
-                .attendanceList(attendances)
-                .userId(member.getId())
-                .name(member.getName())
-                .courseName(course.getName())
-                .build();
-
-    }
-
-    private void validateExistCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
-        if (courseOptional.isEmpty()) {
-            throw new ResourceNotFoundException("해당 과정이 존재하지 않습니다.");
-        }
-    }
-
-    private void validateStudentRegistrationInCourse(Long courseId, Long studentId) {
-        if (!registrationRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
-            throw new ForbiddenException("출석부 조회는 수강 중이거나 수강했던 과정에 대해서만 가능합니다.");
-        }
-    }
 }

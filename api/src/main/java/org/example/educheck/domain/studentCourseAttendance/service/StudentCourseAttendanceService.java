@@ -2,6 +2,8 @@ package org.example.educheck.domain.studentCourseAttendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
@@ -14,6 +16,7 @@ import org.example.educheck.domain.studentCourseAttendance.dto.response.Attendan
 import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
 import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
+import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,13 +36,22 @@ public class StudentCourseAttendanceService {
     private final CourseRepository courseRepository;
     private final RegistrationRepository registrationRepository;
 
+    private static void validateDates(Integer year, Integer month) {
+        if (year != null && (year < 2000 || year > 2026)) {
+            throw new InvalidRequestException("유효하지 않은 연도입니다.");
+        }
+
+        if (month != null && (month < 1 || month > 12)) {
+            throw new InvalidRequestException("유효하지 않은 월입니다.");
+        }
+    }
+
     public AttendanceRecordListResponseDto getStudentAttendanceRecordLists(Member member, Long studentId, Long courseId, Pageable pageable) {
 
         Course validCourse = getValidCourse(courseId);
         validateStaffAuthorizationInCourse(member, courseId);
         Member validStudent = getValidStudentInCourse(studentId, courseId);
 
-        //TODO 유효성 검증
         Page<StudentCourseAttendance> attendanceRecordList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId, pageable);
 
         List<AttendanceRecordResponseDto> list = attendanceRecordList
@@ -60,6 +72,36 @@ public class StudentCourseAttendanceService {
                 .hasNext(attendanceRecordList.hasNext())
                 .hasPrevious(attendanceRecordList.hasPrevious())
                 .build();
+    }
+
+    public MyAttendanceListResponseDto getMyAttendanceRecordLists(Member member, Long courseId, Integer year, Integer month) {
+        Long studentId = member.getStudentId();
+
+        Course validCourse = getValidCourse(courseId);
+        validateStudentRegistrationInCourse(courseId, studentId);
+        validateDates(year, month);
+
+        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
+
+        //respnseDTO로 말아서 전달하기
+        List<MyAttendanceResponseDto> attendances = attendanceList
+                .stream()
+                .map(MyAttendanceResponseDto::from)
+                .toList();
+
+        return MyAttendanceListResponseDto.builder()
+                .attendanceList(attendances)
+                .userId(member.getId())
+                .name(member.getName())
+                .courseName(validCourse.getName())
+                .build();
+
+    }
+
+    private void validateStudentRegistrationInCourse(Long courseId, Long studentId) {
+        if (!registrationRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
+            throw new ForbiddenException("출석부 조회는 수강 중이거나 수강했던 과정에 대해서만 가능합니다.");
+        }
     }
 
     private Member getValidStudentInCourse(Long studentId, Long courseId) {
@@ -84,6 +126,4 @@ public class StudentCourseAttendanceService {
             throw new ForbiddenException("출석부 조회는 해당 과정의 관리자만 조회 가능합니다.");
         }
     }
-
-
 }
