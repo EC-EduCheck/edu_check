@@ -185,11 +185,11 @@ public class AttendanceService {
                 );
 
         long attence = attendanceCounts.getOrDefault("ATTENDANCE", 0L);
-        long late = attendanceCounts.getOrDefault("LATE", 0L);
         long earlyLeave = attendanceCounts.getOrDefault("EARLY_LEAVE", 0L);
-        long absence = attendanceCounts.getOrDefault(null, 0L);
+        long late = attendanceCounts.getOrDefault("LATE", 0L);
+        long absence = attendanceCounts.getOrDefault("null", 0L);
 
-        return AttendanceListResponseDto.from(staff.getId(), responseDtos, attence, late, earlyLeave, absence);
+        return AttendanceListResponseDto.from(staff.getId(), responseDtos, attence, earlyLeave, late, absence);
     }
 
     public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {

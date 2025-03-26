@@ -12,29 +12,7 @@ export default function StaffAttendance() {
   const [isActiveIndex, setIsActiveIndex] = useState(false);
   const [dataList, setDataList] = useState([]);
   const { courseId } = useSelector((state) => state.auth.user);
-  // TODO : UI 구현을 위한 예시 students
-  const [students, setStudents] = useState([
-    {
-      studentId: 1,
-      studentName: '홍길동',
-      status: 'ATTENDANCE',
-    },
-    {
-      studentId: 2,
-      studentName: '김수진',
-      status: 'LATE',
-    },
-    {
-      studentId: 3,
-      studentName: '이영훈',
-      status: 'EARLY_LEAVE',
-    },
-    {
-      studentId: 4,
-      studentName: '박연정',
-      status: 'ATTENDANCE',
-    },
-  ]);
+  const [students, setStudents] = useState([]);
 
   const getAttendances = async () => {
     try {
@@ -46,7 +24,8 @@ export default function StaffAttendance() {
         { label: '지각', value: late },
         { label: '결석', value: absence },
       ]);
-      // setStudents(response.data.students);
+      setStudents(response.data.data.students);
+      console.log(response);
     } catch (error) {
       // TODO : 에러 처리 필요
       console.log(error);
@@ -81,8 +60,9 @@ export default function StaffAttendance() {
   const studentsList = students.map((item, index) => {
     const tag = {
       ATTENDANCE: '출석',
-      LATE: '지각',
       EARLY_LEAVE: '조퇴',
+      LATE: '지각',
+      null: '결석',
     };
 
     if (
