@@ -7,61 +7,72 @@ import Modal from '../../components/modal/Modal';
 export default function StaffStudentManage() {
   const [openModal, setOpenModal] = useState(false);
 
-  const inputBox = <>
-    <div className={styles.inputContainer}>
-    <label>이름</label>
-    <input className={styles.smallInputBox} placeholder="이름을 입력해주세요."></input>
-    <label>연락처</label>
-    <input className={styles.smallInputBox} placeholder="연락처를 입력해주세요."></input>
-    <label>생년월일</label>
-    <div className={styles.birthdate}>
-    <input className={styles.smallInputBox} ></input>
-    <input className={styles.smallInputBox} ></input>
-    <input className={styles.smallInputBox} ></input>
-    </div>
-    <label>이메일</label>
-    <input className={styles.smallInputBox} placeholder="이메일을 입력해주세요."></input>
-    </div>
-  </>
+  const studentInfo = [
+    {
+      name: '홍길동',
+      email: 'educheck@example.com',
+      phone: '010-1234-1234',
+      tagTitle: '수강중',
+    },
+    {
+      name: '홍길동',
+      email: 'educheck@example.com',
+      phone: '010-1234-1234',
+      tagTitle: '수료',
+    },
+    {
+      name: '홍길동',
+      email: 'educheck@example.com',
+      phone: '010-1234-1234',
+      tagTitle: '수강 중단',
+    },
+  ];
+
+  const openModalHandler = () => setOpenModal(true);
+
+  const closeModalHandler = () => setOpenModal(false);
+
+  const inputBox = (
+    <>
+      <div className={styles.inputContainer}>
+        <label>이름</label>
+        <input className={styles.smallInputBox} placeholder="이름을 입력해주세요."></input>
+        <label>연락처</label>
+        <input className={styles.smallInputBox} placeholder="연락처를 입력해주세요."></input>
+        <label>생년월일</label>
+        <div className={styles.birthdate}>
+          <input className={styles.smallInputBox}></input>
+          <input className={styles.smallInputBox}></input>
+          <input className={styles.smallInputBox}></input>
+        </div>
+        <label>이메일</label>
+        <input className={styles.smallInputBox} placeholder="이메일을 입력해주세요."></input>
+      </div>
+    </>
+  );
+
   return (
     <>
       <div>
-        <MainButton title="학습자 등록"></MainButton>
+        <MainButton title="학습자 등록" handleClick={openModalHandler}></MainButton>
       </div>
+
+      {studentInfo.map((student) => (
+        <BaseListItem
+          content={student.name}
+          phone={student.phone}
+          email={student.email}
+          tagTitle={student.tagTitle}
+        ></BaseListItem>
+      ))}
+
       <div>
-        <BaseListItem
-          content="홍길동"
-          phone="010-1234-1234"
-          email="educheck@educheck.com"
-          tagTitle="수강중"
-        ></BaseListItem>
-        <BaseListItem
-          content="홍길동"
-          phone="010-1234-1234"
-          email="educheck@educheck.com"
-          tagTitle="결석"
-        ></BaseListItem>
-        <BaseListItem
-          content="홍길동"
-          phone="010-1234-1234"
-          email="educheck@educheck.com"
-          tagTitle="수강중"
-        ></BaseListItem>
-        <BaseListItem
-          content="홍길동"
-          phone="010-1234-1234"
-          email="educheck@educheck.com"
-          tagTitle="수료"
-        ></BaseListItem>
-        <BaseListItem
-          content="홍길동"
-          phone="010-1234-1234"
-          email="educheck@educheck.com"
-          tagTitle="수강중"
-        ></BaseListItem>
-        <Modal mainText="등록" content={inputBox} isOpen={true}>
-          <input type="text" />
-        </Modal>
+        <Modal
+          mainText="등록"
+          content={inputBox}
+          isOpen={openModal}
+          onClose={closeModalHandler}
+        ></Modal>
       </div>
     </>
   );
