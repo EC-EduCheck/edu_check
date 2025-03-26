@@ -59,6 +59,7 @@ public class GetAbsenceAttendancesResponseDto {
         private LocalDate startDate;
         private LocalDate endDate;
         private LocalDateTime createdAt;
+        private String category;
 
 
         public static AbsenceAttendancesDto from(AbsenceAttendance absenceAttendance) {
@@ -71,6 +72,7 @@ public class GetAbsenceAttendancesResponseDto {
                     .startDate(absenceAttendance.getStartTime())
                     .endDate(absenceAttendance.getEndTime())
                     .createdAt(absenceAttendance.getCreatedAt())
+                    .category(absenceAttendance.getCategory())
                     .build();
         }
     }
