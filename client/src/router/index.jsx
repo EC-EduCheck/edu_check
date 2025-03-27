@@ -67,7 +67,7 @@ const router = createBrowserRouter([
             element: <StaffAttendance />,
           },
           {
-            path: '/dashBoard/staff/attendance/courses/:courseId/students/:studentId',
+            path: '/dashBoard/staff/attendance/detail/courses/:courseId/students/:studentId',
             element: <StaffAttendanceDetail />,
           },
           {

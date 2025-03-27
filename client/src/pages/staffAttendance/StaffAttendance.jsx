@@ -53,7 +53,7 @@ export default function StaffAttendance() {
     }
   };
   const handleStudentClick = (studentId) => {
-    navigate(`/dashBoard/staff/attendance/courses/${courseId}/students/${studentId}`);
+    navigate(`/dashBoard/staff/attendance/detail/courses/${courseId}/students/${studentId}`);
   };
 
   const filterButtons = dataList.map((item, index) => {
