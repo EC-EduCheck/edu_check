@@ -40,5 +40,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             """)
     Optional<LoginResponseDto> staffLoginResponseDtoByMemberId(@Param("memberId") Long memberId);
 
+    Optional<Member> findByStudent_Id(Long studentId);
+
 
 }

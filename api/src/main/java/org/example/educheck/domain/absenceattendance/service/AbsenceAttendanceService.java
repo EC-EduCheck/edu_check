@@ -17,6 +17,7 @@ import org.example.educheck.domain.absenceattendanceattachmentfile.repository.Ab
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.entity.Role;
+import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
@@ -49,6 +50,7 @@ public class AbsenceAttendanceService {
     private final CourseRepository courseRepository;
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
     private final RegistrationRepository registrationRepository;
+    private final MemberRepository memberRepository;
 
     private static void validateMatchApplicant(Member member, AbsenceAttendance absenceAttendance) {
 
@@ -223,6 +225,9 @@ public class AbsenceAttendanceService {
 
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
 
+        Member student = memberRepository.findByStudent_Id(absenceAttendance.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("해당 학생이 존재하지 않습니다."));
+
         Role role = member.getRole();
         if (role == Role.STUDENT) {
             log.info("권한 체크 학생");
@@ -238,9 +243,7 @@ public class AbsenceAttendanceService {
                 .map(AttachmentFileReposeDto::from)
                 .toList();
 
-        return AbsenceAttendanceResponseDto.from(absenceAttendance, fileReposeDtoList);
-
-
+        return AbsenceAttendanceResponseDto.from(absenceAttendance, student, fileReposeDtoList);
     }
 
     private void validateStaffManageCourse(Member member, Long courseId) {
