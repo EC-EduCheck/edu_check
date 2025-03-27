@@ -1,0 +1,5 @@
+.buttonContainer {
+  display: flex;
+  margin: var(--margin-small) auto;
+  justify-content: center;
+}

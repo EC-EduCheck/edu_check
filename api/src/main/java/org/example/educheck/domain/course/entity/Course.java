@@ -2,6 +2,7 @@ package org.example.educheck.domain.course.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.campus.Campus;
@@ -25,6 +26,15 @@ public class Course {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private int totalLectureCount;
+
+    @Builder
+    public Course(Campus campus, String name, LocalDateTime startDate, LocalDateTime endDate) {
+        this.campus = campus;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+//        this.totalLectureCount = 0;
+    }
 
 
 }
