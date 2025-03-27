@@ -52,6 +52,7 @@ public class GetAbsenceAttendancesResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     private static class AbsenceAttendancesDto {
+        private Long absenceAttendanceId;
         private Long studentId;
         private String studentName;
         private Boolean status;
@@ -65,6 +66,7 @@ public class GetAbsenceAttendancesResponseDto {
         public static AbsenceAttendancesDto from(AbsenceAttendance absenceAttendance) {
 
             return AbsenceAttendancesDto.builder()
+                    .absenceAttendanceId(absenceAttendance.getId())
                     .studentId(absenceAttendance.getStudent().getId())
                     .studentName(absenceAttendance.getStudent().getMember().getName())
                     .status(absenceAttendance.getIsApprove() == null ? null : (absenceAttendance.getIsApprove() == 'T'))
