@@ -19,7 +19,7 @@ export default function Modal({
       <div className={styles.container}>
         <CloseButton handleClick={onClose}></CloseButton>
 
-        <div>
+        <div className={styles.contentWrapper}>
           <div>{content}</div>
 
           <div className={`${styles.buttonBox} ${!mainClick && `${styles.active}`}`}>
