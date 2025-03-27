@@ -1,11 +1,11 @@
-import apiInstance from "./instance/apiInstance";
+import apiInstance from './instance/apiInstance';
 
 export const absenceAttendancesApi = {
-  getAbsenceAttendancesByCourseId: async (courseId) => {
-    const response = await apiInstance.get(
-      `/course/${courseId}/absence-attendances`
-    )
+  getAbsenceAttendancesByCourseId: async (courseId) =>
+    await apiInstance.get(`/course/${courseId}/absence-attendances`),
 
-    return response
-  }
-}
+  processAbsenceAttendance: async (courseId, absenceAttendancedId, isApproved) =>
+    await apiInstance.post(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`, {
+      isApproved: isApproved,
+    }),
+};
