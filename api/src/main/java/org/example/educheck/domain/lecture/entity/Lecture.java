@@ -1,4 +1,4 @@
-package org.example.educheck.domain.lecture;
+package org.example.educheck.domain.lecture.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +12,12 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "lecture",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_courseId_session", columnNames = {"course_id", "session"})
+        }
+)
 public class Lecture {
 
     @Id

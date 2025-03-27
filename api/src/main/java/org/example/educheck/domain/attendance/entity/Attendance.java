@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.educheck.domain.lecture.Lecture;
+import org.example.educheck.domain.lecture.entity.Lecture;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
 

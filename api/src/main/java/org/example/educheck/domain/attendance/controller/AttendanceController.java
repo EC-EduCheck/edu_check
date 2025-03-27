@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AttendanceController {
     private final AttendanceService attendanceService;
 
+
     @PostMapping("/checkin")
     public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkIn(
             @AuthenticationPrincipal UserDetails user,
