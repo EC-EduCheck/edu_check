@@ -38,6 +38,21 @@ public class AbsenceAttendanceController {
     }
 
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
+            @PathVariable Long courseId, @PageableDefault(sort = "startTime",
+            direction = Sort.Direction.DESC,
+            size = 10)
+    Pageable pageable, @AuthenticationPrincipal Member member) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(
+                                "특정 교육 과정 유고 결석 내역 조회 성공",
+                                "OK", absenceAttendanceService.getAbsenceAttendances(courseId, pageable, member)
+                        )
+                );
+    }
+
     @PreAuthorize("hasAuthority('STUDENT')")
     @PostMapping("/my/course/{courseId}/absence-attendances")
     public ResponseEntity<ApiResponse<CreateAbsenceAttendacneReponseDto>> applyAttendanceAbsence(@AuthenticationPrincipal Member member,
@@ -79,19 +94,10 @@ public class AbsenceAttendanceController {
 
     }
 
-
-    @GetMapping
-    public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
-            @PathVariable Long courseId, @PageableDefault(sort = "startTime",
-            direction = Sort.Direction.DESC,
-            size = 10)
-    Pageable pageable, @AuthenticationPrincipal Member member) {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok(
-                                "특정 교육 과정 유고 결석 내역 조회 성공",
-                                "OK", absenceAttendanceService.getAbsenceAttendances(courseId, pageable, member)
-                        )
-                );
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @GetMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+    public void getMyAbsenceAttendance(@AuthenticationPrincipal Member member,
+                                       @PathVariable Long absenceAttendancesId) {
+        absenceAttendanceService.getMyAbsenceAttendance(member, absenceAttendancesId);
     }
 }

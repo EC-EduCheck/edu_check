@@ -218,4 +218,14 @@ public class AbsenceAttendanceService {
             absenceAttendanceAttachmentFileRepository.save(attachmentFile);
         }
     }
+
+    public void getMyAbsenceAttendance(Member member, Long absenceAttendancesId) {
+        //해당 유고결석 신청 내역과 조회하는 사람이 일치하는가
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+        validateMatchApplicant(member, absenceAttendance);
+
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendanceAttachmentFileRepository.findByAbsenceAttendanceId(absenceAttendancesId);
+
+
+    }
 }

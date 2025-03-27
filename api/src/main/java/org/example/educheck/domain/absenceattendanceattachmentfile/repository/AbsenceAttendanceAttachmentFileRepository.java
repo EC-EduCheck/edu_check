@@ -12,4 +12,5 @@ public interface AbsenceAttendanceAttachmentFileRepository extends JpaRepository
     @Query("SELECT a FROM absence_attendacne_attachment_file  a WHERE a.deletionRequestedAt <= :date")
     List<AbsenceAttendanceAttachmentFile> findByDeletionRequestedAtBeforeAndDeleted(LocalDateTime date);
 
+    List<AbsenceAttendanceAttachmentFile> findByAbsenceAttendanceId(Long absenceAttendanceId);
 }
