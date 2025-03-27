@@ -29,9 +29,11 @@ export default function StaffAttendanceAbsence() {
   };
 
   useEffect(() => {
+    if (!courseId) return;
     async function fetchData() {
       try {
         const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(courseId);
+        
         setData(response.data.data);
       } catch (error) {
         console.error(error);
