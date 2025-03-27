@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
+import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsResponseDto;
 import org.example.educheck.domain.studentCourseAttendance.service.StudentCourseAttendanceService;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.data.domain.PageRequest;
@@ -64,6 +65,20 @@ public class StudentCourseAttendanceController {
                 studentCourseAttendanceService.getMyAttendanceRecordLists(member, courseId, year, month, pageable)
 
         ));
+    }
+
+    @GetMapping("/my/course/{courseId}/attendances/stats")
+    public ResponseEntity<ApiResponse<AttendanceStatsResponseDto>> getAttendancesStats(@AuthenticationPrincipal Member member,
+                                                                                       @PathVariable Long courseId) {
+
+        return ResponseEntity.ok(
+                ApiResponse.ok(
+                        "결석 현황 및 출석률 조회 성공",
+                        "OK",
+                        studentCourseAttendanceService.getAttendancesStats(member, courseId)
+
+                )
+        );
     }
 
 }
