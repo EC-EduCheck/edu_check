@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { checkIn, completeAttendance } from '../../store/slices/authSlice';
+import { checkIn, completeAttendance, logout } from '../../store/slices/authSlice';
 
 import styles from './SideBar.module.css';
 
@@ -8,12 +8,15 @@ import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
 import { useGeolocated } from 'react-geolocated';
 import { attendanceApi } from '../../api/attendanceApi';
+import { authApi } from '../../api/authApi';
+import { useNavigate } from 'react-router-dom';
 
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [itemList, setItemList] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
     (state) => state.auth.user,
   );
@@ -25,18 +28,17 @@ export default function SideBar() {
   const today = new Date().toISOString().split('T')[0];
   const isAttendanceToday = attendanceDate === today;
 
-  const { coords, isGeolocationAvailable,  error, getPosition } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 10000,
-      },
-      watchPosition: false,
-      userDecisionTimeout: 5000,
-      suppressLocationOnMount: true,
-      isOptimisticGeolocationEnabled: false,
-    });
+  const { coords, isGeolocationAvailable, error, getPosition } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000,
+    },
+    watchPosition: false,
+    userDecisionTimeout: 5000,
+    suppressLocationOnMount: true,
+    isOptimisticGeolocationEnabled: false,
+  });
 
   const handleAttendanceCheck = () => {
     if (isCheckedIn && isAttendanceToday && !isCompleted) {
@@ -70,7 +72,7 @@ export default function SideBar() {
     if (isLoggedIn) {
       const storedDate = attendanceDate;
       const currentDate = new Date().toISOString().split('T')[0];
-      
+
       if (storedDate && storedDate !== currentDate) {
         dispatch(resetAttendanceStatus());
       }
@@ -140,6 +142,12 @@ export default function SideBar() {
     return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
   });
 
+  const handleLogout = async () => {
+    await authApi.logout();
+    dispatch(logout());
+    navigate('/');
+  };
+
   return (
     <div className={styles.sideBar}>
       <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
@@ -167,8 +175,7 @@ export default function SideBar() {
               <p>{email}</p>
             </li>
           </ul>
-          {/* todo: 로그아웃 기능 추가 */}
-          <MainButton title="로그아웃"></MainButton>
+          <MainButton title="로그아웃" handleClick={handleLogout} isEnable={true}></MainButton>
         </div>
       </div>
 
