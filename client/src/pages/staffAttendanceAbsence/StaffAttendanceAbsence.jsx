@@ -19,7 +19,8 @@ export default function StaffAttendanceAbsence() {
   const [hasNext, setHasNext] = useState(false);
   const [page, setPage] = useState(0);
 
-  const openModal = (item) => {
+  const openModal = async (item) => {
+    // TODO: fetch
     setModalContent(item);
     setIsModalOpen(true);
   };
@@ -98,20 +99,8 @@ export default function StaffAttendanceAbsence() {
             />
           ))}
       <div className={styles.buttonContainer}>
-        <CircleButton
-          title="<"
-          isEnable={hasPrev}
-          onClick={() => {
-            setPage((page) => page - 1);
-          }}
-        />
-        <CircleButton
-          title=">"
-          isEnable={hasNext}
-          onClick={() => {
-            setPage((page) => page + 1);
-          }}
-        />
+        <CircleButton title="<" isEnable={hasPrev} onClick={() => setPage((page) => page - 1)} />
+        <CircleButton title=">" isEnable={hasNext} onClick={() => setPage((page) => page + 1)} />
       </div>
 
       {isModalOpen && (
