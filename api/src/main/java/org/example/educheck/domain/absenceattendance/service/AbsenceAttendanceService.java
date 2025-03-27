@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
-import org.example.educheck.domain.absenceattendance.dto.response.AbsenceAttendanceResponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.*;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
@@ -251,5 +248,13 @@ public class AbsenceAttendanceService {
         if (!isCorrect) {
             throw new ForbiddenException("관리자가 관리하는 교육 과정에 대해서만 조회 가능합니다.");
         }
+    }
+
+    public List<MyAbsenceAttendanceResponseDto> getMyAbsenceAttendances(Member member, Long courseId) {
+
+        validateRegistrationCourse(member, courseId);
+
+        return absenceAttendanceRepository.findByStudentIdAndCourseId(member.getStudentId(), courseId);
+
     }
 }

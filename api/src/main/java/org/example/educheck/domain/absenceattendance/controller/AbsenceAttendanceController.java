@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
-import org.example.educheck.domain.absenceattendance.dto.response.AbsenceAttendanceResponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.*;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
@@ -20,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -95,10 +94,11 @@ public class AbsenceAttendanceController {
 
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','MIDDLE_ADMIN')")
     @GetMapping("/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public ResponseEntity<ApiResponse<AbsenceAttendanceResponseDto>> getAbsenceAttendance(@AuthenticationPrincipal Member member,
-                                                                                          @PathVariable Long courseId,
-                                                                                          @PathVariable Long absenceAttendancesId
+    public ResponseEntity<ApiResponse<AbsenceAttendanceResponseDto>> c(@AuthenticationPrincipal Member member,
+                                                                       @PathVariable Long courseId,
+                                                                       @PathVariable Long absenceAttendancesId
     ) {
         return ResponseEntity.ok(
                 ApiResponse.ok("유고 결석 신청 내역 상세 조회 성공",
@@ -106,4 +106,19 @@ public class AbsenceAttendanceController {
                         absenceAttendanceService.getAbsenceAttendance(member, courseId, absenceAttendancesId))
         );
     }
+
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @GetMapping("/my/course/{courseId}/absence-attendances")
+    public ResponseEntity<ApiResponse<List<MyAbsenceAttendanceResponseDto>>> getMyAbsenceAttendances(@AuthenticationPrincipal Member member,
+                                                                                                     @PathVariable Long courseId) {
+        
+        return ResponseEntity.ok(
+                ApiResponse.ok("유고 결석 신청 목록 조회 성공",
+                        "OK",
+                        absenceAttendanceService.getMyAbsenceAttendances(member, courseId))
+
+        );
+    }
+
+
 }
