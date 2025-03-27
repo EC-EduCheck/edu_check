@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
-import org.example.educheck.domain.absenceattendance.dto.response.*;
+import org.example.educheck.domain.absenceattendance.dto.response.AbsenceAttendanceResponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
 import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
@@ -216,7 +219,7 @@ public class AbsenceAttendanceService {
         }
     }
 
-    public GetAbsenceAttendanceResponseDto getAbsenceAttendance(Member member, Long courseId, Long absenceAttendancesId) {
+    public AbsenceAttendanceResponseDto getAbsenceAttendance(Member member, Long courseId, Long absenceAttendancesId) {
 
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
 
@@ -235,8 +238,8 @@ public class AbsenceAttendanceService {
                 .map(AttachmentFileReposeDto::from)
                 .toList();
 
-        AbsenceAttendanceResponseDto from = AbsenceAttendanceResponseDto.from(absenceAttendance, fileReposeDtoList);
-        return GetAbsenceAttendanceResponseDto.from(member.getId(), member.getName(), from);
+        return AbsenceAttendanceResponseDto.from(absenceAttendance, fileReposeDtoList);
+
 
     }
 
