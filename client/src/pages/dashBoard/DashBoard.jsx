@@ -6,15 +6,13 @@ import styles from './DashBoard.module.css';
 import Tab from '../../components/tab/Tab';
 import SideBar from '../../components/sideBar/SideBar';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { navbarPath } from '../../constants/navbarPath';
 
 export default function DashBoard() {
-  const { path } = useSelector((state) => state.sideBarItem);
-  const navigate = useNavigate();
+  const { role } = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    navigate(path);
-  }, [path]);
+  const renderNavbarPath = navbarPath?.[role];
+  console.log(renderNavbarPath, '---------');
 
   return (
     <div className={`container ${styles.dashBoard}`}>

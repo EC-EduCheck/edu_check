@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, use } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { checkIn, completeAttendance, logout } from '../../store/slices/authSlice';
 
@@ -10,6 +10,7 @@ import { useGeolocated } from 'react-geolocated';
 import { attendanceApi } from '../../api/attendanceApi';
 import { authApi } from '../../api/authApi';
 import { useNavigate } from 'react-router-dom';
+import { sidebarList } from '../../constants/sidebar';
 
 export default function SideBar() {
   const infoRef = useRef(null);
@@ -124,6 +125,11 @@ export default function SideBar() {
   const buttonProps = getButtonProps();
 
   const { sidebarItemList } = useSelector((state) => state.sideBarItem);
+  const renderSidebarList = sidebarList[role];
+
+  const sideBarItems = renderSidebarList?.map((item, index) => {
+    return <SideBarItem key={`sidebar-${index}`} item={item}></SideBarItem>;
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -137,10 +143,6 @@ export default function SideBar() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const sideBarItems = sidebarItemList.map((item, index) => {
-    return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
-  });
 
   const handleLogout = async () => {
     await authApi.logout();
