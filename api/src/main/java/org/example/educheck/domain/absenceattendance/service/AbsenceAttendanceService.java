@@ -5,25 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.AbsenceAttendanceResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
+import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.absenceattendanceattachmentfile.repository.AbsenceAttendanceAttachmentFileRepository;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
+import org.example.educheck.domain.member.entity.Role;
+import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
-import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
-import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
-import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
-import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.common.*;
 import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +50,7 @@ public class AbsenceAttendanceService {
     private final CourseRepository courseRepository;
     private final AbsenceAttendanceAttachmentFileRepository absenceAttendanceAttachmentFileRepository;
     private final RegistrationRepository registrationRepository;
+    private final MemberRepository memberRepository;
 
     private static void validateMatchApplicant(Member member, AbsenceAttendance absenceAttendance) {
 
@@ -216,6 +218,38 @@ public class AbsenceAttendanceService {
         for (AbsenceAttendanceAttachmentFile attachmentFile : attachmentFiles) {
             attachmentFile.markDeletionRequested();
             absenceAttendanceAttachmentFileRepository.save(attachmentFile);
+        }
+    }
+
+    public AbsenceAttendanceResponseDto getAbsenceAttendance(Member member, Long courseId, Long absenceAttendancesId) {
+
+        AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
+
+        Member student = memberRepository.findByStudent_Id(absenceAttendance.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("해당 학생이 존재하지 않습니다."));
+
+        Role role = member.getRole();
+        if (role == Role.STUDENT) {
+            log.info("권한 체크 학생");
+            validateMatchApplicant(member, absenceAttendance);
+        } else if (role == Role.MIDDLE_ADMIN) {
+            log.info("권한 체크 중간 관리자");
+            validateStaffManageCourse(member, courseId);
+            //TODO 수강생이 해당 course에 속하는지
+        }
+
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendanceAttachmentFileRepository.findByActivateFilesById(absenceAttendance);
+        List<AttachmentFileReposeDto> fileReposeDtoList = attachmentFiles.stream()
+                .map(AttachmentFileReposeDto::from)
+                .toList();
+
+        return AbsenceAttendanceResponseDto.from(absenceAttendance, student, fileReposeDtoList);
+    }
+
+    private void validateStaffManageCourse(Member member, Long courseId) {
+        boolean isCorrect = staffCourseRepository.existsByStaffIdAndCourseId(member.getStaff().getId(), courseId);
+        if (!isCorrect) {
+            throw new ForbiddenException("관리자가 관리하는 교육 과정에 대해서만 조회 가능합니다.");
         }
     }
 }

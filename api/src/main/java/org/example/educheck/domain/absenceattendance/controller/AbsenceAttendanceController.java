@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
+import org.example.educheck.domain.absenceattendance.dto.response.AbsenceAttendanceResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
@@ -37,6 +38,21 @@ public class AbsenceAttendanceController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok("유고 결석 처리 성공", "OK", null));
     }
 
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
+            @PathVariable Long courseId, @PageableDefault(sort = "startTime",
+            direction = Sort.Direction.DESC,
+            size = 10)
+    Pageable pageable, @AuthenticationPrincipal Member member) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(
+                                "특정 교육 과정 유고 결석 내역 조회 성공",
+                                "OK", absenceAttendanceService.getAbsenceAttendances(courseId, pageable, member)
+                        )
+                );
+    }
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @PostMapping("/my/course/{courseId}/absence-attendances")
@@ -79,19 +95,15 @@ public class AbsenceAttendanceController {
 
     }
 
-
-    @GetMapping("/course/{courseId}/absence-attendances")
-    public ResponseEntity<ApiResponse<GetAbsenceAttendancesResponseDto>> getAbsenceAttendances(
-            @PathVariable Long courseId, @PageableDefault(sort = "createdAt",
-            direction = Sort.Direction.DESC,
-            size = 10)
-    Pageable pageable, @AuthenticationPrincipal Member member) {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok(
-                                "특정 교육 과정 유고 결석 내역 조회 성공",
-                                "OK", absenceAttendanceService.getAbsenceAttendances(courseId, pageable, member)
-                        )
-                );
+    @GetMapping("/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+    public ResponseEntity<ApiResponse<AbsenceAttendanceResponseDto>> getAbsenceAttendance(@AuthenticationPrincipal Member member,
+                                                                                          @PathVariable Long courseId,
+                                                                                          @PathVariable Long absenceAttendancesId
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.ok("유고 결석 신청 내역 상세 조회 성공",
+                        "OK",
+                        absenceAttendanceService.getAbsenceAttendance(member, courseId, absenceAttendancesId))
+        );
     }
 }
