@@ -1,4 +1,5 @@
-package org.example.educheck.domain.attendance.dto.response;
+package org.example.educheck.domain.studentCourseAttendance.dto.response;
+
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,20 +9,17 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class MyAttendanceResponseDto {
+public class AttendanceRecordResponseDto {
 
     private LocalDate lectureDateTime;
     private String attendanceStatus;
     private Long lectureSession;
-    private String lectureTitle;
 
-    public static MyAttendanceResponseDto from(StudentCourseAttendance entity) {
-        return MyAttendanceResponseDto.builder()
+    public static AttendanceRecordResponseDto from(StudentCourseAttendance entity) {
+        return AttendanceRecordResponseDto.builder()
                 .lectureDateTime(entity.getLectureDate())
-                .lectureTitle(entity.getLectureTitle())
                 .attendanceStatus(entity.getAttendanceStatus())
                 .lectureSession(entity.getLectureSession())
                 .build();
     }
-
 }

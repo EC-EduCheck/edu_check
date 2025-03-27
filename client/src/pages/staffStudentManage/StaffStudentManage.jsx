@@ -6,8 +6,7 @@ import Modal from '../../components/modal/Modal';
 
 export default function StaffStudentManage() {
   const [openModal, setOpenModal] = useState(false);
-
-  const studentInfo = [
+  const [students, setStudents] = useState([
     {
       name: '홍길동',
       email: 'educheck@example.com',
@@ -26,7 +25,15 @@ export default function StaffStudentManage() {
       phone: '010-1234-1234',
       tagTitle: '수강 중단',
     },
-  ];
+  ]);
+
+  const handleTagChange = (index, newTagTitle) => {
+    setStudents((prevStudents) =>
+      prevStudents.map((student, i) =>
+        i === index ? { ...student, tagTitle: newTagTitle } : student,
+      ),
+    );
+  };
 
   const openModalHandler = () => setOpenModal(true);
 
@@ -56,16 +63,16 @@ export default function StaffStudentManage() {
       <div>
         <MainButton title="학습자 등록" handleClick={openModalHandler}></MainButton>
       </div>
-
-      {studentInfo.map((student) => (
+      {students.map((student, index) => (
         <BaseListItem
+          key={index}
           content={student.name}
           phone={student.phone}
           email={student.email}
           tagTitle={student.tagTitle}
-        ></BaseListItem>
+          onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
+        />
       ))}
-
       <div>
         <Modal
           mainText="등록"

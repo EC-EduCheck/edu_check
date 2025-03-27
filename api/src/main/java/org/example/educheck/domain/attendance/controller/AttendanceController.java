@@ -7,15 +7,12 @@ import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinReque
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.service.AttendanceService;
-import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +55,7 @@ public class AttendanceController {
     }
 
     // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
+    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
     public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
             @PathVariable Long courseId,
             @PathVariable Long studentId,
@@ -104,20 +101,5 @@ public class AttendanceController {
                 ));
     }
 
-    @PreAuthorize("hasAuthority('STUDENT')")
-    @GetMapping("/my/courses/{courseId}/attendances")
-    public ResponseEntity<ApiResponse<MyAttendanceListResponseDto>> getAttendances(@AuthenticationPrincipal Member member,
-                                                                                   @PathVariable Long courseId,
-                                                                                   @RequestParam(required = false) Integer year,
-                                                                                   @RequestParam(required = false) Integer month) {
 
-        MyAttendanceListResponseDto myAttendances = attendanceService.getMyAttendances(member, courseId, year, month);
-        log.info("myAttendances: {}", myAttendances);
-
-        return ResponseEntity.ok(ApiResponse.ok(
-                "출석부 조회 성공",
-                "OK",
-                myAttendances
-        ));
-    }
 }

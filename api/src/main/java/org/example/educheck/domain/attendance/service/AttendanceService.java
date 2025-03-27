@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceResponseDto;
+import org.example.educheck.domain.attendance.dto.response.AttendanceResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
@@ -25,10 +24,6 @@ import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
-import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
-import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
-import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
-import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -39,7 +34,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -58,17 +52,7 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
-    private final StudentCourseAttendanceRepository studentCourseAttendanceRepository;
 
-    private static void validateDates(Integer year, Integer month) {
-        if (year != null && (year < 2000 || year > 2026)) {
-            throw new InvalidRequestException("유효하지 않은 연도입니다.");
-        }
-
-        if (month != null && (month < 1 || month > 12)) {
-            throw new InvalidRequestException("유효하지 않은 월입니다.");
-        }
-    }
 
     @Transactional
     public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
@@ -143,7 +127,7 @@ public class AttendanceService {
     }
 
     public AttendanceListResponseDto getTodayAttendances(Long courseId, UserDetails user) {
-        // 현재 관리자가 courseId를 가지고 있는지 확인하기
+        // 1-1. 현재 관리자가 courseId를 가지고 있는지 확인하기
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 관리자가 없습니다."));
@@ -152,7 +136,7 @@ public class AttendanceService {
         staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
 
-        // 해당 course 에서 오늘 닐짜의 lectureId 확인하기
+        // 1-2. 해당 course 에서 오늘 닐짜의 lectureId 확인하기
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
@@ -160,21 +144,38 @@ public class AttendanceService {
                         courseId, startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
 
-        // 해당 lectureId의 출석 리스트 가져오기
+        // 2-1. 해당 강의의 학생들 리스트 가져오기
+        List<Student> students = studentRepository.findAllByCourseId(courseId);
+
+        // 2-2. 해당 lectureId의 출석 리스트 가져오기
+        System.out.println(lecture.getId());
         List<Attendance> attendances = attendanceRepository.findAllByLectureId(lecture.getId());
 
-        Map<Status, Long> attendanceCounts = attendances.stream()
+        // 2-3. 출석 리스트를 Map<studentId, AttendanceStatus> 형태로 변환
+        Map<Long, Status> attendanceStatus = attendances.stream()
+                .filter(attendance -> attendance.getStudent() != null && attendance.getStudent().getId() != null)
+                .collect(Collectors.toMap(attendance -> attendance.getStudent().getId(), Attendance::getStatus));
+
+        // 2-4. 총 학생 해당 강의 출석 리스트 생성
+        List<AttendanceResponseDto> responseDtos = students.stream()
+                .map(student -> {
+                    String status = String.valueOf(attendanceStatus.getOrDefault(student.getId(), null));
+                    return new AttendanceResponseDto(student.getId(), student.getMember().getName(), status);
+                })
+                .toList();
+
+        Map<String, Long> attendanceCounts = responseDtos.stream()
                 .collect(Collectors.groupingBy(
-                        Attendance::getStatus,
+                        AttendanceResponseDto::getStatus,
                         Collectors.counting())
                 );
 
-        long attence = attendanceCounts.getOrDefault(Status.ATTENDANCE, 0L);
-        long late = attendanceCounts.getOrDefault(Status.LATE, 0L);
-        long earlyLeave = attendanceCounts.getOrDefault(Status.EARLY_LEAVE, 0L);
-        long absence = attendanceCounts.getOrDefault(null, 0L);
+        long attence = attendanceCounts.getOrDefault("ATTENDANCE", 0L);
+        long earlyLeave = attendanceCounts.getOrDefault("EARLY_LEAVE", 0L);
+        long late = attendanceCounts.getOrDefault("LATE", 0L);
+        long absence = attendanceCounts.getOrDefault("null", 0L);
 
-        return AttendanceListResponseDto.from(staff.getId(), attendances, attence, late, earlyLeave, absence);
+        return AttendanceListResponseDto.from(staff.getId(), responseDtos, attence, earlyLeave, late, absence);
     }
 
     public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {
@@ -209,9 +210,8 @@ public class AttendanceService {
     }
 
     private Course getCourse(Long courseId) {
-        Course course = courseRepository.findById(courseId)
+        return courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
-        return course;
     }
 
     public void updateStudentAttendance(Long courseId, Long studentId, AttendanceUpdateRequestDto requestDto, UserDetails user) {
@@ -293,43 +293,5 @@ public class AttendanceService {
         return attendance.getStatus();
     }
 
-    public MyAttendanceListResponseDto getMyAttendances(Member member, Long courseId, Integer year, Integer month) {
 
-        Long studentId = member.getStudentId();
-
-        validateExistCourse(courseId);
-        validateStudentRegistrationInCourse(courseId, studentId);
-        validateDates(year, month);
-
-        Course course = getCourse(courseId);
-
-        List<StudentCourseAttendance> attendanceList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId);
-
-        //respnseDTO로 말아서 전달하기
-        List<MyAttendanceResponseDto> attendances = attendanceList
-                .stream()
-                .map(MyAttendanceResponseDto::from)
-                .toList();
-
-        return MyAttendanceListResponseDto.builder()
-                .attendanceList(attendances)
-                .userId(member.getId())
-                .name(member.getName())
-                .courseName(course.getName())
-                .build();
-
-    }
-
-    private void validateExistCourse(Long courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
-        if (courseOptional.isEmpty()) {
-            throw new ResourceNotFoundException("해당 과정이 존재하지 않습니다.");
-        }
-    }
-
-    private void validateStudentRegistrationInCourse(Long courseId, Long studentId) {
-        if (!registrationRepository.existsByStudentIdAndCourseId(studentId, courseId)) {
-            throw new ForbiddenException("출석부 조회는 수강 중이거나 수강했던 과정에 대해서만 가능합니다.");
-        }
-    }
 }
