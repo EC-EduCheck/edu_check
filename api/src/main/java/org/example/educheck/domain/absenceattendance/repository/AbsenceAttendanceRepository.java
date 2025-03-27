@@ -16,7 +16,8 @@ public interface AbsenceAttendanceRepository extends JpaRepository<AbsenceAttend
     @Query("SELECT new org.example.educheck.domain.absenceattendance.dto.response.MyAbsenceAttendanceResponseDto( " +
             "a.id, a.startTime, a.endTime, a.isApprove, a.category) " +
             "FROM AbsenceAttendance a " +
-            "WHERE a.course.id = :courseId AND a.student.id = :studentId")
+            "WHERE a.course.id = :courseId AND a.student.id = :studentId " +
+            "ORDER BY a.id DESC")
     List<MyAbsenceAttendanceResponseDto> findByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
 
 }
