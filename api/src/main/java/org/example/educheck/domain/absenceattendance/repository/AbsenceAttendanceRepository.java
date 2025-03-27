@@ -8,16 +8,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface AbsenceAttendanceRepository extends JpaRepository<AbsenceAttendance, Long> {
     Page<AbsenceAttendance> findByCourseId(Long courseId, Pageable pageable);
 
-    @Query("SELECT new org.example.educheck.domain.absenceattendance.dto.response.MyAbsenceAttendanceResponseDto( " +
+    @Query(value = "SELECT new org.example.educheck.domain.absenceattendance.dto.response.MyAbsenceAttendanceResponseDto( " +
             "a.id, a.startTime, a.endTime, a.isApprove, a.category) " +
             "FROM AbsenceAttendance a " +
             "WHERE a.course.id = :courseId AND a.student.id = :studentId " +
-            "ORDER BY a.id DESC")
-    List<MyAbsenceAttendanceResponseDto> findByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+            "ORDER BY a.createdAt DESC",
+            countQuery = "SELECT COUNT(a) FROM AbsenceAttendance a " +
+                    "WHERE a.course.id = :courseId AND a.student.id = :studentId")
+    Page<MyAbsenceAttendanceResponseDto> findByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId, Pageable pageable);
 
 }

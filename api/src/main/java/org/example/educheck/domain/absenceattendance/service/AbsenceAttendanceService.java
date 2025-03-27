@@ -250,11 +250,11 @@ public class AbsenceAttendanceService {
         }
     }
 
-    public List<MyAbsenceAttendanceResponseDto> getMyAbsenceAttendances(Member member, Long courseId) {
+    public Page<MyAbsenceAttendanceResponseDto> getMyAbsenceAttendances(Member member, Long courseId, Pageable pageable) {
 
         validateRegistrationCourse(member, courseId);
 
-        return absenceAttendanceRepository.findByStudentIdAndCourseId(member.getStudentId(), courseId);
+        return absenceAttendanceRepository.findByStudentIdAndCourseId(member.getStudentId(), courseId, pageable);
 
     }
 }

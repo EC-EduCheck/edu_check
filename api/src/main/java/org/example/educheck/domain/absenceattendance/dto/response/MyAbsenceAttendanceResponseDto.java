@@ -1,10 +1,12 @@
 package org.example.educheck.domain.absenceattendance.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
+@JsonPropertyOrder({"absenceAttendanceId", "startDate", "endDate", "isApprove", "category"})
 public class MyAbsenceAttendanceResponseDto {
 
     private Long absenceAttendanceId;
