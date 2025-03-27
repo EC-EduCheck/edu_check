@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import { activeTitle } from '../../utils/buttonContentList';
 import Modal from '../../components/modal/Modal';
+import CircleButton from '../../components/buttons/circleButton/CircleButton';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
@@ -14,6 +15,9 @@ export default function StaffAttendanceAbsence() {
   const [selected, setSelected] = useState('전체');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState();
+  const [hasPrev, setHasPrev] = useState(false);
+  const [hasNext, setHasNext] = useState(false);
+  const [page, setPage] = useState(0);
 
   const openModal = (item) => {
     setModalContent(item);
@@ -32,9 +36,14 @@ export default function StaffAttendanceAbsence() {
     if (!courseId) return;
     async function fetchData() {
       try {
-        const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(courseId);
-        
-        setData(response.data.data);
+        const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(
+          courseId,
+          page,
+        );
+        const newData = response.data.data;
+        setData(newData);
+        setHasNext(newData?.hasNext);
+        setHasPrev(newData?.hasPrevious);
       } catch (error) {
         console.error(error);
       }
@@ -44,12 +53,13 @@ export default function StaffAttendanceAbsence() {
     setSelected('전체');
     activeTitle.push('전체');
     fetchData();
+
     return () => {
       initActiveTitle();
       setSelected('전체');
       activeTitle.push('전체');
     };
-  }, [courseId]);
+  }, [courseId, page]);
 
   const handleButtonClick = (title) => {
     initActiveTitle();
@@ -59,7 +69,7 @@ export default function StaffAttendanceAbsence() {
 
   return (
     <>
-      <div className="buttonContainer">
+      <div className={styles.buttonContainer}>
         {buttonList.map((title, idx) => (
           <MainButton
             key={idx}
@@ -70,7 +80,6 @@ export default function StaffAttendanceAbsence() {
           />
         ))}
       </div>
-
       {data?.absenceAttendances &&
         data.absenceAttendances
           .filter((item) => {
@@ -88,6 +97,22 @@ export default function StaffAttendanceAbsence() {
               key={idx}
             />
           ))}
+      <div className={styles.buttonContainer}>
+        <CircleButton
+          title="<"
+          isEnable={hasPrev}
+          onClick={() => {
+            setPage((page) => page - 1);
+          }}
+        />
+        <CircleButton
+          title=">"
+          isEnable={hasNext}
+          onClick={() => {
+            setPage((page) => page + 1);
+          }}
+        />
+      </div>
 
       {isModalOpen && (
         <Modal
