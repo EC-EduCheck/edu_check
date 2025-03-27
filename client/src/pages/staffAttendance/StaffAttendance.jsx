@@ -8,8 +8,10 @@ import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import FilterButton from '../../components/buttons/filterButton/FilterButton';
 import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
+import { useNavigate } from 'react-router-dom';
 
 export default function StaffAttendance() {
+  const navigate = useNavigate();
   const [isActiveIndex, setIsActiveIndex] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [students, setStudents] = useState([]);
@@ -50,6 +52,9 @@ export default function StaffAttendance() {
       setIsActiveIndex(index);
     }
   };
+  const handleStudentClick = (studentId) => {
+    navigate(`/dashBoard/staff/attendance/courses/${courseId}/students/${studentId}`);
+  };
 
   const filterButtons = dataList.map((item, index) => {
     return (
@@ -81,6 +86,7 @@ export default function StaffAttendance() {
           key={index}
           content={item.studentName}
           tagTitle={tag[item.status]}
+          onClick={() => handleStudentClick(item.studentId)}
         ></BaseListItem>
       );
     }
