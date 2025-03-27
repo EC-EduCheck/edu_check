@@ -53,7 +53,7 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
                     FROM student_course_attendance
                     WHERE lecture_date <= CURDATE()
                     GROUP BY student_id, member_id, member_name, course_id
-                    HAVING student_id = :studentId AND course_id = :courseId
+                    HAVING member_id = :memberId AND course_id = :courseId
             """, nativeQuery = true)
-    AttendanceStatsProjection findAttendanceStatsByStudentId(@Param("studentId") Long studentId, @Param("courseId") Long courseId);
+    AttendanceStatsProjection findAttendanceStatsByStudentId(@Param("memberId") Long studentId, @Param("courseId") Long courseId);
 }

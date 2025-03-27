@@ -137,8 +137,9 @@ public class StudentCourseAttendanceService {
     }
 
     public AttendanceStatsResponseDto getAttendancesStats(Member member, Long courseId) {
-        //유효성 검증 우선 스킵
-        AttendanceStatsProjection projection = studentCourseAttendanceRepository.findAttendanceStatsByStudentId(member.getStudentId(), courseId);
+        validateStudentRegistrationInCourse(courseId, member.getStudentId());
+
+        AttendanceStatsProjection projection = studentCourseAttendanceRepository.findAttendanceStatsByStudentId(member.getId(), courseId);
         return AttendanceStatsResponseDto.from(projection);
     }
 }
