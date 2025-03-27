@@ -1,5 +1,6 @@
 package org.example.educheck.domain.attendance.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
@@ -16,8 +17,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,20 +29,16 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus;
-        // student가 null인 경우 처리
-        if (user == null) {
-            // 테스트용으로 ID 인 학생 사용
-            attendanceStatus = attendanceService.checkIn(3L, requestDto);
-        } else {
-            String email = user.getUsername();
-            attendanceStatus = attendanceService.checkInByEmail(email, requestDto);
-        }
+        Status attendanceStatus = attendanceService.checkIn(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("출석 성공", "OK", responseDto));
+                .body(ApiResponse.ok(
+                        "출석 성공",
+                        "OK",
+                        responseDto
+                ));
     }
 
     // 수강생 금일 출결 현황 조회
@@ -60,14 +55,14 @@ public class AttendanceController {
     }
 
     // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
+    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
     public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
             @PathVariable Long courseId,
             @PathVariable Long studentId,
             @AuthenticationPrincipal UserDetails user
     ) {
         return ResponseEntity.ok(ApiResponse.ok(
-            "특정 학생 세부 출결 현황 조회 성공",
+                "특정 학생 세부 출결 현황 조회 성공",
                 "OK",
                 attendanceService.getStudentAttendances(courseId, studentId, user)
         ));
@@ -80,12 +75,31 @@ public class AttendanceController {
             @PathVariable Long studentId,
             @RequestBody AttendanceUpdateRequestDto requestDto,
             @AuthenticationPrincipal UserDetails user
-            ) {
-                attendanceService.updateStudentAttendance(courseId, studentId, requestDto, user);
+    ) {
+        attendanceService.updateStudentAttendance(courseId, studentId, requestDto, user);
         return ResponseEntity.ok(ApiResponse.ok(
                 "특정 학생 출결 수정 성공",
                 "OK",
-                    null
+                null
+        ));
+    }
+
+    @PatchMapping("/checkout")
+    public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkOut(
+            @AuthenticationPrincipal UserDetails user,
+            @Valid @RequestBody AttendanceCheckinRequestDto requestDto
+    ) {
+        Status attendanceStatus = attendanceService.checkOut(user, requestDto);
+
+        AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(
+                        "퇴실 성공",
+                        "OK",
+                        responseDto
                 ));
     }
+
+
 }

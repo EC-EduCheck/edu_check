@@ -46,3 +46,7 @@
   top: var(--padding-small);
   right: var(--padding-small);
 }
+
+.container .active {
+  margin-top: 0;
+}

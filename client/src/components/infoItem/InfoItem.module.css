@@ -3,10 +3,14 @@
   align-items: center;
   justify-content: space-between;
   font-size: var(--font-size-14);
-  background-color: var(--bg-200);
+  background-color: var(--bg-300);
   border: 1px solid var(--bg-300);
   border-radius: var(--border-radius-20);
   padding: var(--padding-basic) var(--padding-large);
   margin-bottom: var(--margin-basic);
   cursor: default;
+}
+
+.infoItem p {
+  color: var(--text-100);
 }

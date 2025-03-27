@@ -4,6 +4,12 @@ import { jwtDecode } from 'jwt-decode';
 const initialState = {
   accessToken: '',
   isLoggedIn: false,
+  attendanceStatus: {
+    isCheckedIn: false,
+    checkInTime: null,
+    attendanceDate: null,
+    isCompleted: false,
+  },
   user: {
     role: '',
     name: '',
@@ -38,13 +44,31 @@ const authSlice = createSlice({
         lastLoginDate: action.payload.lastLoginDate || '',
       };
     },
-    logout: (state, action) => {
+    logout: (state) => {
       state.accessToken = '';
       state.isLoggedIn = false;
+      state.attendanceStatus = { ...initialState.attendanceStatus };
       state.user = { ...initialState.user };
+    },
+    checkIn: (state) => {
+      state.attendanceStatus = {
+        isCheckedIn: true,
+        checkInTime: new Date().toISOString(),
+        attendanceDate: new Date().toISOString().split('T')[0],
+        isCompleted: false,
+      };
+    },
+    completeAttendance: (state) => {
+      state.attendanceStatus = {
+        ...state.attendanceStatus,
+        isCompleted: true,
+      };
+    },
+    resetAttendanceStatus: (state) => {
+      state.attendanceStatus = { ...initialState.attendanceStatus };
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, checkIn, completeAttendance, resetAttendanceStatus } = authSlice.actions;
 export default authSlice.reducer;

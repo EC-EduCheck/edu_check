@@ -7,8 +7,8 @@ import { updateNav } from '../../../store/slices/sideBarItemSlice';
 export default function SidebarItem({ index, item }) {
   const dispatch = useDispatch();
 
-  const currentSideBarItem = useSelector((state) => state.sideBarItem.nav);
-  const isActive = currentSideBarItem === item;
+  const { nav } = useSelector((state) => state.sideBarItem);
+  const isActive = nav === item;
 
   const handleClick = () => {
     dispatch(updateNav(item));

@@ -1,5 +1,5 @@
-import React from 'react'
-import styles from "./InputBox.module.css"
+import React from 'react';
+import styles from './InputBox.module.css';
 
 export default function InputBox({
   type,
@@ -11,12 +11,12 @@ export default function InputBox({
   content,
   name,
 }) {
-  const selectText = isSelect ? '(선택)' : '(필수)';
 
   return (
     <div className={styles.inputContainer}>
       <p className={styles.label}>
-        {label} <span>{selectText}</span>
+        {label}
+        <span>{isSelect}</span>
       </p>
       <input
         className={styles.inputBox}
