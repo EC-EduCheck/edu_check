@@ -238,7 +238,7 @@ public class AbsenceAttendanceService {
             //TODO 수강생이 해당 course에 속하는지
         }
 
-        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendanceAttachmentFileRepository.findByAbsenceAttendanceId(absenceAttendancesId);
+        List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendanceAttachmentFileRepository.findByActivateFilesById(absenceAttendance);
         List<AttachmentFileReposeDto> fileReposeDtoList = attachmentFiles.stream()
                 .map(AttachmentFileReposeDto::from)
                 .toList();
