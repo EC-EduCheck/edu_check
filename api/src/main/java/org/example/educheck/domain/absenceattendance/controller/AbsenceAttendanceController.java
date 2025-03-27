@@ -5,6 +5,7 @@ import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAt
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendanceResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
@@ -94,10 +95,15 @@ public class AbsenceAttendanceController {
 
     }
 
-    @PreAuthorize("hasAuthority('STUDENT')")
-    @GetMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public void getMyAbsenceAttendance(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long absenceAttendancesId) {
-        absenceAttendanceService.getMyAbsenceAttendance(member, absenceAttendancesId);
+    @GetMapping("/course/{courseId}/absence-attendances/{absenceAttendancesId}")
+    public ResponseEntity<ApiResponse<GetAbsenceAttendanceResponseDto>> getAbsenceAttendance(@AuthenticationPrincipal Member member,
+                                                                                             @PathVariable Long courseId,
+                                                                                             @PathVariable Long absenceAttendancesId
+    ) {
+        return ResponseEntity.ok(
+                ApiResponse.ok("유고 결석 신청 내역 상세 조회 성공",
+                        "OK",
+                        absenceAttendanceService.getAbsenceAttendance(member, courseId, absenceAttendancesId))
+        );
     }
 }

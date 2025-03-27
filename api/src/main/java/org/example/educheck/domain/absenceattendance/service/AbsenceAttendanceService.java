@@ -5,25 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.dto.request.CreateAbsenceAttendacneRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.ProcessAbsenceAttendanceRequestDto;
 import org.example.educheck.domain.absenceattendance.dto.request.UpdateAbsenceAttendacneRequestDto;
-import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceAttendacneReponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
-import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
+import org.example.educheck.domain.absenceattendance.dto.response.*;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanceRepository;
+import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.absenceattendanceattachmentfile.repository.AbsenceAttendanceAttachmentFileRepository;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
+import org.example.educheck.domain.member.entity.Role;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
-import org.example.educheck.global.common.exception.custom.common.InvalidRequestException;
-import org.example.educheck.global.common.exception.custom.common.NotOwnerException;
-import org.example.educheck.global.common.exception.custom.common.ResourceMismatchException;
-import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
+import org.example.educheck.global.common.exception.custom.common.*;
 import org.example.educheck.global.common.s3.S3Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -219,13 +216,34 @@ public class AbsenceAttendanceService {
         }
     }
 
-    public void getMyAbsenceAttendance(Member member, Long absenceAttendancesId) {
-        //해당 유고결석 신청 내역과 조회하는 사람이 일치하는가
+    public GetAbsenceAttendanceResponseDto getAbsenceAttendance(Member member, Long courseId, Long absenceAttendancesId) {
+
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
-        validateMatchApplicant(member, absenceAttendance);
+
+        Role role = member.getRole();
+        if (role == Role.STUDENT) {
+            log.info("권한 체크 학생");
+            validateMatchApplicant(member, absenceAttendance);
+        } else if (role == Role.MIDDLE_ADMIN) {
+            log.info("권한 체크 중간 관리자");
+            validateStaffManageCourse(member, courseId);
+            //TODO 수강생이 해당 course에 속하는지
+        }
 
         List<AbsenceAttendanceAttachmentFile> attachmentFiles = absenceAttendanceAttachmentFileRepository.findByAbsenceAttendanceId(absenceAttendancesId);
+        List<AttachmentFileReposeDto> fileReposeDtoList = attachmentFiles.stream()
+                .map(AttachmentFileReposeDto::from)
+                .toList();
 
+        AbsenceAttendanceResponseDto from = AbsenceAttendanceResponseDto.from(absenceAttendance, fileReposeDtoList);
+        return GetAbsenceAttendanceResponseDto.from(member.getId(), member.getName(), from);
 
+    }
+
+    private void validateStaffManageCourse(Member member, Long courseId) {
+        boolean isCorrect = staffCourseRepository.existsByStaffIdAndCourseId(member.getStaff().getId(), courseId);
+        if (!isCorrect) {
+            throw new ForbiddenException("관리자가 관리하는 교육 과정에 대해서만 조회 가능합니다.");
+        }
     }
 }
