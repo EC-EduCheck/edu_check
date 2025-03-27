@@ -1,5 +1,6 @@
 package org.example.educheck.domain.attendance.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
@@ -15,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @Slf4j
 @RestController
@@ -56,7 +55,7 @@ public class AttendanceController {
     }
 
     // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
+    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
     public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
             @PathVariable Long courseId,
             @PathVariable Long studentId,
@@ -96,9 +95,11 @@ public class AttendanceController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(
-                "퇴실 성공",
-                "OK",
-                responseDto
-        ));
+                        "퇴실 성공",
+                        "OK",
+                        responseDto
+                ));
     }
+
+
 }

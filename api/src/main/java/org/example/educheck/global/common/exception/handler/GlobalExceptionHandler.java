@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,5 +72,13 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.INVALID_INPUT.getStatus())
                 .body(ApiResponse.error(ErrorCode.INVALID_INPUT.getMessage(),
                         ErrorCode.INVALID_INPUT.getCode()));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        return ResponseEntity
+                .status(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getStatus())
+                .body(ApiResponse.error(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getMessage(),
+                        ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getCode()));
     }
 }

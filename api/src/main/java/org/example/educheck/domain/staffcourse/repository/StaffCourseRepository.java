@@ -15,4 +15,6 @@ public interface StaffCourseRepository extends JpaRepository<StaffCourse, Long> 
             "WHERE s.id = :staffId " +
             "AND c.id = :courseId")
     Optional<StaffCourse> findByStaffIdAndCourseId(Long staffId, Long courseId);
+
+    boolean existsByStaffIdAndCourseId(Long staffId, Long courseId);
 }

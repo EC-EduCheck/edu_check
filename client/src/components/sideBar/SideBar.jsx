@@ -174,11 +174,13 @@ export default function SideBar() {
 
       <div>
         {error && <div>위치 정보를 가져오는 데 실패했습니다: {error.message}</div>}
-        <MainButton
-          title={buttonProps.title}
-          handleClick={handleAttendanceCheck}
-          isEnable={buttonProps.isEnable}
-        />
+        {role === 'STUDENT' && (
+          <MainButton
+            title={buttonProps.title}
+            handleClick={handleAttendanceCheck}
+            isEnable={buttonProps.isEnable}
+          />
+        )}
       </div>
       <nav>{sideBarItems}</nav>
     </div>

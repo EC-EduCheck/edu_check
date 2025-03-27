@@ -8,7 +8,6 @@ import org.example.educheck.domain.absenceattendance.dto.response.CreateAbsenceA
 import org.example.educheck.domain.absenceattendance.dto.response.GetAbsenceAttendancesResponseDto;
 import org.example.educheck.domain.absenceattendance.dto.response.UpdateAbsenceAttendacneReponseDto;
 import org.example.educheck.domain.absenceattendance.service.AbsenceAttendanceService;
-import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 public class AbsenceAttendanceController {
     private final AbsenceAttendanceService absenceAttendanceService;
-    private final AttendanceService attendanceService;
 
 
     @PatchMapping("/course/{courseId}/absence-attendances/{absesnceAttendancesId}")

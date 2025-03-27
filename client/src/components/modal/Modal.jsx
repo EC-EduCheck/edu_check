@@ -22,9 +22,11 @@ export default function Modal({
         <div>
           <div>{content}</div>
 
-          <div className={styles.buttonBox}>
-            {subClick && <MainButton handleClick={subClick} title={subText || '확인' } isEnable={true}></MainButton>}
-            <MainButton handleClick={mainClick} title={mainText || '취소'} isEnable={true}></MainButton>
+          <div className={`${styles.buttonBox} ${!mainClick && `${styles.active}`}`}>
+            {subClick && <MainButton handleClick={subClick} title={subText || '확인'}></MainButton>}
+            {mainClick && (
+              <MainButton handleClick={mainClick} title={mainText || '취소'}></MainButton>
+            )}
           </div>
         </div>
       </div>
