@@ -1,5 +1,4 @@
-import axios from 'axios';
-import apiInstance from './apiInstance';
+import apiInstance from './instance/apiInstance';
 
 export const reservationApi = {
   getReservations: async () => {
