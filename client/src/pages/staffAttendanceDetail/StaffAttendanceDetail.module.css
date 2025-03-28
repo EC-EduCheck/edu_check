@@ -1,28 +1,28 @@
 .container {
   display: flex;
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: var(--padding-large); /* 상단 여백 추가 */
 }
 
 .dashboardContainer {
-  position: fixed;
-  width: 20%;
-  padding: var(--padding-large);
-  height: 100vh;
-  overflow-y: auto;
+  width: 25%;
+  padding: 0 var(--padding-large);
   box-sizing: border-box;
-  left: 20%;
+  background-color: white;
 }
 
 .contentWrapper {
-  margin-left: 20%; 
-  flex: 1;
-  padding: var(--padding-large);
+  width: 70%;
+  padding: 0 var(--padding-large);
   box-sizing: border-box;
-  height: 100vh;
   overflow-y: auto;
+}
+
+/* DashBoardItem 컴포넌트의 스타일 */
+.dashBoardItem {
+  border-top: 1px solid var(--border-100);
+  padding-top: var(--padding-large);
 }
 
 .userInfoContainer {
@@ -44,7 +44,7 @@
 
 .userPhone {
   font-size: var(--font-size-18);
-  color: var(--text-3ㅂㅂ00);
+  color: var(--text-200);
   margin: 0;
 }
 
@@ -70,6 +70,11 @@
   background-color: white;
 }
 
+/* BaseListItem 컴포넌트의 스타일 */
+.baseListItem:first-child {
+  border-top: 1px solid var(--border-100);
+  padding-top: var(--padding-large);
+}
 .tag {
   padding: var(--padding-small) var(--padding-basic);
   border-radius: var(--border-radius-20);

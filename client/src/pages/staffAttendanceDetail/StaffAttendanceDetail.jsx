@@ -39,7 +39,6 @@ export default function StaffAttendanceDetail() {
               <p className={styles.userPhone}>{studentAttendance.studentPhoneNumber}</p>
             </div>
           </div>
-
           <div className={styles.databoardContainer}>
             <DataBoard
               title="금일 기준 출석률"
