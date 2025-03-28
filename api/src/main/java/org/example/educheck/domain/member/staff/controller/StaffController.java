@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.staff.dto.request.UpdateStudentRegistrationStatusRequestDto;
+import org.example.educheck.domain.member.staff.dto.response.GetStudentsResponseDto;
 import org.example.educheck.domain.member.staff.dto.response.UpdateStudentRegistrationStatusResponseDto;
 import org.example.educheck.domain.member.staff.service.StaffService;
 import org.example.educheck.global.common.dto.ApiResponse;
@@ -31,6 +32,19 @@ public class StaffController {
                 ApiResponse.ok("수강생 등록 상태 변경 성공",
                         "OK",
                         staffService.updateStudentRegistrationStatus(member, courseId, studentId, requestDto)));
+    }
+
+    @PreAuthorize("hasAuthority('MIDDLE_ADMIN')")
+    @GetMapping("/course/{courseId}/students")
+    public ResponseEntity<ApiResponse<GetStudentsResponseDto>> getStudentsByCourse(
+            @AuthenticationPrincipal Member member,
+            @PathVariable Long courseId
+            ) {
+
+        return ResponseEntity.ok(
+                ApiResponse.ok("수강생 전체 조회 성공",
+                        "OK",
+                        staffService.getStudentsByCourse(member, courseId)));
     }
 
 
