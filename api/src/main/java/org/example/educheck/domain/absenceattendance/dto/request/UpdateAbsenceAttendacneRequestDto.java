@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class UpdateAbsenceAttendacneRequestDto {
 
     @NotEmpty
-    private String resean;
+    private String reason;
     @NotNull
     private LocalDate startDate;
     @NotNull
@@ -25,7 +25,7 @@ public class UpdateAbsenceAttendacneRequestDto {
     private String category;
 
     public void updateEntity(AbsenceAttendance entity) {
-        entity.setReason(resean);
+        entity.setReason(reason);
         entity.setStartTime(startDate);
         entity.setEndTime(endDate);
         entity.setCategory(category);

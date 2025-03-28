@@ -8,4 +8,7 @@ export const absenceAttendancesApi = {
     await apiInstance.post(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`, {
       isApproved: isApproved,
     }),
+
+  getAbsenceAttendance: async (courseId, absenceAttendancedId) =>
+    await apiInstance.get(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`),
 };
