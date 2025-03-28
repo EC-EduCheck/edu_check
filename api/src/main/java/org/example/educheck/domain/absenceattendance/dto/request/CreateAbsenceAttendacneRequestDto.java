@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class CreateAbsenceAttendacneRequestDto {
 
     @NotEmpty
-    private String resean;
+    private String reason;
     @NotEmpty
     private LocalDate startDate;
     @NotEmpty

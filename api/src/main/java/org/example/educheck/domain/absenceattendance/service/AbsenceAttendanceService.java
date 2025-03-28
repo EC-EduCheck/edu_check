@@ -121,7 +121,7 @@ public class AbsenceAttendanceService {
                 .student(member.getStudent())
                 .startTime(requestDto.getStartDate())
                 .endTime(requestDto.getEndDate())
-                .reason(requestDto.getResean())
+                .reason(requestDto.getreason())
                 .category(requestDto.getCategory())
                 .build();
 
