@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './SidebarItem.module.css';
-import { useSelector } from 'react-redux';
 import SidebarItemIcon from '../sidebarItemIcon/SidebarItemIcon';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +14,7 @@ export default function SidebarItem({ index, item }) {
     <button className={styles.sidebarItem} onClick={() => navigate(item.path)}>
       {/* <SidebarItemIcon isActive={isActive} src={item.icon}></SidebarItemIcon> */}
       {/* <p className={isActive ? `${styles.active}` : ''}>{item.name}</p> */}
-      <SidebarItemIcon src={item.icon}></SidebarItemIcon>
+      <SidebarItemIcon icon={item.icon}></SidebarItemIcon>
       <p>{item.name}</p>
     </button>
   );
