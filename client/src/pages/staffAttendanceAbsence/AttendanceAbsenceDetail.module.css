@@ -1,0 +1,41 @@
+.boxItem {
+  width: 100%;
+  display: block;
+  padding: var(--padding-small);
+  border-radius: var(--border-radius-5);
+  background-color: var(--bg-200);
+  box-shadow: var(--box-shadow-small);
+  transition: var(--transition-basic);
+  margin: var(--margin-small) 0;
+}
+
+.boxItem a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-basic);
+}
+
+.boxItem a:hover {
+  text-decoration: underline;
+}
+
+.fileName {
+  display: inline-block;
+  background-color: var(--file-bg, #e0f7fa);
+  padding: 0.2em;
+  border-radius: var(--border-radius-5);
+  max-width: calc(6ch + 1em);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.fileName:hover {
+  max-width: 100%;
+  transition: var(--transition-basic);
+}
+
+.detail {
+  width: 100%;
+}

@@ -7,6 +7,7 @@ import MainButton from '../../components/buttons/mainButton/MainButton';
 import { activeTitle } from '../../utils/buttonContentList';
 import Modal from '../../components/modal/Modal';
 import CircleButton from '../../components/buttons/circleButton/CircleButton';
+import AttendanceAbsenceDetail from './AttendanceAbsenceDetail';
 
 export default function StaffAttendanceAbsence() {
   const [data, setData] = useState();
@@ -18,10 +19,22 @@ export default function StaffAttendanceAbsence() {
   const [hasPrev, setHasPrev] = useState(false);
   const [hasNext, setHasNext] = useState(false);
   const [page, setPage] = useState(0);
+  const [selectedAbsenceAttendanceId, setSelectedAbsenceAttendanceId] = useState();
 
-  const openModal = (item) => {
-    setModalContent(item);
-    setIsModalOpen(true);
+  const openModal = async (item) => {
+    try {
+      const response = await absenceAttendancesApi.getAbsenceAttendance(
+        courseId,
+        item.absenceAttendanceId,
+      );
+      const detailData = response.data.data;
+      setModalContent(detailData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSelectedAbsenceAttendanceId(item.absenceAttendanceId);
+      setIsModalOpen(true);
+    }
   };
 
   const initActiveTitle = () => {
@@ -97,21 +110,10 @@ export default function StaffAttendanceAbsence() {
               key={idx}
             />
           ))}
+
       <div className={styles.buttonContainer}>
-        <CircleButton
-          title="<"
-          isEnable={hasPrev}
-          onClick={() => {
-            setPage((page) => page - 1);
-          }}
-        />
-        <CircleButton
-          title=">"
-          isEnable={hasNext}
-          onClick={() => {
-            setPage((page) => page + 1);
-          }}
-        />
+        <CircleButton title="<" isEnable={hasPrev} onClick={() => setPage((page) => page - 1)} />
+        <CircleButton title=">" isEnable={hasNext} onClick={() => setPage((page) => page + 1)} />
       </div>
 
       {isModalOpen && (
@@ -122,8 +124,7 @@ export default function StaffAttendanceAbsence() {
           subClick={() => console.log('승인 처리')}
           mainText="반려"
           subText="승인"
-          content={'content'}
-          // content={modalContent}
+          content={<AttendanceAbsenceDetail courseId={courseId} id={selectedAbsenceAttendanceId} />}
         />
       )}
     </>
