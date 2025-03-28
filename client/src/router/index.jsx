@@ -45,7 +45,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/dashBoard/student/attendance',
-            element: <StudentAttendance />,
+            element: <TmpLayout />,
             children: [
               {
                 index: true,
@@ -57,14 +57,25 @@ const router = createBrowserRouter([
               },
             ],
           },
-
           {
             path: '/dashBoard/student/reservation',
-            element: <RoomReservation />,
+            element: <TmpLayout />,
+            children: [
+              {
+                index: true,
+                element: <RoomReservation />,
+              },
+            ],
           },
           {
             path: '/dashBoard/student/setting',
-            element: <StudentSetting />,
+            element: <TmpLayout />,
+            children: [
+              {
+                index: true,
+                element: <StudentSetting />,
+              },
+            ],
           },
         ],
       },
