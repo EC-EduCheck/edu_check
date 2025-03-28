@@ -24,7 +24,6 @@ export default function StaffAttendance() {
       const response = await attendanceApi.getTodayAttendances(courseId);
       const { totalAttendance, totalEarlyLeave, totalLate, totalAbsence } =
         response.data.data.summary;
-      console.log(response.data.data);
       setDataList([
         { label: '출석', value: totalAttendance },
         { label: '조퇴', value: totalEarlyLeave },
