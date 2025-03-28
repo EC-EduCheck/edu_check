@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class UpdateAbsenceAttendacneReponseDto {
 
     private Long absenceAttendanceId;
-    private String resean;
+    private String reason;
     private LocalDate startDate;
     private LocalDate endDate;
     private String category;
@@ -26,7 +26,7 @@ public class UpdateAbsenceAttendacneReponseDto {
     public static UpdateAbsenceAttendacneReponseDto from(AbsenceAttendance absenceAttendance) {
         return UpdateAbsenceAttendacneReponseDto.builder()
                 .absenceAttendanceId(absenceAttendance.getId())
-                .resean(absenceAttendance.getReason())
+                .reason(absenceAttendance.getReason())
                 .startDate(absenceAttendance.getStartTime())
                 .endDate(absenceAttendance.getEndTime())
                 .category(absenceAttendance.getCategory())

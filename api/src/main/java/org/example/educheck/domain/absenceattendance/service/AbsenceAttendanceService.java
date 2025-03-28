@@ -111,7 +111,7 @@ public class AbsenceAttendanceService {
     }
 
     @Transactional
-    public CreateAbsenceAttendacneReponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+    public CreateAbsenceAttendanceResponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         validateRegistrationCourse(member, courseId);
 
@@ -121,7 +121,7 @@ public class AbsenceAttendanceService {
                 .student(member.getStudent())
                 .startTime(requestDto.getStartDate())
                 .endTime(requestDto.getEndDate())
-                .reason(requestDto.getResean())
+                .reason(requestDto.getreason())
                 .category(requestDto.getCategory())
                 .build();
 
@@ -129,7 +129,7 @@ public class AbsenceAttendanceService {
 
         saveAttachementFiles(files, savedAbsenceAttendance);
 
-        return CreateAbsenceAttendacneReponseDto.from(savedAbsenceAttendance);
+        return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
     }
 
     private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
