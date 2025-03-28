@@ -93,23 +93,26 @@ export default function StaffAttendanceAbsence() {
           />
         ))}
       </div>
-      {data?.absenceAttendances &&
-        data.absenceAttendances
-          .filter((item) => {
-            if (selected === '전체') return true;
-            if (selected === '승인') return item.status === true;
-            if (selected === '반려') return item.status === false;
-            return item.status === null;
-          })
-          .map((item, idx) => (
-            <LeftLineListItem
-              isClickable={role === 'MIDDLE_ADMIN'}
-              status={item.status}
-              children={item}
-              handleClick={() => openModal(item)}
-              key={idx}
-            />
-          ))}
+
+      <div className={styles.absenceContainer}>
+        {data?.absenceAttendances &&
+          data.absenceAttendances
+            .filter((item) => {
+              if (selected === '전체') return true;
+              if (selected === '승인') return item.status === true;
+              if (selected === '반려') return item.status === false;
+              return item.status === null;
+            })
+            .map((item, idx) => (
+              <LeftLineListItem
+                isClickable={role === 'MIDDLE_ADMIN'}
+                status={item.status}
+                children={item}
+                handleClick={() => openModal(item)}
+                key={idx}
+              />
+            ))}
+      </div>
 
       <div className={styles.buttonContainer}>
         <CircleButton title="<" isEnable={hasPrev} onClick={() => setPage((page) => page - 1)} />

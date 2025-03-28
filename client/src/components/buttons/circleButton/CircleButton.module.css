@@ -1,6 +1,6 @@
 .circleButton {
-  font-size: var(--font-size-24);
-  padding: var(--padding-small);
+  font-size: var(--font-size-18);
+  padding: var(--padding-basic);
   margin-right: var(--margin-small);
   border: 1px solid var(--border-100);
   border-radius: var(--border-radius-30);

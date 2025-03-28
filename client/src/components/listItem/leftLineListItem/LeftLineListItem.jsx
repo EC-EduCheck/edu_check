@@ -28,14 +28,15 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
       <div className={`${styles.colorLine} ${bgColor ? styles[bgColor] : ''}`}></div>
       {children?.studentName ? (
         // 관리자 - 유고결석
-        <>
-          <p>{children.studentName}</p>
-          <p>{status}</p>
-          <p>{categoryMapper[children.category] || ''}</p>
-          <p>{children.attached ? '첨부' : '미첨부'}</p>
-          <p>{new Date(children.createdAt).toLocaleDateString().replace(/\.$/, '')}</p>
+        <div className={styles.staffContainer}>
+          <div className={styles.info}>
+            <p>{children.studentName}</p>
+            <p>{categoryMapper[children.category] || ''}</p>
+            <p>{children.attached ? '첨부' : '미첨부'}</p>
+            <p>{new Date(children.createdAt).toLocaleDateString().replace(/\.$/, '')}</p>
+          </div>
           <p>{statusMapper[children.status]}</p>
-        </>
+        </div>
       ) : (
         // 수강생 - 유고결석
         <>

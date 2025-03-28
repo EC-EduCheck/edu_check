@@ -2,4 +2,9 @@
   display: flex;
   margin: var(--margin-small) auto;
   justify-content: center;
+  gap: 1rem;
+}
+
+.absenceContainer {
+  margin: var(--margin-medium) 0;
 }

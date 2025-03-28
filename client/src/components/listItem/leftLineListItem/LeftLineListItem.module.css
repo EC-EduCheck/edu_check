@@ -54,7 +54,24 @@ p.green {
   color: var(--primary-100);
 }
 
-/* 수강생 유교결석 */
+/* 관리자 유고결석 */
+.staffContainer {
+  width: 100%;
+  font-size: var(--font-size-16);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.staffContainer .info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.staffContainer > p {
+  text-align: right;
+}
+
+/* 수강생 유고결석 */
 .leftBox {
   display: flex;
   flex-direction: column;
