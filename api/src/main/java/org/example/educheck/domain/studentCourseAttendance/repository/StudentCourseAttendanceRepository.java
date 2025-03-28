@@ -15,7 +15,7 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
 
 
     @Query("SELECT sca FROM StudentCourseAttendance sca " +
-            "WHERE sca.courseId = :courseId " +
+            "WHERE sca.id.courseId = :courseId " +
             "AND DATE( sca.lectureDate) = DATE(NOW())")
     List<StudentCourseAttendance> findByCourseIdAndLectureDateIsToday(@Param("courseId") Long courseId);
 
