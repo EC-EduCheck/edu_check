@@ -14,7 +14,15 @@ export default function Tab() {
   const renderTabList = tabList?.[role]?.[segment];
 
   const tabContent = renderTabList?.map((item, index) => {
-    return <TabButton key={`tab-${index}`} index={index} item={item}></TabButton>;
+
+    return (
+      <TabButton
+        key={`tab-${index}`}
+        index={index}
+        item={item}
+        isActive={location.pathname === item.path}
+      ></TabButton>
+    );
   });
 
   return <div className={styles.tab}>{tabContent}</div>;
