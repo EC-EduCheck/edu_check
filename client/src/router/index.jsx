@@ -92,7 +92,7 @@ const router = createBrowserRouter([
                 element: <StaffAttendance />,
               },
               {
-                path: URL_PATHS.MIDDLE_ADMIN.ATTENDANCE.DETAIL,
+                path: URL_PATHS.MIDDLE_ADMIN.ATTENDANCE.DETAIL_PATTERN,
                 element: <StaffAttendanceDetail />,
               },
               {
