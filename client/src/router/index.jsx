@@ -18,7 +18,6 @@ import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttenda
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 
-import NavigationHandler from '../handler/NavigationHandler';
 import TmpLayout from '../layout/TmpLayout';
 import { staffBaseUrl } from '../constants/baseUrl';
 
@@ -120,10 +119,10 @@ const router = createBrowserRouter([
         path: '/notfound',
         element: <NotFound />,
       },
-      {
-        path: '*',
-        element: <Navigate to="/notfound" replace />,
-      },
+      // {
+      //   path: '*',
+      //   element: <Navigate to="/notfound" replace />,
+      // },
     ],
   },
 ]);

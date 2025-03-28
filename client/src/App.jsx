@@ -19,7 +19,6 @@ export default function App() {
             ...response.data.data,
             accessToken: accessToken,
           }),
-          setRole(response.data.data),
         );
       } catch (error) {
         // console.error(error);

@@ -14,7 +14,7 @@ export default function StaffAttendanceAbsence() {
       }
     }
     fetchData();
-    console.log('data=' + data);
+    // console.log('data=' + data);
   }, []);
 
   return <div>StaffAttendanceAbsence</div>;

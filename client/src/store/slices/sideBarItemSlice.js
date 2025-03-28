@@ -43,7 +43,6 @@ const sideBarItemSlice = createSlice({
         const accessToken = action.payload.accessToken.replace('Bearer ', '');
         const decodedToken = jwtDecode(accessToken);
         const role = decodedToken.roles[0];
-        console.log(role);
         state.role = role;
         state.nav = role === 'STUDENT' ? '출석' : '출결';
         state.sidebarItemList = role === 'STUDENT' ? studentSideBarList : staffSideBarList;

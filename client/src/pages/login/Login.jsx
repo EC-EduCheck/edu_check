@@ -12,11 +12,12 @@ import MainButton from '../../components/buttons/mainButton/MainButton';
 import { baseUrl } from '../../constants/baseUrl';
 
 export default function Login() {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const { role } = useSelector((state) => state.auth.user);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { role } = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const [inputData, setInputData] = useState({
     email: '',
     password: '',
@@ -44,14 +45,8 @@ export default function Login() {
           ...response.data.data,
           accessToken: accessToken,
         }),
-        setRole(response.data.data),
       );
-      // navigate('/', { replace: true });
-      const mainPath = baseUrl?.[role];
-      console.log(role);
-      console.log(baseUrl);
-      console.log(mainPath);
-      navigate(mainPath, { replace: true });
+      console.log(isLoggedIn, 'isloggedin');
     } catch (error) {
       // TODO: BE에서 에러처리 후 응답 메시지 출력으로 변경
       console.log(error);
@@ -62,7 +57,8 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/', { replace: true });
+      const mainPath = baseUrl?.[role];
+      navigate(mainPath, { replace: true });
     }
   }, [isLoggedIn, navigate]);
 

@@ -12,7 +12,6 @@ export default function DashBoard() {
   const { role } = useSelector((state) => state.auth.user);
 
   const renderNavbarPath = navbarPath?.[role];
-  console.log(renderNavbarPath, '---------');
 
   return (
     <div className={`container ${styles.dashBoard}`}>

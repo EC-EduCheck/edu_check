@@ -12,7 +12,6 @@ export default function Tab() {
 
   const { role } = useSelector((state) => state.auth.user);
   const segment = getNthSegment(location.pathname, 2);
-  console.log(segment);
   const renderTabList = tabList?.[role]?.[segment];
 
   const tabContent = renderTabList?.map((item, index) => {
