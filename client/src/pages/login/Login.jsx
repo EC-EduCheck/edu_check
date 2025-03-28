@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './Login.module.css';
 import { authApi } from '../../api/authApi';
 import { login } from '../../store/slices/authSlice';
-import { setRole } from '../../store/slices/sideBarItemSlice';
 
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';

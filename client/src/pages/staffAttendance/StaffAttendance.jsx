@@ -40,7 +40,9 @@ export default function StaffAttendance() {
   };
 
   useEffect(() => {
-    getAttendances();
+    if (courseId) {
+      getAttendances();
+    }
   }, [courseId]);
 
   const handleActiveFilter = (index) => {

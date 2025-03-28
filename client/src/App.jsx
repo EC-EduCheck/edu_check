@@ -4,7 +4,6 @@ import router from './router';
 import { authApi } from './api/authApi';
 import { login } from './store/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import { setRole } from './store/slices/sideBarItemSlice';
 
 export default function App() {
   const dispatch = useDispatch();

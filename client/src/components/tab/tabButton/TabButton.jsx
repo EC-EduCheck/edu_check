@@ -5,12 +5,11 @@ import { useNavigate } from 'react-router-dom';
 
 export default function TabButton({ index, item }) {
   const navigate = useNavigate();
-  const currentTabItem = useSelector((state) => state.sideBarItem.tab);
-  const isActive = currentTabItem === index;
 
   return (
     <button
-      className={`${styles.tabButton} ${isActive ? `${styles.active}` : ''}`}
+      // className={`${styles.tabButton} ${isActive ? `${styles.active}` : ''}`}
+      className={`${styles.tabButton}`}
       onClick={() => navigate(item.path)}
     >
       {item.name}

@@ -43,7 +43,7 @@ const authSlice = createSlice({
         phoneNumber: action.payload.phoneNumber || '',
         lastLoginDate: action.payload.lastLoginDate || '',
       };
-      console.log('login');
+      console.log('login reducer');
     },
     logout: (state) => {
       state.accessToken = '';

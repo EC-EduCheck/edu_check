@@ -124,7 +124,6 @@ export default function SideBar() {
 
   const buttonProps = getButtonProps();
 
-  const { sidebarItemList } = useSelector((state) => state.sideBarItem);
   const renderSidebarList = sidebarList[role];
 
   const sideBarItems = renderSidebarList?.map((item, index) => {
