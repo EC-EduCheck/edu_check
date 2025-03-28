@@ -33,22 +33,21 @@ export default function PaginationComponent({ totalPages, onPageChange }) {
 
   return (
     <div className={styles.container}>
-      <button
-        className={styles.button}
-        onClick={goToPreviousPage}
-        disabled={currentPage === 1}
-      >
+      <button className={styles.button} onClick={goToPreviousPage} disabled={currentPage === 1}>
         <img src="/assets/arrowBackIcon.svg" alt="arrowPre" className={styles.arrowPrevious} />
       </button>
-      <input
-        className={styles.input}
-        type="number"
-        value={currentPage}
-        onChange={handleInputChange}
-        onKeyPress={handleKeyPress}
-        min="1"
-        max={totalPages}
-      />
+      <div className={styles.pageIndicator}>
+        <input
+          className={styles.input}
+          type="number"
+          value={currentPage}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          min="1"
+          max={totalPages}
+        />
+        <span className={styles.pageCount}>/ {totalPages}</span>
+      </div>
       <button
         className={styles.button}
         onClick={goToNextPage}

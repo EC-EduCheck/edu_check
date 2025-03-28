@@ -1,16 +1,33 @@
 .container {
   display: flex;
   align-items: center;
+  padding: var(--padding-small) var(--padding-basic);
+  background-color: var(--bg-200);
+  border-radius: var(--border-radius-10);
+  box-shadow: var(--box-shadow-medium);
+}
+
+.pageIndicator {
+  display: flex;
+  align-items: center;
 }
 
 .button {
-  background: none;
-  border: none;
+  background: var(--bg-200);
+  border-radius: var(--border-radius-5);
   cursor: pointer;
-  padding: var(--padding-small);
+  transition: var(--transition-basic);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .button:disabled {
@@ -19,27 +36,33 @@
 }
 
 .input {
-  width: 10px;
+  width: 25px;
   text-align: center;
-  font-size: var(--font-size-24);
-  padding: var(--padding-small);
+  font-size: var(--font-size-14);
+  font-weight: 500;
   border: none;
-  background: none;
-  outline: none;
-  -moz-appearance: textfield; /* Firefox */
   color: var(--text-100);
+  transition: var(--transition-basic);
+  -moz-appearance: textfield; /* Firefox */
 }
-
 .input::-webkit-outer-spin-button,
 .input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+.pageCount {
+  font-size: var(--font-size-14);
+  color: var(--text-200);
+  font-weight: 400;
+  width: 25px;
+  word-spacing: 0.06em;
+}
+
 .arrowPrevious,
 .arrowNext {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .arrowNext {
