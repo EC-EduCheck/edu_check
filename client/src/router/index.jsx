@@ -85,7 +85,6 @@ const router = createBrowserRouter([
                 index: true,
                 element: <StaffAttendance />,
               },
-
               {
                 path: '/dashBoard/staff/attendance/detail',
                 element: <StaffAttendanceDetail />,

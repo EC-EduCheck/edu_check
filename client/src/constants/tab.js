@@ -16,7 +16,7 @@ export const tabList = {
       { name: '세부 출결 현황', path: `${staffBaseUrl}/attendance/detail` },
       { name: '유고 결석 관리', path: `${staffBaseUrl}/attendance/absence` },
     ],
-    studentManage: [{ name: '학습자', path: '' }],
-    reservation: [{ name: '회의실 예약', path: '' }],
+    studentManage: [{ name: '학습자', path: `${staffBaseUrl}/studentManage` }],
+    reservation: [{ name: '회의실 예약', path: `${staffBaseUrl}/reservation` }],
   },
 };
