@@ -31,3 +31,7 @@
   justify-content: center;
   gap: 1rem;
 }
+
+.studentsBox p {
+  margin-top: var(--margin-small);
+}
