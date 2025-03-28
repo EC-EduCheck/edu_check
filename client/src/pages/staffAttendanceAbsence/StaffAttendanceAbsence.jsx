@@ -45,6 +45,33 @@ export default function StaffAttendanceAbsence() {
     }
   };
 
+  const refreshData = async () => {
+    try {
+      const response = await absenceAttendancesApi.getAbsenceAttendancesByCourseId(courseId, page);
+      const newData = response.data.data;
+      setData(newData);
+      setHasNext(newData?.hasNext);
+      setHasPrev(newData?.hasPrevious);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleProcessRequest = async (isApproved) => {
+    try {
+      await absenceAttendancesApi.processAbsenceAttendance(
+        courseId,
+        selectedAbsenceAttendanceId,
+        isApproved,
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsModalOpen(false);
+      await refreshData();
+    }
+  };
+
   useEffect(() => {
     if (!courseId) return;
     async function fetchData() {
@@ -120,8 +147,8 @@ export default function StaffAttendanceAbsence() {
         <Modal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          mainClick={() => console.log('반려 처리')}
-          subClick={() => console.log('승인 처리')}
+          mainClick={() => handleProcessRequest(false)}
+          subClick={() => handleProcessRequest(true)}
           mainText="반려"
           subText="승인"
           content={<AttendanceAbsenceDetail courseId={courseId} id={selectedAbsenceAttendanceId} />}
