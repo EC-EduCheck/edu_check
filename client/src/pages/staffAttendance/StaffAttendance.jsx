@@ -105,7 +105,7 @@ export default function StaffAttendance() {
         </>
       </DashBoardItem>
 
-      {studentsList}
+      <div className={styles.studentsBox}>{studentsList}</div>
     </div>
   );
 }

@@ -3,10 +3,11 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--padding-basic) var(--padding-medium);
-  /* margin-top: var(--margin-basic); */
+  margin-top: var(--margin-basic);
   border: 1px solid var(--border-100);
   border-radius: var(--border-radius-20);
   box-sizing: border-box;
+  transition: var(--transition-basic);
 }
 
 .baseListItem p {
