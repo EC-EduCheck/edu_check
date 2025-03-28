@@ -12,23 +12,15 @@ public class TodayAttendanceResponseDto {
 
     private final Long memberId;
     private final LocalDateTime today;
+    private final TodayAttendanceSummary summary;
     private final List<TodayAttendanceStatus> students;
-    private final Long totalAttendance;
-    private final Long totalEarlyLeave;
-    private final Long totalLate;
-    private final Long totalAbsence;
 
-
-    public static TodayAttendanceResponseDto from(Long memberId, List<TodayAttendanceStatus> students, Long totalAttendance,
-                                                  Long totalEarly, Long totalLate, Long totalAbsence) {
+    public static TodayAttendanceResponseDto from(Long memberId, List<TodayAttendanceStatus> students, TodayAttendanceSummary summary) {
         return TodayAttendanceResponseDto.builder()
                 .memberId(memberId)
                 .today(LocalDateTime.now())
                 .students(students)
-                .totalAttendance(totalAttendance)
-                .totalEarlyLeave(totalEarly)
-                .totalLate(totalLate)
-                .totalAbsence(totalAbsence)
+                .summary(summary)
                 .build();
     }
 }

@@ -2,10 +2,7 @@ package org.example.educheck.domain.studentCourseAttendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordResponseDto;
-import org.example.educheck.domain.attendance.dto.response.TodayAttendanceResponseDto;
-import org.example.educheck.domain.attendance.dto.response.TodayAttendanceStatus;
+import org.example.educheck.domain.attendance.dto.response.*;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
@@ -162,7 +159,8 @@ public class StudentCourseAttendanceService {
         Long totalAbsence = statusCounts.getOrDefault("ABSENT", 0L);
         Long totalAttendance = statusCounts.getOrDefault("ATTENDANCE", 0L);
 
+        TodayAttendanceSummary summary = TodayAttendanceSummary.from(totalAttendance, totalEarlyLeave, totalLate, totalAbsence);
 
-        return TodayAttendanceResponseDto.from(member.getId(), studentRecords, totalAttendance, totalEarlyLeave, totalLate, totalAbsence);
+        return TodayAttendanceResponseDto.from(member.getId(), studentRecords, summary);
     }
 }
