@@ -5,7 +5,6 @@ import TabButton from './tabButton/TabButton';
 import { tabList } from '../../constants/tab';
 import { useLocation } from 'react-router-dom';
 import { getNthSegment } from '../../utils/routerUtils';
-import { staffBaseUrl } from '../../constants/baseUrl';
 
 export default function Tab() {
   const location = useLocation();

@@ -15,7 +15,6 @@ import { sidebarList } from '../../constants/sidebar';
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [itemList, setItemList] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
