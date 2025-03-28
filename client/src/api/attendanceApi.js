@@ -12,7 +12,6 @@ export const attendanceApi = {
         withCredentials: true,
       },
     );
-    console.log(response);
     return response.data;
   },
   submitCheckOut: async () => {

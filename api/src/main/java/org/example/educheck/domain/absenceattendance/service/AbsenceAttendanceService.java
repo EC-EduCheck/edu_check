@@ -69,11 +69,11 @@ public class AbsenceAttendanceService {
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
-    public void processAbsenceAttendanceService(Long courseId, Long absesnceAttendancesId, ProcessAbsenceAttendanceRequestDto requestDto, Member member) {
+    public void processAbsenceAttendanceService(Long courseId, Long absenceAttendancesId, ProcessAbsenceAttendanceRequestDto requestDto, Member member) {
 
 
         AbsenceAttendance absenceAttendance =
-                absenceAttendanceRepository.findById(absesnceAttendancesId)
+                absenceAttendanceRepository.findById(absenceAttendancesId)
                         .orElseThrow(() -> new ResourceNotFoundException("유교 결석 조회 불가"));
 
         Staff staff =
@@ -111,7 +111,7 @@ public class AbsenceAttendanceService {
     }
 
     @Transactional
-    public CreateAbsenceAttendacneReponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+    public CreateAbsenceAttendanceResponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         validateRegistrationCourse(member, courseId);
 
@@ -121,7 +121,7 @@ public class AbsenceAttendanceService {
                 .student(member.getStudent())
                 .startTime(requestDto.getStartDate())
                 .endTime(requestDto.getEndDate())
-                .reason(requestDto.getResean())
+                .reason(requestDto.getReason())
                 .category(requestDto.getCategory())
                 .build();
 
@@ -129,7 +129,7 @@ public class AbsenceAttendanceService {
 
         saveAttachementFiles(files, savedAbsenceAttendance);
 
-        return CreateAbsenceAttendacneReponseDto.from(savedAbsenceAttendance);
+        return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
     }
 
     private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {

@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AttendanceStatsResponseDto {
-    private Long studentId;
     private Long memberId;
     private String memberName;
     private Long courseId;
@@ -18,7 +17,6 @@ public class AttendanceStatsResponseDto {
 
     public static AttendanceStatsResponseDto from(AttendanceStatsProjection projection) {
         return AttendanceStatsResponseDto.builder()
-                .studentId(projection.getStudentId())
                 .memberId(projection.getMemberId())
                 .memberName(projection.getMemberName())
                 .courseId(projection.getCourseId())

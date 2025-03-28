@@ -21,13 +21,12 @@
 
 .fileName {
   display: inline-block;
-  background-color: var( --accent-300);
+  background-color: var(--accent-300);
   padding: 0.2em;
   border-radius: var(--border-radius-5);
   text-overflow: ellipsis;
   cursor: pointer;
 }
-
 
 .detail {
   width: 100%;

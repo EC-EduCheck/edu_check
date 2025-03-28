@@ -4,7 +4,6 @@ import router from './router';
 import { authApi } from './api/authApi';
 import { login } from './store/slices/authSlice';
 import { useDispatch } from 'react-redux';
-import { setRole } from './store/slices/sideBarItemSlice';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -19,7 +18,6 @@ export default function App() {
             ...response.data.data,
             accessToken: accessToken,
           }),
-          setRole(response.data.data),
         );
       } catch (error) {
         // console.error(error);

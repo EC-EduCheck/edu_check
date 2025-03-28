@@ -22,9 +22,9 @@ export default function StaffAttendance() {
   const getAttendances = async () => {
     try {
       const response = await attendanceApi.getTodayAttendances(courseId);
-      const { attence, early, late, absence } = response.data.data;
+      const { attendance, early, late, absence } = response.data.data;
       setDataList([
-        { label: '출석', value: attence },
+        { label: '출석', value: attendance },
         { label: '조퇴', value: early },
         { label: '지각', value: late },
         { label: '결석', value: absence },
@@ -40,8 +40,10 @@ export default function StaffAttendance() {
   };
 
   useEffect(() => {
-    getAttendances();
-  }, [isActiveIndex]);
+    if (courseId) {
+      getAttendances();
+    }
+  }, [courseId]);
 
   const handleActiveFilter = (index) => {
     if (index === isActiveIndex) {

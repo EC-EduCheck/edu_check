@@ -1,23 +1,18 @@
 import React from 'react';
 import styles from './TabButton.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateTab } from '../../../store/slices/sideBarItemSlice';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function TabButton({ index, item }) {
-  const dispatch = useDispatch();
-  const currentTabItem = useSelector((state) => state.sideBarItem.tab);
-  const isActive = currentTabItem === index;
-
-  const handleClick = () => {
-    dispatch(updateTab(index));
-  };
+  const navigate = useNavigate();
 
   return (
     <button
-      className={`${styles.tabButton} ${isActive ? `${styles.active}` : ''}`}
-      onClick={handleClick}
+      // className={`${styles.tabButton} ${isActive ? `${styles.active}` : ''}`}
+      className={`${styles.tabButton}`}
+      onClick={() => navigate(item.path)}
     >
-      {item}
+      {item.name}
     </button>
   );
 }

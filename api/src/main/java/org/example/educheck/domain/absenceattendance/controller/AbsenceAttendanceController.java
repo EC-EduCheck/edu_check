@@ -54,10 +54,10 @@ public class AbsenceAttendanceController {
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @PostMapping("/my/course/{courseId}/absence-attendances")
-    public ResponseEntity<ApiResponse<CreateAbsenceAttendacneReponseDto>> applyAttendanceAbsence(@AuthenticationPrincipal Member member,
-                                                                                                 @PathVariable Long courseId,
-                                                                                                 @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
-                                                                                                 @RequestPart(value = "files", required = false) MultipartFile[] files
+    public ResponseEntity<ApiResponse<CreateAbsenceAttendanceResponseDto>> applyAttendanceAbsence(@AuthenticationPrincipal Member member,
+                                                                                                  @PathVariable Long courseId,
+                                                                                                  @RequestPart(value = "data") CreateAbsenceAttendacneRequestDto requestDto,
+                                                                                                  @RequestPart(value = "files", required = false) MultipartFile[] files
 
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)

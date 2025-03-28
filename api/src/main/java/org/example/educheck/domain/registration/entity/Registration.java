@@ -1,15 +1,13 @@
 package org.example.educheck.domain.registration.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.student.entity.Student;
 
 @Getter
 @Entity
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Registration {
 
