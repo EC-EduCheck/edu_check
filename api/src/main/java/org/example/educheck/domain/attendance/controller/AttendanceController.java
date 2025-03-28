@@ -1,10 +1,10 @@
 package org.example.educheck.domain.attendance.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Status;
@@ -16,14 +16,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class AttendanceController {
     private final AttendanceService attendanceService;
+
 
     @PostMapping("/checkin")
     public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkIn(
@@ -42,21 +41,8 @@ public class AttendanceController {
                 ));
     }
 
-    // 수강생 금일 출결 현황 조회
-    @GetMapping("/courses/{courseId}/attendances/today")
-    public ResponseEntity<ApiResponse<AttendanceListResponseDto>> getTodayAttendances(
-            @PathVariable Long courseId,
-            @AuthenticationPrincipal UserDetails user
-    ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "금일 출석 현황 조회 성공",
-                "OK",
-                attendanceService.getTodayAttendances(courseId, user)
-        ));
-    }
-
     // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
+    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
     public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
             @PathVariable Long courseId,
             @PathVariable Long studentId,
@@ -96,9 +82,11 @@ public class AttendanceController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(
-                "퇴실 성공",
-                "OK",
-                responseDto
-        ));
+                        "퇴실 성공",
+                        "OK",
+                        responseDto
+                ));
     }
+
+
 }

@@ -102,13 +102,23 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
                 );
 
-        LoginResponseDto loginResponseDto = memberRepository.findLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        LoginResponseDto loginResponseDto = roleBasedLogin(member);
 
 
         member.setLastLoginDate(LocalDateTime.now());
 
         return loginResponseDto;
+    }
+
+    private LoginResponseDto roleBasedLogin(Member member) {
+
+        return switch (member.getRole()) {
+            case STUDENT -> memberRepository.studentLoginResponseDtoByMemberId(member.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이다."));
+            case MIDDLE_ADMIN -> memberRepository.staffLoginResponseDtoByMemberId(member.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이다."));
+            default -> throw new IllegalArgumentException("존재하지 않는 회원이다.");
+        };
     }
 
     public EmailCheckResponseDto emailCheck(String email) {
@@ -134,9 +144,10 @@ public class AuthService {
         cookie.setPath("/api/auth/refresh");
         response.addCookie(cookie);
 
-        Member member = memberRepository.findByEmail(email).orElse(null);
-        return memberRepository.findLoginResponseDtoByMemberId(member.getId())
-                .orElseThrow(LoginValidationException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                LoginValidationException::new);
+
+        return roleBasedLogin(member);
 
 
     }

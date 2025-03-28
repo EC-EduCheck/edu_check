@@ -1,9 +1,11 @@
 package org.example.educheck.domain.attendance.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.educheck.domain.lecture.Lecture;
+import org.example.educheck.domain.lecture.entity.Lecture;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.global.common.entity.BaseTimeEntity;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Attendance extends BaseTimeEntity {
 
     @Id
@@ -33,10 +36,16 @@ public class Attendance extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR(50)")
     private Status status;
 
+    @Builder
+    public Attendance(Student student, Lecture lecture, LocalDateTime checkInTimestamp) {
+        this.student = student;
+        this.lecture = lecture;
+        this.checkInTimestamp = checkInTimestamp;
+    }
+
     public Attendance updateStatus(Status status) {
         this.status = status;
-
         return this;
-    };
+    }
 
 }

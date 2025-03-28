@@ -1,0 +1,29 @@
+.circleButton {
+  font-size: var(--font-size-24);
+  padding: var(--padding-small);
+  margin-right: var(--margin-small);
+  border: 1px solid var(--border-100);
+  border-radius: var(--border-radius-30);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 200;
+  transition: var(--transition-basic);
+  background-color: #fff;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.circleButton:hover {
+  box-shadow: var(--box-shadow-medium);
+}
+
+.buttonTitle {
+  color: var(--text-100);
+  transform: translateY(-2px);
+}

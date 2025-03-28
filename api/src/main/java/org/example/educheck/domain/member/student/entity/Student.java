@@ -10,6 +10,7 @@ import org.example.educheck.domain.registration.entity.Registration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -21,8 +22,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Member member;
 
     @Enumerated(EnumType.STRING)
@@ -40,5 +40,18 @@ public class Student {
         this.status = status;
         this.courseParticipationStatus = courseParticipationStatus;
         this.registrations = registrations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Student)) return false;
+        Student student = (Student) o;
+        return Objects.equals(id, student.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

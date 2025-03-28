@@ -19,12 +19,14 @@ export default function Modal({
       <div className={styles.container}>
         <CloseButton handleClick={onClose}></CloseButton>
 
-        <div>
+        <div className={styles.contentWrapper}>
           <div>{content}</div>
 
-          <div className={styles.buttonBox}>
+          <div className={`${styles.buttonBox} ${!mainClick && `${styles.active}`}`}>
             {subClick && <MainButton handleClick={subClick} title={subText || '확인'}></MainButton>}
-            <MainButton handleClick={mainClick} title={mainText || '취소'}></MainButton>
+            {mainClick && (
+              <MainButton handleClick={mainClick} title={mainText || '취소'}></MainButton>
+            )}
           </div>
         </div>
       </div>

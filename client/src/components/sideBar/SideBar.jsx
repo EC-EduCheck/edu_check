@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { checkIn, completeAttendance } from '../../store/slices/authSlice';
+import { checkIn, completeAttendance, logout } from '../../store/slices/authSlice';
 
 import styles from './SideBar.module.css';
 
@@ -8,12 +8,15 @@ import SideBarItem from './sidebarItem/SidebarItem';
 import MainButton from '../buttons/mainButton/MainButton';
 import { useGeolocated } from 'react-geolocated';
 import { attendanceApi } from '../../api/attendanceApi';
+import { authApi } from '../../api/authApi';
+import { useNavigate } from 'react-router-dom';
+import { sidebarList } from '../../constants/sidebar';
 
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [itemList, setItemList] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
     (state) => state.auth.user,
   );
@@ -25,18 +28,17 @@ export default function SideBar() {
   const today = new Date().toISOString().split('T')[0];
   const isAttendanceToday = attendanceDate === today;
 
-  const { coords, isGeolocationAvailable,  error, getPosition } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 10000,
-      },
-      watchPosition: false,
-      userDecisionTimeout: 5000,
-      suppressLocationOnMount: true,
-      isOptimisticGeolocationEnabled: false,
-    });
+  const { coords, isGeolocationAvailable, error, getPosition } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000,
+    },
+    watchPosition: false,
+    userDecisionTimeout: 5000,
+    suppressLocationOnMount: true,
+    isOptimisticGeolocationEnabled: false,
+  });
 
   const handleAttendanceCheck = () => {
     if (isCheckedIn && isAttendanceToday && !isCompleted) {
@@ -70,7 +72,7 @@ export default function SideBar() {
     if (isLoggedIn) {
       const storedDate = attendanceDate;
       const currentDate = new Date().toISOString().split('T')[0];
-      
+
       if (storedDate && storedDate !== currentDate) {
         dispatch(resetAttendanceStatus());
       }
@@ -89,7 +91,7 @@ export default function SideBar() {
 
   useEffect(() => {
     if (coords) {
-      console.log('위도:', coords.latitude, '경도:', coords.longitude);
+      // console.log('위도:', coords.latitude, '경도:', coords.longitude);
       submitAttendanceAPI(coords.latitude, coords.longitude);
     } else if (error) {
       console.error('위치 정보 오류:', error);
@@ -101,7 +103,7 @@ export default function SideBar() {
     try {
       const data = await attendanceApi.submitAttendance(latitude, longitude);
       alert(data.message);
-      console.log(data);
+      // console.log(data);
       dispatch(checkIn());
     } catch (error) {
       console.error('출석 체크 오류:', error);
@@ -121,7 +123,11 @@ export default function SideBar() {
 
   const buttonProps = getButtonProps();
 
-  const { sidebarItemList } = useSelector((state) => state.sideBarItem);
+  const renderSidebarList = sidebarList[role];
+
+  const sideBarItems = renderSidebarList?.map((item, index) => {
+    return <SideBarItem key={`sidebar-${index}`} item={item} isActive={location.pathname === item.path}></SideBarItem>;
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -136,15 +142,17 @@ export default function SideBar() {
     };
   }, []);
 
-  const sideBarItems = sidebarItemList.map((item, index) => {
-    return <SideBarItem key={index} index={index} item={item}></SideBarItem>;
-  });
+  const handleLogout = async () => {
+    await authApi.logout();
+    dispatch(logout());
+    navigate('/');
+  };
 
   return (
     <div className={styles.sideBar}>
       <div ref={infoRef} onClick={() => setIsOpen(true)} className={styles.memberInfo}>
         <div className={styles.memberInfoImg}>
-          <img src="../../assets/logo.png" alt="user image" />
+          <img src="/assets/logo.png" alt="user image" />
         </div>
 
         <div className={styles.memberInfoDetail}>
@@ -167,18 +175,19 @@ export default function SideBar() {
               <p>{email}</p>
             </li>
           </ul>
-          {/* todo: 로그아웃 기능 추가 */}
-          <MainButton title="로그아웃"></MainButton>
+          <MainButton title="로그아웃" handleClick={handleLogout} isEnable={true}></MainButton>
         </div>
       </div>
 
       <div>
         {error && <div>위치 정보를 가져오는 데 실패했습니다: {error.message}</div>}
-        <MainButton
-          title={buttonProps.title}
-          handleClick={handleAttendanceCheck}
-          isEnable={buttonProps.isEnable}
-        />
+        {role === 'STUDENT' && (
+          <MainButton
+            title={buttonProps.title}
+            handleClick={handleAttendanceCheck}
+            isEnable={buttonProps.isEnable}
+          />
+        )}
       </div>
       <nav>{sideBarItems}</nav>
     </div>

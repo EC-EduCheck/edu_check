@@ -43,6 +43,7 @@ const authSlice = createSlice({
         phoneNumber: action.payload.phoneNumber || '',
         lastLoginDate: action.payload.lastLoginDate || '',
       };
+      console.log('login reducer');
     },
     logout: (state) => {
       state.accessToken = '';
@@ -70,5 +71,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout, checkIn, completeAttendance, resetAttendanceStatus } = authSlice.actions;
+export const { login, logout, checkIn, completeAttendance, resetAttendanceStatus } =
+  authSlice.actions;
 export default authSlice.reducer;

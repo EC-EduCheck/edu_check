@@ -4,19 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.repository.AttendanceRepository;
-import org.example.educheck.domain.course.repository.CourseRepository;
-import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.campus.Campus;
 import org.example.educheck.domain.course.entity.Course;
-import org.example.educheck.domain.lecture.Lecture;
+import org.example.educheck.domain.course.repository.CourseRepository;
+import org.example.educheck.domain.lecture.entity.Lecture;
 import org.example.educheck.domain.lecture.repository.LectureRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
@@ -31,8 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 
 @Slf4j
@@ -40,6 +38,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
+    private static final double LOCATION_TOLERANCE = 0.05;
+    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
@@ -48,9 +48,6 @@ public class AttendanceService {
     private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
-
-    private static final double LOCATION_TOLERANCE = 0.05;
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
 
     @Transactional
     public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
@@ -124,38 +121,6 @@ public class AttendanceService {
         return isWithin;
     }
 
-    public AttendanceListResponseDto getTodayAttendances(Long courseId, UserDetails user) {
-        // 현재 관리자가 courseId를 가지고 있는지 확인하기
-        String email = user.getUsername();
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 관리자가 없습니다."));
-        Staff staff = staffRepository.findByMemberId(member.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 관리자가 없습니다."));
-        staffCourseRepository.findByStaffIdAndCourseId(staff.getId(), courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
-
-        // 해당 course 에서 오늘 닐짜의 lectureId 확인하기
-        LocalDateTime today = LocalDateTime.now();
-        Lecture lecture = lectureRepository.findByCourseToday(courseId, today)
-                .orElseThrow(() -> new ResourceNotFoundException("교육 과정 중 금일 강의는 존재하지 않습니다."));
-
-        // 해당 lectureId의 출석 리스트 가져오기
-        List<Attendance> attendances = attendanceRepository.findAllByLectureId(lecture.getId());
-
-        Map<Status, Long> attendanceCounts = attendances.stream()
-                .collect(Collectors.groupingBy(
-                        Attendance::getStatus,
-                        Collectors.counting())
-                );
-
-        long attence = attendanceCounts.getOrDefault(Status.ATTENDANCE, 0L);
-        long late = attendanceCounts.getOrDefault(Status.LATE, 0L);
-        long earlyLeave = attendanceCounts.getOrDefault(Status.EARLY_LEAVE, 0L);
-        long absence = attendanceCounts.getOrDefault(null, 0L);
-
-        return AttendanceListResponseDto.from(staff.getId(), attendances, attence, late, earlyLeave, absence);
-    }
-
     public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {
         checkStaffHasCourse(user, courseId);
 
@@ -173,8 +138,7 @@ public class AttendanceService {
 
         // 조회한 학생의 금일 기준 출석률
         LocalDateTime today = LocalDateTime.now();
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
+        Course course = getCourse(courseId);
         Long lectureTotalCountByToday = lectureRepository.findByCourseIdAndDateBetween(courseId, course.getStartDate(), today).stream().count();
         Long attendanceTotalCountByToday = attendances.stream().filter(attendance -> attendance.getStatus() == Status.ATTENDANCE).count();
         Long attendanceRateByToday = (attendanceTotalCountByToday / lectureTotalCountByToday) * 100;
@@ -186,6 +150,11 @@ public class AttendanceService {
         Long courseProgressRate = (lectureTotalCountByToday / (long) attendances.size()) * 100;
 
         return StudentAttendanceListResponseDto.from(student, attendances, attendanceRateByToday, overallAttendanceRate, courseProgressRate);
+    }
+
+    private Course getCourse(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당하는 강의가 없습니다."));
     }
 
     public void updateStudentAttendance(Long courseId, Long studentId, AttendanceUpdateRequestDto requestDto, UserDetails user) {
@@ -259,12 +228,13 @@ public class AttendanceService {
             attendance.setStatus(Status.EARLY_LEAVE);
         } else if (attendance.getStatus() == Status.LATE) {
             attendance.setStatus(Status.LATE);
-        } else{
+        } else {
             attendance.setStatus(Status.ATTENDANCE);
         }
 
         attendanceRepository.save(attendance);
         return attendance.getStatus();
     }
+
 
 }
