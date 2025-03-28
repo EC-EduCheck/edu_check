@@ -22,12 +22,14 @@ export default function StaffAttendance() {
   const getAttendances = async () => {
     try {
       const response = await attendanceApi.getTodayAttendances(courseId);
-      const { attendance, early, late, absence } = response.data.data;
+      const { totalAttendance, totalEarlyLeave, totalLate, totalAbsence } =
+        response.data.data.summary;
+      console.log(response.data.data);
       setDataList([
-        { label: '출석', value: attendance },
-        { label: '조퇴', value: early },
-        { label: '지각', value: late },
-        { label: '결석', value: absence },
+        { label: '출석', value: totalAttendance },
+        { label: '조퇴', value: totalEarlyLeave },
+        { label: '지각', value: totalLate },
+        { label: '결석', value: totalAbsence },
       ]);
       setStudents(response.data.data.students);
     } catch (error) {
@@ -71,7 +73,7 @@ export default function StaffAttendance() {
       ATTENDANCE: '출석',
       EARLY_LEAVE: '조퇴',
       LATE: '지각',
-      null: '결석',
+      ABSENT: '결석',
     };
 
     if (
