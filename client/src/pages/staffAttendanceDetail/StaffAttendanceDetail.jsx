@@ -31,7 +31,6 @@ export default function StaffAttendanceDetail() {
 
   return (
     <div className={styles.container}>
-      <h1>세부 출격 현황</h1>
       <div className={styles.dashboardContainer}>
         <DashBoardItem>
           <div className={styles.userInfoContainer}>

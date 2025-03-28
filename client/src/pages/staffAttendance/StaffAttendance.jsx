@@ -9,7 +9,7 @@ import FilterButton from '../../components/buttons/filterButton/FilterButton';
 import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
 import { useNavigate } from 'react-router-dom';
-
+import { URL_PATHS } from '../../constants/urlPaths';
 export default function StaffAttendance() {
   const navigate = useNavigate();
   const [isActiveIndex, setIsActiveIndex] = useState(false);
@@ -55,7 +55,7 @@ export default function StaffAttendance() {
     }
   };
   const handleStudentClick = (studentId) => {
-    navigate(`/dashBoard/staff/attendance/detail/courses/${courseId}/students/${studentId}`);
+    navigate(URL_PATHS.MIDDLE_ADMIN.ATTENDANCE.DETAIL(courseId, studentId));
   };
 
   const filterButtons = dataList.map((item, index) => {

@@ -17,7 +17,8 @@ export const URL_PATHS = {
     BASE: BASE_PATHS.MIDDLE_ADMIN,
     ATTENDANCE: {
       BASE: `${BASE_PATHS.MIDDLE_ADMIN}/attendance`,
-      DETAIL: `${BASE_PATHS.MIDDLE_ADMIN}/attendance/detail`,
+      DETAIL: (courseId, studentId) =>
+        `${BASE_PATHS.MIDDLE_ADMIN}/attendance/course/${courseId}/student/${studentId}`,
       ABSENCE: `${BASE_PATHS.MIDDLE_ADMIN}/attendance/absence`,
     },
     STUDENT_MANAGE: `${BASE_PATHS.MIDDLE_ADMIN}/studentManage`,
