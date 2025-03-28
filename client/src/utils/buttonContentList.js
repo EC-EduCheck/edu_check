@@ -22,9 +22,7 @@ const clickableList = {
 };
 
 export const getIsClickable = (menuType) => {
-  return (
-    Object.entries(clickableList).find(([click, types]) => types.includes(menuType))?.[0] || false
-  );
+  return clickableList.true.includes(menuType);
 };
 
 // LeftLineListItem
