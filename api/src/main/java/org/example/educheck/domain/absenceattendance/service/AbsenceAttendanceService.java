@@ -69,11 +69,11 @@ public class AbsenceAttendanceService {
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
-    public void processAbsenceAttendanceService(Long courseId, Long absesnceAttendancesId, ProcessAbsenceAttendanceRequestDto requestDto, Member member) {
+    public void processAbsenceAttendanceService(Long courseId, Long absenceAttendancesId, ProcessAbsenceAttendanceRequestDto requestDto, Member member) {
 
 
         AbsenceAttendance absenceAttendance =
-                absenceAttendanceRepository.findById(absesnceAttendancesId)
+                absenceAttendanceRepository.findById(absenceAttendancesId)
                         .orElseThrow(() -> new ResourceNotFoundException("유교 결석 조회 불가"));
 
         Staff staff =

@@ -2,13 +2,11 @@ package org.example.educheck.domain.studentCourseAttendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
-import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordResponseDto;
+import org.example.educheck.domain.attendance.dto.response.*;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
-import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
@@ -25,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,7 +33,6 @@ public class StudentCourseAttendanceService {
 
     private final StudentCourseAttendanceRepository studentCourseAttendanceRepository;
     private final MemberRepository memberRepository;
-    private final StaffRepository staffRepository;
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
     private final RegistrationRepository registrationRepository;
@@ -141,5 +140,27 @@ public class StudentCourseAttendanceService {
 
         AttendanceStatsProjection projection = studentCourseAttendanceRepository.findAttendanceStatsByStudentId(member.getId(), courseId);
         return AttendanceStatsResponseDto.from(projection);
+    }
+
+    public TodayAttendanceResponseDto getTodayAttendances(Long courseId, Member member) {
+
+        validateStaffAuthorizationInCourse(member, courseId);
+        List<StudentCourseAttendance> todayAttendances = studentCourseAttendanceRepository.findByCourseIdAndLectureDateIsToday(courseId);
+        List<TodayAttendanceStatus> studentRecords = todayAttendances.stream()
+                .map(TodayAttendanceStatus::from)
+                .toList();
+
+        //getStatus() 를 기준으로 그룹화하고, 각 상태별 개수를 Map<String, Long> 형태로 저장
+        Map<String, Long> statusCounts = studentRecords.stream()
+                .collect(Collectors.groupingBy(TodayAttendanceStatus::getStatus, Collectors.counting()));
+
+        Long totalLate = statusCounts.getOrDefault("LATE", 0L);
+        Long totalEarlyLeave = statusCounts.getOrDefault("EARLY_LEAVE", 0L);
+        Long totalAbsence = statusCounts.getOrDefault("ABSENT", 0L);
+        Long totalAttendance = statusCounts.getOrDefault("ATTENDANCE", 0L);
+
+        TodayAttendanceSummary summary = TodayAttendanceSummary.from(totalAttendance, totalEarlyLeave, totalLate, totalAbsence);
+
+        return TodayAttendanceResponseDto.from(member.getId(), studentRecords, summary);
     }
 }

@@ -8,7 +8,7 @@ import { login } from '../../store/slices/authSlice';
 
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
-import { baseUrl } from '../../constants/baseUrl';
+import { BASE_PATHS } from '../../constants/urlPaths';
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const mainPath = baseUrl?.[role];
+      const mainPath = BASE_PATHS?.[role];
       navigate(mainPath, { replace: true });
     }
   }, [isLoggedIn, navigate]);

@@ -1,0 +1,26 @@
+export const BASE_PATHS = {
+  STUDENT: '/dashBoard/student',
+  MIDDLE_ADMIN: '/dashBoard/staff',
+};
+
+export const URL_PATHS = {
+  STUDENT: {
+    BASE: BASE_PATHS.STUDENT,
+    ATTENDANCE: {
+      BASE: `${BASE_PATHS.STUDENT}/attendance`,
+      ABSENCE: `${BASE_PATHS.STUDENT}/attendance/absence`,
+    },
+    RESERVATION: `${BASE_PATHS.STUDENT}/reservation`,
+    SETTING: `${BASE_PATHS.STUDENT}/setting`,
+  },
+  MIDDLE_ADMIN: {
+    BASE: BASE_PATHS.MIDDLE_ADMIN,
+    ATTENDANCE: {
+      BASE: `${BASE_PATHS.MIDDLE_ADMIN}/attendance`,
+      DETAIL: `${BASE_PATHS.MIDDLE_ADMIN}/attendance/detail`,
+      ABSENCE: `${BASE_PATHS.MIDDLE_ADMIN}/attendance/absence`,
+    },
+    STUDENT_MANAGE: `${BASE_PATHS.MIDDLE_ADMIN}/studentManage`,
+    RESERVATION: `${BASE_PATHS.MIDDLE_ADMIN}/reservation`,
+  },
+};
