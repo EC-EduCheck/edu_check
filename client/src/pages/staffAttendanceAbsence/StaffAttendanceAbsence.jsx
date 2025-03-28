@@ -66,8 +66,6 @@ export default function StaffAttendanceAbsence() {
     setSelected('전체');
     activeTitle.push('전체');
     fetchData();
-    // console.log('data=' + data);
-  }, []);
 
     return () => {
       initActiveTitle();
