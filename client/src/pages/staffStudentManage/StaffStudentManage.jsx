@@ -61,7 +61,7 @@ export default function StaffStudentManage() {
   return (
     <>
       <div>
-        <MainButton title="학습자 등록" handleClick={openModalHandler}></MainButton>
+        <MainButton title="학습자 등록" handleClick={openModalHandler} isEnable={true}></MainButton>
       </div>
       {students.map((student, index) => (
         <BaseListItem

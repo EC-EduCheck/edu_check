@@ -1,3 +1,17 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 360px;
+  padding: 0.5rem 1rem;
+  gap: 3rem;
+}
+
+.mainButton {
+  width: 50%;
+  padding: 0 0 0 135px
+}
+
 .roomDashBoardItem {
   padding: var(--padding-medium)  
 }

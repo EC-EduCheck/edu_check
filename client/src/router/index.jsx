@@ -18,7 +18,8 @@ import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttenda
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 
-import NavigationHandler from '../handler/NavigationHandler';
+import TmpLayout from '../layout/TmpLayout';
+import { staffBaseUrl } from '../constants/baseUrl';
 
 const router = createBrowserRouter([
   {
@@ -35,21 +36,28 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: '/dashBoard',
+        path: '/dashBoard/student',
         element: <DashBoard />,
         children: [
           {
-            path: '/dashBoard/student',
-            element: <DashBoard />,
+            index: true,
+            element: <Navigate to="/dashBoard/student/attendance" replace />,
           },
           {
             path: '/dashBoard/student/attendance',
             element: <StudentAttendance />,
+            children: [
+              {
+                index: true,
+                element: <StudentAttendance />,
+              },
+              {
+                path: '/dashBoard/student/attendance/absence',
+                element: <StudentAttendanceAbsence />,
+              },
+            ],
           },
-          {
-            path: '/dashBoard/student/attendance/absence',
-            element: <StudentAttendanceAbsence />,
-          },
+
           {
             path: '/dashBoard/student/reservation',
             element: <RoomReservation />,
@@ -58,9 +66,16 @@ const router = createBrowserRouter([
             path: '/dashBoard/student/setting',
             element: <StudentSetting />,
           },
+        ],
+      },
+
+      {
+        path: '/dashBoard/staff',
+        element: <DashBoard />,
+        children: [
           {
-            path: '/dashBoard/staff',
-            element: <DashBoard />,
+            index: true,
+            element: <Navigate to="/dashBoard/staff/attendance" replace />,
           },
           {
             path: '/dashBoard/staff/attendance',
@@ -76,22 +91,35 @@ const router = createBrowserRouter([
           },
           {
             path: '/dashBoard/staff/studentManage',
-            element: <StaffStudentManage />,
+            element: <TmpLayout />,
+            children: [
+              {
+                index: true,
+                element: <StaffStudentManage />,
+              },
+            ],
           },
           {
             path: '/dashBoard/staff/reservation',
-            element: <StaffRoomReservation />,
+            element: <TmpLayout />,
+            children: [
+              {
+                index: true,
+                element: <StaffRoomReservation />,
+              },
+            ],
           },
         ],
       },
+
       {
         path: '/notfound',
         element: <NotFound />,
       },
-      {
-        path: '*',
-        element: <Navigate to="/notfound" replace />,
-      },
+      // {
+      //   path: '*',
+      //   element: <Navigate to="/notfound" replace />,
+      // },
     ],
   },
 ]);

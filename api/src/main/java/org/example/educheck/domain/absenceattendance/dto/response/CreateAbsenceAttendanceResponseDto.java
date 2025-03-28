@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CreateAbsenceAttendacneReponseDto {
+public class CreateAbsenceAttendanceResponseDto {
 
     private Long absenceAttendanceId;
-    private String resean;
+    private String reason;
     private LocalDate startDate;
     private LocalDate endDate;
     private String category;
@@ -24,10 +24,10 @@ public class CreateAbsenceAttendacneReponseDto {
     private Character isApprove;
     private LocalDateTime approveDate;
 
-    public static CreateAbsenceAttendacneReponseDto from(AbsenceAttendance absenceAttendance) {
-        return CreateAbsenceAttendacneReponseDto.builder()
+    public static CreateAbsenceAttendanceResponseDto from(AbsenceAttendance absenceAttendance) {
+        return CreateAbsenceAttendanceResponseDto.builder()
                 .absenceAttendanceId(absenceAttendance.getId())
-                .resean(absenceAttendance.getReason())
+                .reason(absenceAttendance.getReason())
                 .startDate(absenceAttendance.getStartTime())
                 .endDate(absenceAttendance.getEndTime())
                 .category(absenceAttendance.getCategory())

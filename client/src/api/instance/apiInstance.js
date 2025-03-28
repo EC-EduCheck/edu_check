@@ -3,22 +3,22 @@ import store from '../../store/store';
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 const NO_TOKEN_REQUIRED = ['/api/auth/login', '/api/auth/signup', '/api/auth/refresh', '/'];
 
 apiInstance.interceptors.request.use((config) => {
-  console.log(config);
+  // console.log(config);
   const accessToken = store.getState().auth.accessToken;
   const isRequiredTokenUrl = !NO_TOKEN_REQUIRED.includes(config.url);
 
   if (isRequiredTokenUrl) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
-    console.log(config.headers);
+    // console.log(config.headers);
   }
 
-  console.log(config);
+  // console.log(config);
 
   return config;
 });

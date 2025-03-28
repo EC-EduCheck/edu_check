@@ -42,8 +42,10 @@ export default function StaffAttendance() {
   };
 
   useEffect(() => {
-    getAttendances();
-  }, [isActiveIndex]);
+    if (courseId) {
+      getAttendances();
+    }
+  }, [courseId]);
 
   const handleActiveFilter = (index) => {
     if (index === isActiveIndex) {

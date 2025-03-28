@@ -6,6 +6,7 @@ import org.example.educheck.global.common.exception.ErrorCode;
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.example.educheck.global.common.exception.custom.common.GlobalException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -80,5 +81,13 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getStatus())
                 .body(ApiResponse.error(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getMessage(),
                         ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getCode()));
+    }
+
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHttpMessageConversionException(HttpMessageConversionException ex) {
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getStatus())
+                .body(ApiResponse.error(ErrorCode.INVALID_INPUT.getMessage(),
+                        ErrorCode.INVALID_INPUT.getCode()));
     }
 }
