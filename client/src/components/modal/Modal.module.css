@@ -25,7 +25,15 @@
   flex-direction: column;
   box-sizing: border-box;
   z-index: 999;
+  width: 30%;
+  max-width: 1000px;
 }
+
+
+.contentWrapper {
+  width: 100%;
+}
+
 
 .container p {
   color: var(--bg-100);

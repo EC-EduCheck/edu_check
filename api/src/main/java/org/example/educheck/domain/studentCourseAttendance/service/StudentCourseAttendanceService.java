@@ -13,6 +13,8 @@ import org.example.educheck.domain.registration.repository.RegistrationRepositor
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordResponseDto;
+import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsProjection;
+import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsResponseDto;
 import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
 import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
@@ -132,5 +134,12 @@ public class StudentCourseAttendanceService {
         if (!staffCourseRepository.existsByStaffIdAndCourseId(staffId, courseId)) {
             throw new ForbiddenException("출석부 조회는 해당 과정의 관리자만 조회 가능합니다.");
         }
+    }
+
+    public AttendanceStatsResponseDto getAttendancesStats(Member member, Long courseId) {
+        validateStudentRegistrationInCourse(courseId, member.getStudentId());
+
+        AttendanceStatsProjection projection = studentCourseAttendanceRepository.findAttendanceStatsByStudentId(member.getId(), courseId);
+        return AttendanceStatsResponseDto.from(projection);
     }
 }

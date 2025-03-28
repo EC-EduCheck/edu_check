@@ -30,9 +30,9 @@ export const getIsClickable = (menuType) => {
 // LeftLineListItem
 export const getBackgroundColor = (menuType) => {
   switch (true) {
-    case ['승인'].includes(menuType):
+    case ['승인', true].includes(menuType):
       return 'green';
-    case ['반려'].includes(menuType):
+    case ['반려', false].includes(menuType):
       return 'red';
     default:
       return false;

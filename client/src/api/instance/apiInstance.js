@@ -3,7 +3,7 @@ import store from '../../store/store';
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 const NO_TOKEN_REQUIRED = ['/api/auth/login', '/api/auth/signup', '/api/auth/refresh', '/'];
