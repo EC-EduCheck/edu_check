@@ -19,11 +19,11 @@ export default function StaffAttendanceDetail() {
     { id: 6, content: '2024년 01월 01일', tagTitle: '결석' },
     { id: 7, content: '2024년 01월 01일', tagTitle: '결석' },
     { id: 8, content: '2024년 01월 01일', tagTitle: '결석' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '조퇴' },
-    { id: 9, content: '2024년 01월 01일', tagTitle: '출석' },
+    { id: 19, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 29, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 39, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 49, content: '2024년 01월 01일', tagTitle: '조퇴' },
+    { id: 59, content: '2024년 01월 01일', tagTitle: '출석' },
   ];
 
   return (
@@ -49,7 +49,7 @@ export default function StaffAttendanceDetail() {
         <div className={styles.listContainer}>
           {attendanceItems.map((item) => (
             <BaseListItem
-              key={item.id}
+              key={`attendance-${item.id}`}
               id={item.id}
               content={item.content}
               tagTitle={item.tagTitle}
