@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, use } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { checkIn, completeAttendance, logout } from '../../store/slices/authSlice';
 
@@ -15,7 +15,6 @@ import { sidebarList } from '../../constants/sidebar';
 export default function SideBar() {
   const infoRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [itemList, setItemList] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { name, role, courseName, phoneNumber, birthDate, email } = useSelector(
@@ -127,7 +126,7 @@ export default function SideBar() {
   const renderSidebarList = sidebarList[role];
 
   const sideBarItems = renderSidebarList?.map((item, index) => {
-    return <SideBarItem key={`sidebar-${index}`} item={item}></SideBarItem>;
+    return <SideBarItem key={`sidebar-${index}`} item={item} isActive={location.pathname === item.path}></SideBarItem>;
   });
 
   useEffect(() => {

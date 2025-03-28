@@ -13,6 +13,12 @@ import java.util.List;
 
 public interface StudentCourseAttendanceRepository extends JpaRepository<StudentCourseAttendance, Integer> {
 
+
+    @Query("SELECT sca FROM StudentCourseAttendance sca " +
+            "WHERE sca.id.courseId = :courseId " +
+            "AND DATE( sca.lectureDate) = DATE(NOW())")
+    List<StudentCourseAttendance> findByCourseIdAndLectureDateIsToday(@Param("courseId") Long courseId);
+
     List<StudentCourseAttendance> findByIdStudentIdAndIdCourseId(Long studentId, Long courseId);
 
     Page<StudentCourseAttendance> findByIdStudentIdAndIdCourseId(Long studentId, Long courseId, Pageable pageable);
@@ -28,7 +34,6 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
             @Param("year") Integer year,
             @Param("month") Integer month,
             Pageable pageable);
-
 
     @Query(value = """
                     SELECT
@@ -56,4 +61,5 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
                     HAVING member_id = :memberId AND course_id = :courseId
             """, nativeQuery = true)
     AttendanceStatsProjection findAttendanceStatsByStudentId(@Param("memberId") Long studentId, @Param("courseId") Long courseId);
+
 }

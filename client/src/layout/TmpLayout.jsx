@@ -2,7 +2,6 @@ import React from 'react';
 import Tab from '../components/tab/Tab';
 import { Outlet } from 'react-router-dom';
 import styles from '../pages/dashBoard/DashBoard.module.css';
-import { staffBaseUrl } from '../constants/baseUrl';
 
 export default function TmpLayout({ tabList }) {
   return (

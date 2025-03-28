@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.AttendanceListResponseDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
 import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Status;
@@ -40,19 +39,6 @@ public class AttendanceController {
                         "OK",
                         responseDto
                 ));
-    }
-
-    // 수강생 금일 출결 현황 조회
-    @GetMapping("/courses/{courseId}/attendances/today")
-    public ResponseEntity<ApiResponse<AttendanceListResponseDto>> getTodayAttendances(
-            @PathVariable Long courseId,
-            @AuthenticationPrincipal UserDetails user
-    ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "금일 출석 현황 조회 성공",
-                "OK",
-                attendanceService.getTodayAttendances(courseId, user)
-        ));
     }
 
     // 수강생 세부 출결 현황 조회

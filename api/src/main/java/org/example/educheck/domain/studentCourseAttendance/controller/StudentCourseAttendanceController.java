@@ -3,6 +3,7 @@ package org.example.educheck.domain.studentCourseAttendance.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.response.MyAttendanceRecordListResponseDto;
+import org.example.educheck.domain.attendance.dto.response.TodayAttendanceResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
 import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsResponseDto;
@@ -79,6 +80,19 @@ public class StudentCourseAttendanceController {
 
                 )
         );
+    }
+
+    @PreAuthorize("hasAuthority('MIDDLE_ADMIN')")
+    @GetMapping("/courses/{courseId}/attendances/today")
+    public ResponseEntity<ApiResponse<TodayAttendanceResponseDto>> getTodayAttendances(
+            @PathVariable Long courseId,
+            @AuthenticationPrincipal Member member
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                "금일 출석 현황 조회 성공",
+                "OK",
+                studentCourseAttendanceService.getTodayAttendances(courseId, member)
+        ));
     }
 
 }
