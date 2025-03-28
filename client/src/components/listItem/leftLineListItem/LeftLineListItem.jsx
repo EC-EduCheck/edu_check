@@ -18,20 +18,40 @@ export default function LeftLineListItem({ isClickable, handleClick, status, chi
   };
 
   const bgColor = getBackgroundColor(status);
+  const fontColor = getBackgroundColor(status);
 
   return (
     <div
       {...(isClickable ? { onClick: handleClick } : {})}
-      className={`${styles.leftLineListItem} ${isClickable && `${styles.active}`} ${bgColor ? styles[bgColor] : ''}`}
+      className={`${styles.leftLineListItem} ${isClickable && `${styles.active}`}`}
     >
-      <p>{children.studentName}</p>
-      <p>{status}</p>
-      <p>{categoryMapper[children.category] || ''}</p>
-      <p>{children.attached ? '첨부' : '미첨부'}</p>
-      <p>{new Date(children.createdAt).toLocaleDateString().replace(/\.$/, '')}</p>
-      <p>{statusMapper[children.status]}</p>
+      <div className={`${styles.colorLine} ${bgColor ? styles[bgColor] : ''}`}></div>
+      {children?.studentName ? (
+        // 관리자 - 유고결석
+        <>
+          <p>{children.studentName}</p>
+          <p>{status}</p>
+          <p>{categoryMapper[children.category] || ''}</p>
+          <p>{children.attached ? '첨부' : '미첨부'}</p>
+          <p>{new Date(children.createdAt).toLocaleDateString().replace(/\.$/, '')}</p>
+          <p>{statusMapper[children.status]}</p>
+        </>
+      ) : (
+        // 수강생 - 유고결석
+        <>
+          <div className={styles.leftBox}>
+            <p>{categoryMapper[children.category]}</p>
+            <p className={`${fontColor ? styles[fontColor] : ''}`}>{children.isApprove}</p>
+          </div>
 
-      {!isClickable && <MoreButton></MoreButton>}
+          <div className={styles.rightBox}>
+            <p>
+              {children.startDate}~{children.endDate}
+            </p>
+            {!isClickable && <MoreButton></MoreButton>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

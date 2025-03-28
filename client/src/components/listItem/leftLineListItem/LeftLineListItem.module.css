@@ -10,11 +10,21 @@
   border-radius: var(--border-radius-20);
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
   transition: var(--transition-basic);
 }
 
-.leftLineListItem::before {
+.colorLine {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--border-radius-20);
+  overflow: hidden;
+}
+
+.colorLine::before {
+  display: block;
   content: '';
   width: 12px;
   position: absolute;
@@ -32,6 +42,42 @@
   background-color: var(--primary-300);
 }
 
+p.red {
+  color: var(--primary-300);
+}
+
 .green::before {
   background-color: var(--primary-100);
+}
+
+p.green {
+  color: var(--primary-100);
+}
+
+/* 수강생 유교결석 */
+.leftBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.leftBox p:first-child {
+  font-weight: 500;
+}
+
+.leftBox p:last-child {
+  font-size: var(--font-size-14);
+}
+
+.rightBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: var(--padding-basic);
+  right: var(--padding-medium);
+}
+
+.rightBox p {
+  font-size: var(--font-size-14);
 }
