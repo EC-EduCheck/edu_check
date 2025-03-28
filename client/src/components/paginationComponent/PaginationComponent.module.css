@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--padding-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  width: 10px;
+  text-align: center;
+  font-size: var(--font-size-24);
+  padding: var(--padding-small);
+  border: none;
+  background: none;
+  outline: none;
+  -moz-appearance: textfield; /* Firefox */
+  color: var(--text-100);
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.arrowPrevious,
+.arrowNext {
+  width: 24px;
+  height: 24px;
+}
+
+.arrowNext {
+  transform: rotate(180deg);
+}
