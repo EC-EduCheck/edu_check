@@ -127,19 +127,22 @@ public class AbsenceAttendanceService {
 
         AbsenceAttendance savedAbsenceAttendance = absenceAttendanceRepository.save(absenceAttendance);
 
-        saveAttachementFiles(files, savedAbsenceAttendance);
+        saveAttachmentFiles(files, savedAbsenceAttendance);
 
         return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
     }
 
-    private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
+    private void saveAttachmentFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
         log.info("첨부파일 저장 로직 동작");
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
+
             for (Map<String, String> result : uploadedResults) {
+
                 for (MultipartFile file : files) {
 
                     String originalName = file.getOriginalFilename();
+                    log.info("originalName : {}", originalName);
                     String mimeType = file.getContentType();
 
                     AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
@@ -198,7 +201,7 @@ public class AbsenceAttendanceService {
         absenceAttendanceRepository.save(absenceAttendance);
 
         if (files != null) {
-            saveAttachementFiles(files, absenceAttendance);
+            saveAttachmentFiles(files, absenceAttendance);
         }
 
         return UpdateAbsenceAttendacneReponseDto.from(absenceAttendance);

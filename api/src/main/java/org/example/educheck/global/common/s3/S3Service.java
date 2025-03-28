@@ -38,6 +38,7 @@ public class S3Service {
 
 
         for (MultipartFile file : files) {
+            log.info("fileName : {}", file.getName());
             Map<String, String> fileInfo = uploadFile(file);
             uploadedFiles.add(fileInfo);
 
