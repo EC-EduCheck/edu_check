@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './TabButton.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateTab } from '../../../store/slices/sideBarItemSlice';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 export default function TabButton({ index, item }) {

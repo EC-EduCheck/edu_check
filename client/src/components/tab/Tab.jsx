@@ -4,16 +4,17 @@ import styles from './Tab.module.css';
 import TabButton from './tabButton/TabButton';
 import { tabList } from '../../constants/tab';
 import { useLocation } from 'react-router-dom';
-import { getLastSegment } from '../../utils/routerUtils';
+import { getNthSegment } from '../../utils/routerUtils';
+import { staffBaseUrl } from '../../constants/baseUrl';
 
 export default function Tab() {
   const location = useLocation();
 
   const { role } = useSelector((state) => state.auth.user);
+  const segment = getNthSegment(location.pathname, 2);
+  console.log(segment);
+  const renderTabList = tabList?.[role]?.[segment];
 
-  const lastSegment = getLastSegment(location.pathname);
-
-  const renderTabList = tabList?.[role]?.[lastSegment];
   const tabContent = renderTabList?.map((item, index) => {
     return <TabButton key={`tab-${index}`} index={index} item={item}></TabButton>;
   });

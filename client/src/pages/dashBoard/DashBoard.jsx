@@ -17,13 +17,7 @@ export default function DashBoard() {
   return (
     <div className={`container ${styles.dashBoard}`}>
       <SideBar />
-      <div className={styles.dashBoardBox}>
-        <Tab />
-        {/* TODO : dashBoardContent 내부에 대시보드 및 컴포넌트 사용 */}
-        <div className={styles.dashBoardContent}>
-          <Outlet></Outlet>
-        </div>
-      </div>
+      <Outlet></Outlet>
     </div>
   );
 }

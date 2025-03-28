@@ -9,9 +9,12 @@ import { setRole } from '../../store/slices/sideBarItemSlice';
 
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
+import { baseUrl } from '../../constants/baseUrl';
 
 export default function Login() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { role } = useSelector((state) => state.auth.user);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputData, setInputData] = useState({
@@ -19,7 +22,7 @@ export default function Login() {
     password: '',
   });
   const [isLoginButtonEnable, setIsLoginButtonEnable] = useState(false);
-  
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleInputChange = (event) => {
@@ -43,7 +46,12 @@ export default function Login() {
         }),
         setRole(response.data.data),
       );
-      navigate('/', { replace: true });
+      // navigate('/', { replace: true });
+      const mainPath = baseUrl?.[role];
+      console.log(role);
+      console.log(baseUrl);
+      console.log(mainPath);
+      navigate(mainPath, { replace: true });
     } catch (error) {
       // TODO: BE에서 에러처리 후 응답 메시지 출력으로 변경
       console.log(error);
