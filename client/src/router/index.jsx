@@ -16,6 +16,7 @@ import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import DateClickingSelecting from '../pages/roomReservation/dateClickingSelecting/DateClickingSelecting';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
+import ReservationCalendar from '../pages/roomReservation/dateClickingSelecting/DateClickingSelecting';
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <RoomReservation />,
+                element: <ReservationCalendar />,
               },
             ],
           },
