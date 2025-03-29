@@ -25,15 +25,14 @@
   flex-direction: column;
   box-sizing: border-box;
   z-index: 999;
-  width: 30%;
+  width: 50%;
+  min-width: auto;
   max-width: 1000px;
 }
-
 
 .contentWrapper {
   width: 100%;
 }
-
 
 .container p {
   color: var(--bg-100);

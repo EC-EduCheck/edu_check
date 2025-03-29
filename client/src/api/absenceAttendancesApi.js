@@ -5,8 +5,8 @@ export const absenceAttendancesApi = {
     await apiInstance.get(`/course/${courseId}/absence-attendances?page=${page}`),
 
   processAbsenceAttendance: async (courseId, absenceAttendancedId, isApproved) =>
-    await apiInstance.post(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`, {
-      isApproved: isApproved,
+    await apiInstance.patch(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`, {
+      isApprove: isApproved,
     }),
 
   getAbsenceAttendance: async (courseId, absenceAttendancedId) =>

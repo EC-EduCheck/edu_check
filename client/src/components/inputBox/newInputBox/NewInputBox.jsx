@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './InputBox2.module.css';
+import styles from './NewInputBox.module.css';
 
-export default function InputBox2({
+export default function NewInputBox({
   type,
   title,
   disabled,
@@ -13,20 +13,20 @@ export default function InputBox2({
 }) {
 
   return (
-    <div className={styles.inputContainer2}>
-      <p className={styles.label2}>
+    <div className={styles.inputContainer}>
+      <p className={styles.label}>
         {label}
         <span>{isSelect}</span>
       </p>
       <input
-        className={styles.inputBox2}
+        className={styles.inputBox}
         type={type}
         placeholder={title}
         disabled={disabled}
         onChange={onChange}
         name={name}
       ></input>
-      <p className={styles.content2}>{content}</p>
+      <p className={styles.content}>{content}</p>
     </div>
   );
 }

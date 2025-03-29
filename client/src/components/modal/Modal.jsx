@@ -1,5 +1,5 @@
-import React from 'react'
-import styles from "./Modal.module.css"
+import React from 'react';
+import styles from './Modal.module.css';
 import MainButton from '../buttons/mainButton/MainButton';
 import CloseButton from '../buttons/closeButton/CloseButton';
 
@@ -23,9 +23,9 @@ export default function Modal({
           <div>{content}</div>
 
           <div className={`${styles.buttonBox} ${!mainClick && `${styles.active}`}`}>
-            {subClick && <MainButton handleClick={subClick} title={subText || '확인'}></MainButton>}
+            {subClick && <MainButton handleClick={subClick} title={subText || '확인'} isEnable={true}></MainButton>}
             {mainClick && (
-              <MainButton handleClick={mainClick} title={mainText || '취소'}></MainButton>
+              <MainButton handleClick={mainClick} title={mainText || '취소'} isEnable={true}></MainButton>
             )}
           </div>
         </div>

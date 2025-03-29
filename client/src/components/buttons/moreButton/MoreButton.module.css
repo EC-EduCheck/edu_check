@@ -38,9 +38,9 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  position: sticky;
+  position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   border-radius: var(--border-radius-10);
   border: 1px solid var(--bg-300);
   overflow: hidden;

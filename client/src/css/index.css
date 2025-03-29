@@ -106,6 +106,8 @@ li {
 
 .container {
   width: var(--width-full);
+  min-height: fit-content;
+  overflow: hidden;
 }
 
 .subTitle {

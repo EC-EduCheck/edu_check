@@ -125,8 +125,23 @@ export default function SideBar() {
 
   const renderSidebarList = sidebarList[role];
 
+  const compareUrl = (pathName, itemPath) => {
+    const getSegment = (url) => url.split('/').filter(Boolean).slice(0, 3);
+
+    const segment1 = getSegment(pathName);
+    const segment2 = getSegment(itemPath);
+
+    return segment1.join('/') === segment2.join('/');
+  };
+
   const sideBarItems = renderSidebarList?.map((item, index) => {
-    return <SideBarItem key={`sidebar-${index}`} item={item} isActive={location.pathname === item.path}></SideBarItem>;
+    return (
+      <SideBarItem
+        key={`sidebar-${index}`}
+        item={item}
+        isActive={compareUrl(location.pathname, item.path)}
+      ></SideBarItem>
+    );
   });
 
   useEffect(() => {

@@ -3,3 +3,7 @@
   width: 100%;
   gap: 1rem;
 }
+
+.studentsBox > div:hover {
+  box-shadow: var(--box-shadow-medium);
+}

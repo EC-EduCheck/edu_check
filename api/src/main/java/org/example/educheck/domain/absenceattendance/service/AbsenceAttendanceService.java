@@ -127,34 +127,36 @@ public class AbsenceAttendanceService {
 
         AbsenceAttendance savedAbsenceAttendance = absenceAttendanceRepository.save(absenceAttendance);
 
-        saveAttachementFiles(files, savedAbsenceAttendance);
+        saveAttachmentFiles(files, savedAbsenceAttendance);
 
         return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
     }
 
-    private void saveAttachementFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
+    private void saveAttachmentFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
         log.info("첨부파일 저장 로직 동작");
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
-            for (Map<String, String> result : uploadedResults) {
-                for (MultipartFile file : files) {
 
-                    String originalName = file.getOriginalFilename();
-                    String mimeType = file.getContentType();
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
+                Map<String, String> result = uploadedResults.get(i);
 
-                    AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
-                            .absenceAttendance(savedAbsenceAttendance)
-                            .url(result.get("fileUrl"))
-                            .s3Key(result.get("s3Key"))
-                            .originalName(originalName)
-                            .mime(mimeType)
-                            .build();
+                String originalFilename = file.getOriginalFilename();
+                log.info("originalFilename : {}", originalFilename);
+                String mineType = file.getContentType();
 
-                    log.info(attachmentFile.getUrl());
+                AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
+                        .absenceAttendance(savedAbsenceAttendance)
+                        .url(result.get("fileUrl"))
+                        .s3Key(result.get("s3Key"))
+                        .originalName(originalFilename)
+                        .mime(mineType)
+                        .build();
 
-                    absenceAttendanceAttachmentFileRepository.save(attachmentFile);
-                }
+                absenceAttendanceAttachmentFileRepository.save(attachmentFile);
+
             }
+            
         }
     }
 
@@ -198,7 +200,7 @@ public class AbsenceAttendanceService {
         absenceAttendanceRepository.save(absenceAttendance);
 
         if (files != null) {
-            saveAttachementFiles(files, absenceAttendance);
+            saveAttachmentFiles(files, absenceAttendance);
         }
 
         return UpdateAbsenceAttendacneReponseDto.from(absenceAttendance);
