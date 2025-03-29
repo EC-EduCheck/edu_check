@@ -23,7 +23,7 @@ dbconfig = {
 cnxpool = pooling.MySQLConnectionPool(pool_name="pool", pool_size=5, **dbconfig)
 
 
-def get_data_from_db(student_id, course_id):
+def get_data_from_db(member_id, course_id):
 
     status_mapper = {
         "ATTENDANCE": "출석",
@@ -37,35 +37,53 @@ def get_data_from_db(student_id, course_id):
         query = """
     SELECT lecture_session, lecture_date, attendance_status
     FROM student_course_attendance
-    WHERE student_id = %s AND course_id = %s
+    WHERE member_id = %s AND course_id = %s
 """
-        data = pd.read_sql(query, conn, params=(student_id, course_id))
+        data = pd.read_sql(query, conn, params=(member_id, course_id))
         data["attendance_status"] = data["attendance_status"].replace(status_mapper)
 
     finally:
         conn.close()
     return data
 
+    def get_student_name(member_id):
+    conn = cnxpool.get_connection()
+    try:
+        query = """
+        SELECT student_name
+        FROM student_course_attendance
+        WHERE member_id = %s
+        """
+        cursor = conn.cursor()
+        cursor.execute(query, (member_id,))
+        result = cursor.fetchone()
+        if result and result[0]:
+            return result[0]
+        else:
+            return f"student_{member_id}"
+    finally:
+        conn.close()
 
-@app.route("/app/courses/<int:course_id>/students/<int:student_id>", methods=["GET"])
-def data(student_id, course_id):
-    df = get_data_from_db(student_id, course_id)
+
+@app.route("/app/courses/<int:course_id>/members/<int:member_id>", methods=["GET"])
+def data(member_id, course_id):
+    df = get_data_from_db(member_id, course_id)
 
     return jsonify(df.to_dict(orient="records"))
 
 
 @app.route(
-    "/app/courses/<int:course_id>/students/<int:student_id>/download", methods=["GET"]
+    "/app/courses/<int:course_id>/members/<int:member_id>/download", methods=["GET"]
 )
-def download(student_id, course_id):
-    data = get_data_from_db(student_id, course_id)
+def download(member_id, course_id):
+    data = get_data_from_db(member_id, course_id)
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         data.to_excel(writer, index=False, sheet_name="Data")
     output.seek(0)
 
     return send_file(
-        output, download_name=f"{student_id}_출석부.xlsx", as_attachment=True
+        output, download_name=f"{member_id}_출석부.xlsx", as_attachment=True
     )
 
 
