@@ -13,7 +13,7 @@
 
 .inputBox::placeholder {
   color: var(--text-300);
-  text-align: center;
+  text-align: left;
 }
 
 .inputBox:focus {
