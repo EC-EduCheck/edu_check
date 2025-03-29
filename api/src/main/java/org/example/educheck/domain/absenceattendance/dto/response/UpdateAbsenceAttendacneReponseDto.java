@@ -21,7 +21,7 @@ public class UpdateAbsenceAttendacneReponseDto {
     private LocalDate endDate;
     private String category;
     private Character isApprove;
-    private LocalDateTime approveDate;
+    private LocalDateTime approveDateTime;
 
     public static UpdateAbsenceAttendacneReponseDto from(AbsenceAttendance absenceAttendance) {
         return UpdateAbsenceAttendacneReponseDto.builder()
@@ -31,7 +31,7 @@ public class UpdateAbsenceAttendacneReponseDto {
                 .endDate(absenceAttendance.getEndTime())
                 .category(absenceAttendance.getCategory())
                 .isApprove(absenceAttendance.getIsApprove())
-                .approveDate(absenceAttendance.getApproveDate())
+                .approveDateTime(absenceAttendance.getApproveDateTime())
                 .build();
     }
 

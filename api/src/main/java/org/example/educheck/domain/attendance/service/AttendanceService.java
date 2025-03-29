@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
 import org.example.educheck.domain.attendance.entity.Status;
 import org.example.educheck.domain.attendance.repository.AttendanceRepository;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 
 @Slf4j
@@ -119,37 +117,6 @@ public class AttendanceService {
         boolean isWithin = Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
                 Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
         return isWithin;
-    }
-
-    public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {
-        checkStaffHasCourse(user, courseId);
-
-        // studentId에 해당하는 수강생이 있는지 확인하기
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 수강생이 없습니다."));
-
-        // 해당 교육 강좌에 해당하는 강의 리스트
-        List<Lecture> lectures = lectureRepository.findAllByCourseId(courseId);
-
-        // 특정 학생의 강의의 출석 리스트
-        List<Attendance> attendances = lectures.stream()
-                .map(lecture -> attendanceRepository.findByLectureIdStudentId(studentId, lecture.getId()))
-                .toList();
-
-        // 조회한 학생의 금일 기준 출석률
-        LocalDateTime today = LocalDateTime.now();
-        Course course = getCourse(courseId);
-        Long lectureTotalCountByToday = lectureRepository.findByCourseIdAndDateBetween(courseId, course.getStartDate(), today).stream().count();
-        Long attendanceTotalCountByToday = attendances.stream().filter(attendance -> attendance.getStatus() == Status.ATTENDANCE).count();
-        Long attendanceRateByToday = (attendanceTotalCountByToday / lectureTotalCountByToday) * 100;
-
-        // 조회한 학생의 전체 출석률
-        Long overallAttendanceRate = (attendanceTotalCountByToday / (long) attendances.size()) * 100;
-
-        // 과정 진행률
-        Long courseProgressRate = (lectureTotalCountByToday / (long) attendances.size()) * 100;
-
-        return StudentAttendanceListResponseDto.from(student, attendances, attendanceRateByToday, overallAttendanceRate, courseProgressRate);
     }
 
     private Course getCourse(Long courseId) {

@@ -62,7 +62,7 @@ public class AbsenceAttendanceService {
             throw new InvalidRequestException("이미 취소 요청한 유고 결석 신청입니다.");
         }
 
-        if (absenceAttendance.getIsApprove() != null || absenceAttendance.getApproveDate() != null) {
+        if (absenceAttendance.getIsApprove() != null || absenceAttendance.getApproveDateTime() != null) {
             throw new InvalidRequestException("처리 이전에만 수정 가능합니다.");
         }
     }
@@ -85,7 +85,7 @@ public class AbsenceAttendanceService {
         }
 
         absenceAttendance.setStaff(staff);
-        absenceAttendance.setApproveDate(LocalDateTime.now());
+        absenceAttendance.setApproveDateTime(LocalDateTime.now());
         absenceAttendance.setIsApprove(
                 String.valueOf(
                                 requestDto.isApprove()
@@ -156,7 +156,7 @@ public class AbsenceAttendanceService {
                 absenceAttendanceAttachmentFileRepository.save(attachmentFile);
 
             }
-            
+
         }
     }
 

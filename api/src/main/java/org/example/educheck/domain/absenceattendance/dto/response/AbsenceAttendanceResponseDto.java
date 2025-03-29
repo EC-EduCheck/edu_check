@@ -29,7 +29,7 @@ public class AbsenceAttendanceResponseDto {
     private LocalDateTime createdAt;
     private String category;
     private String reason;
-    private LocalDateTime approveDate;
+    private LocalDateTime approveDateTime;
     private Character isApprove;
     private List<AttachmentFileReposeDto> files;
 
@@ -43,7 +43,7 @@ public class AbsenceAttendanceResponseDto {
                 .createdAt(absenceAttendance.getCreatedAt())
                 .category(absenceAttendance.getCategory())
                 .reason(absenceAttendance.getReason())
-                .approveDate(absenceAttendance.getApproveDate())
+                .approveDateTime(absenceAttendance.getApproveDateTime())
                 .isApprove(absenceAttendance.getIsApprove())
                 .files(files)
                 .build();

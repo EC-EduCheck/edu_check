@@ -41,7 +41,7 @@ public class AbsenceAttendance extends BaseTimeEntity {
     private LocalDate startTime;
     private LocalDate endTime;
     private Character isApprove;
-    private LocalDateTime approveDate;
+    private LocalDateTime approveDateTime;
     private String reason;
     private String category;
 
@@ -51,14 +51,14 @@ public class AbsenceAttendance extends BaseTimeEntity {
     private LocalDateTime deletionRequestedAt;
 
     @Builder
-    public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDate, String reason, String category) {
+    public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDateTime, String reason, String category) {
         this.staff = staff;
         this.course = course;
         this.student = student;
         this.startTime = startTime;
         this.endTime = endTime;
         this.isApprove = isApprove;
-        this.approveDate = approveDate;
+        this.approveDateTime = approveDateTime;
         this.reason = reason;
         this.category = category;
     }

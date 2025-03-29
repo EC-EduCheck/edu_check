@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -14,5 +14,5 @@ import java.time.LocalDateTime;
 public class AttendanceUpdateRequestDto {
 
     private String status;
-    private LocalDateTime date;
+    private LocalDate date;
 }
