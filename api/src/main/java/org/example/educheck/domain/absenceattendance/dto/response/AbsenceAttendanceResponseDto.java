@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
 import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.member.entity.Member;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class AbsenceAttendanceResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDateTime createdAt;
-    private String category;
+    private AttendanceStatus category;
     private String reason;
     private LocalDateTime approveDateTime;
     private Character isApprove;

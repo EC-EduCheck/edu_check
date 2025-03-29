@@ -6,11 +6,11 @@ import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
+import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.dto.request.UpdateStudentRegistrationStatusRequestDto;
 import org.example.educheck.domain.member.staff.dto.response.GetStudentsResponseDto;
 import org.example.educheck.domain.member.staff.dto.response.UpdateStudentRegistrationStatusResponseDto;
 import org.example.educheck.domain.member.staff.entity.Staff;
-import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.student.dto.response.StudentInfoResponseDto;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
@@ -54,14 +54,14 @@ public class StaffService {
         Registration registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 학생의 수강 정보를 찾을 수 없습니다."));
 
-        registration.setStatus(requestDto.getStatus());
+        registration.setRegistrationStatus(requestDto.getRegistrationStatus());
 
         return UpdateStudentRegistrationStatusResponseDto.from(
                 studentId,
                 courseId,
                 studentMember.getName(),
                 course.getName(),
-                requestDto.getStatus()
+                requestDto.getRegistrationStatus()
         );
     }
 
@@ -93,7 +93,7 @@ public class StaffService {
                             .studentName(studentInfo.getName())
                             .studentEmail(studentInfo.getEmail())
                             .studentPhoneNumber(studentInfo.getPhoneNumber())
-                            .registrationStatus(registration.getStatus()) // 수강 상태
+                            .registrationStatus(registration.getRegistrationStatus()) // 수강 상태
                             .build();
                 })
                 .collect(Collectors.toList());

@@ -3,6 +3,7 @@ package org.example.educheck.domain.absenceattendance.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
@@ -43,7 +44,10 @@ public class AbsenceAttendance extends BaseTimeEntity {
     private Character isApprove;
     private LocalDateTime approveDateTime;
     private String reason;
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
+    private AttendanceStatus category;
 
     @OneToMany(mappedBy = "absenceAttendance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AbsenceAttendanceAttachmentFile> absenceAttendanceAttachmentFiles = new ArrayList<>();
@@ -51,7 +55,7 @@ public class AbsenceAttendance extends BaseTimeEntity {
     private LocalDateTime deletionRequestedAt;
 
     @Builder
-    public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDateTime, String reason, String category) {
+    public AbsenceAttendance(Staff staff, Course course, Student student, LocalDate startTime, LocalDate endTime, Character isApprove, LocalDateTime approveDateTime, String reason, AttendanceStatus category) {
         this.staff = staff;
         this.course = course;
         this.student = student;

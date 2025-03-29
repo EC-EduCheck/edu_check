@@ -185,7 +185,7 @@ public class AbsenceAttendanceService {
 
 
     @Transactional
-    public UpdateAbsenceAttendacneReponseDto updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
+    public UpdateAbsenceAttendanceReponseDto updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
         validateMatchApplicant(member, absenceAttendance);
@@ -203,7 +203,7 @@ public class AbsenceAttendanceService {
             saveAttachmentFiles(files, absenceAttendance);
         }
 
-        return UpdateAbsenceAttendacneReponseDto.from(absenceAttendance);
+        return UpdateAbsenceAttendanceReponseDto.from(absenceAttendance);
 
     }
 

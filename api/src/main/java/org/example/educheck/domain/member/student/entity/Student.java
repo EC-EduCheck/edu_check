@@ -22,12 +22,13 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")
-    private Status status; // PENDING, NORMAL, WITHDRAW
+    private StudentStatus studentStatus; // PENDING, NORMAL, WITHDRAW
 
     private char courseParticipationStatus;
 
@@ -35,9 +36,9 @@ public class Student {
     private List<Registration> registrations = new ArrayList<>();
 
     @Builder
-    public Student(Member member, Status status, char courseParticipationStatus, List<Registration> registrations) {
+    public Student(Member member, StudentStatus studentStatus, char courseParticipationStatus, List<Registration> registrations) {
         this.member = member;
-        this.status = status;
+        this.studentStatus = studentStatus;
         this.courseParticipationStatus = courseParticipationStatus;
         this.registrations = registrations;
     }

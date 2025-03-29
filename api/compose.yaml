@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: ${DATABASE_NAME}
       TZ: Asia/Seoul
     volumes:
-      - mysql-volume:/var/lib/mysql
+      - mysql-volume:/var/lib/mysql2
 
   redis:
     image: redis:alpine

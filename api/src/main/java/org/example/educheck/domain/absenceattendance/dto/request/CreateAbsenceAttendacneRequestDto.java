@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 
 import java.time.LocalDate;
 
@@ -19,5 +20,5 @@ public class CreateAbsenceAttendacneRequestDto {
     @NotEmpty
     private LocalDate endDate;
     @NotEmpty
-    private String category;
+    private AttendanceStatus category;
 }

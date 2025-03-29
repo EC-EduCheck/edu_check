@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.example.educheck.domain.course.entity.Course;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Entity
@@ -31,5 +32,9 @@ public class Lecture {
     private String title;
     //LocalDate로 변경
     private LocalDate date;
+
+    private LocalTime starTime;
+
+    private LocalTime endTime;
 
 }

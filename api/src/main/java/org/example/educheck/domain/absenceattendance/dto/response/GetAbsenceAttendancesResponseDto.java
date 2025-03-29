@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class GetAbsenceAttendancesResponseDto {
         private LocalDate startDate;
         private LocalDate endDate;
         private LocalDateTime createdAt;
-        private String category;
+        private AttendanceStatus category;
 
 
         public static AbsenceAttendancesDto from(AbsenceAttendance absenceAttendance) {

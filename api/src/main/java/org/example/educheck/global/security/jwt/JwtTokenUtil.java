@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenUtil {
 
@@ -39,6 +41,7 @@ public class JwtTokenUtil {
 
     private String createToken(Authentication authentication, long validityMilliSeconds) {
 
+        log.info("authentication: {}", authentication.getAuthorities());
         String email = null;
         try {
             Object principal = authentication.getPrincipal();

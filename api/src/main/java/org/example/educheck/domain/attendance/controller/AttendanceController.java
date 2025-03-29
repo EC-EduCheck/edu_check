@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
-import org.example.educheck.domain.attendance.entity.Status;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus = attendanceService.checkIn(user, requestDto);
+        AttendanceStatus attendanceStatus = attendanceService.checkIn(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
@@ -61,7 +61,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus = attendanceService.checkOut(user, requestDto);
+        AttendanceStatus attendanceStatus = attendanceService.checkOut(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
