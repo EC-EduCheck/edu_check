@@ -11,10 +11,11 @@ import org.example.educheck.domain.member.dto.LoginResponseDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
-import org.example.educheck.domain.member.student.entity.Status;
 import org.example.educheck.domain.member.student.entity.Student;
+import org.example.educheck.domain.member.student.entity.StudentStatus;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
+import org.example.educheck.domain.registration.entity.RegistrationStatus;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
 import org.example.educheck.global.security.CustomUserDetailsService;
@@ -58,7 +59,7 @@ public class AuthService {
         Member member = memberRepository.save(requestDto.toEntity(encodedPassword));
         Student student = Student.builder()
                 .member(member)
-                .status(Status.NORMAL)
+                .studentStatus(StudentStatus.NORMAL)
                 .courseParticipationStatus('T')
                 .build();
         Student savedStudent = studentRepository.save(student);
@@ -68,7 +69,7 @@ public class AuthService {
         Registration registration = Registration.builder()
                 .student(savedStudent)
                 .course(course)
-                .status(org.example.educheck.domain.registration.entity.Status.PREVIOUS)
+                .registrationStatus(RegistrationStatus.PREVIOUS)
                 .build();
         registrationRepository.save(registration);
 

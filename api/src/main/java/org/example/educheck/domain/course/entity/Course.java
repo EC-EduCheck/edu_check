@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.campus.Campus;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -23,17 +23,15 @@ public class Course {
     private Campus campus;
 
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private int totalLectureCount;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Builder
-    public Course(Campus campus, String name, LocalDateTime startDate, LocalDateTime endDate) {
+    public Course(Campus campus, String name, LocalDate startDate, LocalDate endDate) {
         this.campus = campus;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-//        this.totalLectureCount = 0;
     }
 
 

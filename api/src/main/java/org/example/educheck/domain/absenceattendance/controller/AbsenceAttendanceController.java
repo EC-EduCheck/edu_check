@@ -69,7 +69,7 @@ public class AbsenceAttendanceController {
 
     @PreAuthorize("hasAuthority('STUDENT')")
     @PutMapping("/my/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public ResponseEntity<ApiResponse<UpdateAbsenceAttendacneReponseDto>> updateAttendanceAbsence(@AuthenticationPrincipal Member member,
+    public ResponseEntity<ApiResponse<UpdateAbsenceAttendanceReponseDto>> updateAttendanceAbsence(@AuthenticationPrincipal Member member,
                                                                                                   @PathVariable Long absenceAttendancesId,
                                                                                                   @RequestPart(value = "data") UpdateAbsenceAttendacneRequestDto requestDto,
                                                                                                   @RequestPart(value = "files", required = false) MultipartFile[] files) {

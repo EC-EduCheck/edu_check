@@ -25,12 +25,12 @@ public class Registration {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")
-    private Status status;
+    private RegistrationStatus registrationStatus;
 
     @Builder
-    public Registration(Student student, Course course, Status status) {
+    public Registration(Student student, Course course, RegistrationStatus registrationStatus) {
         this.student = student;
         this.course = course;
-        this.status = status;
+        this.registrationStatus = registrationStatus;
     }
 }

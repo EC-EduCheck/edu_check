@@ -36,12 +36,10 @@ public class Member implements UserDetails {
     @Column(columnDefinition = "VARCHAR(50)")
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
+    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER)
     private Student student;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @OneToOne(mappedBy = "member", fetch = FetchType.EAGER)
     private Staff staff;
 
     @Builder

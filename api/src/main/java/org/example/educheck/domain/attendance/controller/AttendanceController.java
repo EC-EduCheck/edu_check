@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
-import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
-import org.example.educheck.domain.attendance.entity.Status;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.attendance.service.AttendanceService;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus = attendanceService.checkIn(user, requestDto);
+        AttendanceStatus attendanceStatus = attendanceService.checkIn(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
@@ -39,20 +38,6 @@ public class AttendanceController {
                         "OK",
                         responseDto
                 ));
-    }
-
-    // 수강생 세부 출결 현황 조회
-    @GetMapping("/courses/{courseId}/students/{studentId}/attendances/v2")
-    public ResponseEntity<ApiResponse<StudentAttendanceListResponseDto>> getStudentAttendances(
-            @PathVariable Long courseId,
-            @PathVariable Long studentId,
-            @AuthenticationPrincipal UserDetails user
-    ) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                "특정 학생 세부 출결 현황 조회 성공",
-                "OK",
-                attendanceService.getStudentAttendances(courseId, studentId, user)
-        ));
     }
 
     // 수강생 출결 상태 수정
@@ -76,7 +61,7 @@ public class AttendanceController {
             @AuthenticationPrincipal UserDetails user,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        Status attendanceStatus = attendanceService.checkOut(user, requestDto);
+        AttendanceStatus attendanceStatus = attendanceService.checkOut(user, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
