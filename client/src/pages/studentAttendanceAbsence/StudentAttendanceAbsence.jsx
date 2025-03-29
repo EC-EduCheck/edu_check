@@ -5,11 +5,47 @@ import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
 import RoundButton from '../../components/buttons/roundButton/RoundButton';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import NewInputBox from '../../components/inputBox/newInputBox/NewInputBox';
-
+import Modal from '../../components/modal/Modal';
 
 export default function StudentAttendanceAbsence() {
   const [AbsenceListData, setAbsenceListData] = useState(false);
+  const [students, setStudents] = useState([
+      {
+        absenceAttendanceId: 4,
+        startDate: '2025-03-14',
+        endDate: '2025-03-14',
+        category: 'LATE',
+        isApprove: '대기',
+        approvedDate: '2025-03-14',
+      },
+  ]);
+  const [openModal, setOpenModal] = useState(false);
 
+  const handleTagChange = () => {
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
+
+  const inputBox = (
+    <>
+          <RoundButton title="결석"/>
+          <RoundButton title="조퇴"/>
+          <RoundButton title="지각"/>
+          <div className={styles.inputContainer}>
+            <label>신청날짜</label>
+            <input className={styles.smallInputBox} placeholder="2025.03.31"></input>
+            <label>신청기간</label>
+            <input className={styles.smallInputBox} placeholder="2025.03.31-2025.04.01"></input>
+            <label>서류</label>
+            <input className={styles.smallInputBox} placeholder="파일을 첨부해주세요."></input>
+            <label>사유</label>
+            <input className={styles.smallInputBox} placeholder="자세한 사유을 입력해주세요."></input>
+          </div>  
+      </>
+    );
   // 데이터 예시
   const response = [
     {
@@ -73,6 +109,7 @@ export default function StudentAttendanceAbsence() {
         isClickable={false}
         status={item.isApprove}
         children={item}
+        onTagChange={handleTagChange}
       ></LeftLineListItem>
     );
   });
@@ -123,6 +160,17 @@ export default function StudentAttendanceAbsence() {
           </DashBoardItem>
         </div>
       </div>
+
+    <div>
+      <Modal
+      isOpen={openModal}
+      onClose={handleCloseModal}
+      isEnable={true}
+      mainClick
+      mainText={"수정"}
+      content={inputBox}
+      ></Modal>
+    </div>
     </>
   );
 }
