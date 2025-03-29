@@ -8,6 +8,8 @@ services:
       - .env
     networks:
       - db-network
+    ports:
+      - ${DATABASE_PORT}:3306
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -45,8 +47,6 @@ services:
       - db-network
       - cache-network
       - web-network
-    ports:
-      - "587:587"
     depends_on:
       mysql:
         condition: service_healthy
