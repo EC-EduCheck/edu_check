@@ -137,27 +137,26 @@ public class AbsenceAttendanceService {
         if (files != null && files.length > 0) {
             List<Map<String, String>> uploadedResults = s3Service.uploadFiles(files);
 
-            for (Map<String, String> result : uploadedResults) {
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
+                Map<String, String> result = uploadedResults.get(i);
 
-                for (MultipartFile file : files) {
+                String originalFilename = file.getOriginalFilename();
+                log.info("originalFilename : {}", originalFilename);
+                String mineType = file.getContentType();
 
-                    String originalName = file.getOriginalFilename();
-                    log.info("originalName : {}", originalName);
-                    String mimeType = file.getContentType();
+                AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
+                        .absenceAttendance(savedAbsenceAttendance)
+                        .url(result.get("fileUrl"))
+                        .s3Key(result.get("s3Key"))
+                        .originalName(originalFilename)
+                        .mime(mineType)
+                        .build();
 
-                    AbsenceAttendanceAttachmentFile attachmentFile = AbsenceAttendanceAttachmentFile.builder()
-                            .absenceAttendance(savedAbsenceAttendance)
-                            .url(result.get("fileUrl"))
-                            .s3Key(result.get("s3Key"))
-                            .originalName(originalName)
-                            .mime(mimeType)
-                            .build();
+                absenceAttendanceAttachmentFileRepository.save(attachmentFile);
 
-                    log.info(attachmentFile.getUrl());
-
-                    absenceAttendanceAttachmentFileRepository.save(attachmentFile);
-                }
             }
+            
         }
     }
 
