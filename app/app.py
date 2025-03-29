@@ -46,21 +46,18 @@ def get_data_from_db(member_id, course_id):
         conn.close()
     return data
 
-    def get_student_name(member_id):
+def get_student_name(member_id):
     conn = cnxpool.get_connection()
     try:
         query = """
-        SELECT student_name
-        FROM student_course_attendance
-        WHERE member_id = %s
+        SELECT name
+        FROM member
+        WHERE id = %s
         """
         cursor = conn.cursor()
         cursor.execute(query, (member_id,))
         result = cursor.fetchone()
-        if result and result[0]:
-            return result[0]
-        else:
-            return f"student_{member_id}"
+        return result[0]
     finally:
         conn.close()
 
@@ -81,9 +78,10 @@ def download(member_id, course_id):
     with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
         data.to_excel(writer, index=False, sheet_name="Data")
     output.seek(0)
+    member_name = get_student_name(member_id)
 
     return send_file(
-        output, download_name=f"{member_id}_출석부.xlsx", as_attachment=True
+        output, download_name=f"{member_name}_출석부.xlsx", as_attachment=True
     )
 
 
