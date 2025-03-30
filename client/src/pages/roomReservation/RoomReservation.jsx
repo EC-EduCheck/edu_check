@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import FullCalendar from '/@fullcalendar/react';
-import resourceTimeGridPlugin from '/@fullcalendar/resource-timegrid';
-import interactionPlugin from '/@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/react';
+import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import { reservationApi } from '../../api/reservationApi';
 import { useSelector } from 'react-redux';
 
