@@ -43,7 +43,7 @@ jobs:
         run: echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
 
       - name: Docker Image Build
-        run: docker-compose build --no-cache
+        run: docker compose build
 
       - name: Docker Image Push
         run: docker compose push
