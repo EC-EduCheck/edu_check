@@ -67,6 +67,7 @@ services:
     image: ${DOCKER_REGISTRY}/educheck-client-image:latest
     env_file:
       - .env
+      - TZ=Asia/Seoul
     environment:
       - DOMAIN=${DOMAIN}
     volumes:
