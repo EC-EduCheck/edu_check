@@ -36,10 +36,10 @@ services:
     container_name: api-container
     build:
       context: ./api
-      cache_to:
-        - type=local,dest=/tmp/.build-cache/api,mode=max
-      cache_from:
-        - type=local,src=/tmp/.build-cache/api
+      # cache_to:
+      #   - type=local,dest=/tmp/.build-cache/api,mode=max
+      # cache_from:
+      #   - type=local,src=/tmp/.build-cache/api
     image: ${DOCKER_REGISTRY}/educheck-api-image:latest
     env_file:
       - .env
@@ -56,10 +56,10 @@ services:
     container_name: client-container
     build:
       context: ./client
-      cache_to:
-        - type=local,dest=/tmp/.build-cache/client,mode=max
-      cache_from:
-        - type=local,src=/tmp/.build-cache/client
+      # cache_to:
+      #   - type=local,dest=/tmp/.build-cache/client,mode=max
+      # cache_from:
+      #   - type=local,src=/tmp/.build-cache/client
       args:
         VITE_API_URL: ${VITE_API_URL}
         VITE_HOLIDAY_API_KEY: ${VITE_HOLIDAY_API_KEY}
