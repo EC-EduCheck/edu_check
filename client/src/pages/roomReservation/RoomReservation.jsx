@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+// import FullCalendar from '@fullcalendar/react';
+// import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+// import interactionPlugin from '@fullcalendar/interaction';
 import { reservationApi } from '../../api/reservationApi';
 import { useSelector } from 'react-redux';
+import packageJson from '/package.json';
 
 const RoomReservation = () => {
   const [resources, setResources] = useState([]);
@@ -13,6 +14,8 @@ const RoomReservation = () => {
   const campusId = useSelector((state) => state.auth.user.campusId);
   const courseId = useSelector((state) => state.auth.user.courseId);
   console.log(campusId);
+
+  console.log(packageJson);
 
   // useEffect(() => {
   //   if (!campusId) return;
