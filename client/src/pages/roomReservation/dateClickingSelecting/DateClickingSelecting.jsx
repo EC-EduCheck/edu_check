@@ -67,7 +67,7 @@ const MeetingRoomSchedule = () => {
   };
 
   const formatToLocalDateTime = (isoString) => {
-    return isoString.split('+')[0]; 
+    return isoString.split('+')[0];
   };
 
   const handleTimeSlotSelect = async (selectInfo) => {
@@ -110,13 +110,11 @@ const MeetingRoomSchedule = () => {
       };
 
       setEvents([...events, newEvent]);
-
-
     }
   };
 
   // 이벤트 클릭 핸들러
-  const handleEventClick = (clickInfo) => {
+  const handleEventClick = async (clickInfo) => {
     const event = clickInfo.event;
     const resourceId = event.getResources()[0].id;
     const resourceTitle = resources.find((r) => r.id === resourceId)?.title;
@@ -134,9 +132,11 @@ const MeetingRoomSchedule = () => {
 
     if (confirmed) {
       setEvents(events.filter((e) => e.id !== event.id));
-
-
     }
+
+    console.log(resourceId);
+    const response = await reservationApi.cancelReservation(campusId, resourceId);
+    console.log(response);
   };
 
   // 날짜 포맷 변환 함수 (API 형식 -> FullCalendar 형식)
