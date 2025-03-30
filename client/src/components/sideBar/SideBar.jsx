@@ -102,6 +102,7 @@ export default function SideBar() {
   const submitAttendanceAPI = async (latitude, longitude) => {
     try {
       const data = await attendanceApi.submitAttendance(latitude, longitude);
+      console.log(data);
       alert(data.message);
       // console.log(data);
       dispatch(checkIn());

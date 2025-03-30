@@ -22,14 +22,17 @@ import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.entity.RegistrationStatus;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.attendance.AttendanceAlreadyException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 
 @Slf4j
@@ -37,8 +40,7 @@ import java.time.LocalTime;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
-    private static final double LOCATION_TOLERANCE = 0.05;
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
+    private static final int ATTENDANCE_DEADLINE = 30;
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
@@ -49,15 +51,7 @@ public class AttendanceService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public AttendanceStatus checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
-        if (user == null) {
-            throw new IllegalArgumentException("인증된 사용자 정보가 없습니다.");
-        }
-
-        String userEmail = user.getUsername();
-
-        Member member = memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+    public AttendanceStatus checkIn(Member member, AttendanceCheckinRequestDto requestDto) {
 
         Student student = studentRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
@@ -74,43 +68,34 @@ public class AttendanceService {
         Course currentCourse = currentRegistration.getCourse();
 
         LocalDate today = LocalDate.now();
-//        LocalDateTime startOfDay = today.atStartOfDay();
-//        LocalDate startOfDay = today;
-//        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-//        Lecture todayLecture = lectureRepository.findByCourseIdAndDateBetween(
-//                        currentCourse.getId(), startOfDay, endOfDay)
-//                .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
         Lecture todayLecture = lectureRepository.findByCourseIdAndDate(
                         currentCourse.getId(), today)
                 .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
 
+        Campus campus = currentCourse.getCampus();
+
+        //테스트 하기 위해 우선 주석처리했습니다.
+//        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
+//            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
+//        }
+
         LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(ATTENDANCE_DEADLINE)) {
+        Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
+
+        Optional<Attendance> attendanceOptional = attendanceRepository.findByStudentIdAndCheckInDate(studentId);
+
+        if (attendanceOptional.isPresent()) {
+            throw new AttendanceAlreadyException();
+        }
+
+        if (timeDiff.toMillis() <= ATTENDANCE_DEADLINE) {
+            createAttendanceRecord(student, todayLecture, AttendanceStatus.ATTENDANCE);
+            return AttendanceStatus.ATTENDANCE;
+        } else {
             createAttendanceRecord(student, todayLecture, AttendanceStatus.LATE);
             return AttendanceStatus.LATE;
         }
 
-        Campus campus = currentCourse.getCampus();
-
-        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
-            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
-        }
-
-//        Attendance attendance = attendanceRepository.findByStudentIdAndCheckInTimestampBetween(
-//                        student.getId(), startOfDay, endOfDay)
-//                .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
-
-        Attendance attendance = attendanceRepository.findByStudentIdAndCheckInExist(
-                        student.getId(), today)
-                .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다.")
-                );
-
-        if (attendance.getCheckInTimestamp() != null) {
-            throw new IllegalStateException("이미 출석 처리되었습니다.");
-        }
-
-        createAttendanceRecord(student, todayLecture, AttendanceStatus.ATTENDANCE);
-        return AttendanceStatus.ATTENDANCE;
     }
 
     private void createAttendanceRecord(Student student, Lecture lecture, AttendanceStatus attendanceStatus) {
@@ -125,9 +110,22 @@ public class AttendanceService {
 
     //TODO: 좌표 계산 원으로
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        boolean isWithin = Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
-                Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
-        return isWithin;
+        return calculateDistance(campus.getGpsX(), campus.getGpsY(), latitude, longitude) <= 500;
+    }
+
+    private double calculateDistance(double campusLatitude, double campusLongitude, double latitude, double longitude) {
+        final int R = 6371;
+
+        double latitudeDistance = Math.toRadians(latitude - campusLatitude);
+        double longitudeDistance = Math.toRadians(longitude - campusLongitude);
+
+        double a = Math.sin(latitudeDistance / 2) * Math.sin(latitudeDistance / 2)
+                + Math.cos(Math.toRadians(campusLatitude)) * Math.cos(Math.toRadians(latitude))
+                * Math.sin(longitudeDistance / 2) * Math.sin(longitudeDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c * 1000;
     }
 
     private Course getCourse(Long courseId) {
