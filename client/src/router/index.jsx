@@ -14,7 +14,7 @@ import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 // import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
-import RoomReservation from '../pages/roomReservation/RoomReservation';
+// import RoomReservation from '../pages/roomReservation/RoomReservation';
 
 const router = createBrowserRouter([
   {
@@ -58,7 +58,8 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <RoomReservation />,
+                // element: <RoomReservation />,
+                element: <StudentSetting />,
               },
             ],
           },
@@ -117,7 +118,8 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <RoomReservation />,
+                // element: <RoomReservation />,
+                element: <StudentSetting />,
               },
             ],
           },
