@@ -13,6 +13,7 @@ const RoomReservation = () => {
   const campusId = useSelector((state) => state.auth.user.campusId);
   const courseId = useSelector((state) => state.auth.user.courseId);
   console.log(campusId);
+
   useEffect(() => {
     if (!campusId) return;
 
@@ -126,7 +127,7 @@ const RoomReservation = () => {
       장소: ${resourceTitle}
       시작: ${formatDisplayTime(event.start)}
       종료: ${formatDisplayTime(event.end)}
-      
+
       삭제하시겠습니까?
     `);
 
