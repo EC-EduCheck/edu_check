@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.response.*;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
+import org.example.educheck.domain.lecture.repository.LectureRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
@@ -36,6 +37,7 @@ public class StudentCourseAttendanceService {
     private final StaffCourseRepository staffCourseRepository;
     private final CourseRepository courseRepository;
     private final RegistrationRepository registrationRepository;
+    private final LectureRepository lectureRepository;
 
     private static void validateDates(Integer year, Integer month) {
         if (year != null && (year < 2000 || year > 2026)) {
@@ -139,7 +141,18 @@ public class StudentCourseAttendanceService {
         validateStudentRegistrationInCourse(courseId, member.getStudentId());
 
         AttendanceStatsProjection projection = studentCourseAttendanceRepository.findAttendanceStatsByStudentId(member.getId(), courseId);
-        return AttendanceStatsResponseDto.from(projection);
+        Long totalLectureCount = lectureRepository.countByCourseId(courseId);
+        double attendanceRate = calculateAttendanceRate(projection, totalLectureCount);
+        return AttendanceStatsResponseDto.from(projection, attendanceRate);
+    }
+
+    private double calculateAttendanceRate(AttendanceStatsProjection projection, Long totalLectureCount) {
+
+        if (totalLectureCount == 0) {
+            return 0.0;
+        }
+
+        return (projection.getAttendanceCount() - projection.getAccumulatedAbsence()) / totalLectureCount * 100;
     }
 
     public TodayAttendanceResponseDto getTodayAttendances(Long courseId, Member member) {

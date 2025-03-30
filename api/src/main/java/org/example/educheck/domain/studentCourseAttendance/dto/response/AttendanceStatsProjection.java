@@ -9,6 +9,8 @@ public interface AttendanceStatsProjection {
 
     Long getCourseId();
 
+    Integer getProgressCount();
+
     Integer getAttendanceCount();
 
     Integer getLateCount();
