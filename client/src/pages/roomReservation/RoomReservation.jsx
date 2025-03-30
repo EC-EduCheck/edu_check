@@ -161,7 +161,7 @@ const RoomReservation = () => {
   // }
 
   return (
-    <div>회의실 예약</div>
+    <div>회의실 예약 !</div>
     // <div className="p-4">
     //   <div className="mb-4">
     //     <h2 className="text-xl font-bold">{selectedDate.toLocaleDateString()} 회의실 예약 현황</h2>
