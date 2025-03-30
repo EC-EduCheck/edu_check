@@ -33,7 +33,7 @@ public class Lecture {
     //LocalDate로 변경
     private LocalDate date;
 
-    private LocalTime startTime;
+    private LocalTime starTime;
 
     private LocalTime endTime;
 
