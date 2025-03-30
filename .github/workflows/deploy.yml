@@ -15,12 +15,12 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v4
 
-      # - name: Use Cache for Build Image Layer Save
-      #   uses: actions/cache@v4.2.0
-      #   with:
-      #     path: /tmp/.build-cache
-      #     key: docker-image-cache-${{ github.sha }}
-      #     restore-keys: docker-image-cache-
+      - name: Use Cache for Build Image Layer Save
+        uses: actions/cache@v4.2.0
+        with:
+          path: /tmp/.build-cache
+          key: docker-image-cache-${{ github.sha }}
+          restore-keys: docker-image-cache-
 
       - name: Create .env file
         run: echo """${{ secrets.ENV_FILE }}""" >> .env
@@ -33,13 +33,13 @@ jobs:
       - name: Add Remote Server FingerPrint to Know Hosts
         run: ssh-keyscan -H -p ${{secrets.SSH_PORT}} ${{secrets.SSH_HOST}} >> ~/.ssh/known_hosts || true
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      # - name: Create BuildKit Builder
-      #   run: |
-      #     docker buildx create --use --name buildkit
-      #     docker buildx use buildkit
+      - name: Create BuildKit Builder
+        run: |
+          docker buildx create --use --name buildkit
+          docker buildx use buildkit
 
       - name: Login DockerHub
         run: echo '${{ secrets.DOCKER_PASSWORD }}' | docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
