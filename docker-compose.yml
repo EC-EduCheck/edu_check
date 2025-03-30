@@ -93,6 +93,7 @@ services:
     networks:
       - web-network
       - db-network
+      - cache-network
     ports:
       - "5000:5000"
     depends_on:
