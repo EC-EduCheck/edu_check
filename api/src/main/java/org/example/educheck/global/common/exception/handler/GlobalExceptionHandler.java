@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,5 +101,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(String.format("잘못된 요청: '%s' 값은 %s 타입이어야 합니다.", ex.getName(), ex.getRequiredType().getSimpleName()), ErrorCode.INVALID_INPUT.getCode())
                 );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        return ResponseEntity
+                .status(ErrorCode.API_ENDPOINT_NOT_FOUND.getStatus())
+                .body(ApiResponse.error(ErrorCode.API_ENDPOINT_NOT_FOUND.getMessage(),
+                        ErrorCode.API_ENDPOINT_NOT_FOUND.getCode()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNoResourceFoundException(NoResourceFoundException ex) {
+        return ResponseEntity
+                .status(ErrorCode.RESOURCE_NOT_FOUND.getStatus())
+                .body(ApiResponse.error(ErrorCode.RESOURCE_NOT_FOUND.getMessage(),
+                        ErrorCode.RESOURCE_NOT_FOUND.getCode()));
     }
 }
