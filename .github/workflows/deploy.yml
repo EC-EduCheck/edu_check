@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - deploy/*
+      - test/*
 
 jobs:
   deploy:
