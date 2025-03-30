@@ -8,6 +8,7 @@ import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateReques
 import org.example.educheck.domain.attendance.dto.response.AttendanceStatusResponseDto;
 import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.attendance.service.AttendanceService;
+import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class AttendanceController {
 
     @PostMapping("/checkin")
     public ResponseEntity<ApiResponse<AttendanceStatusResponseDto>> checkIn(
-            @AuthenticationPrincipal UserDetails user,
+            @AuthenticationPrincipal Member member,
             @Valid @RequestBody AttendanceCheckinRequestDto requestDto
     ) {
-        AttendanceStatus attendanceStatus = attendanceService.checkIn(user, requestDto);
+        AttendanceStatus attendanceStatus = attendanceService.checkIn(member, requestDto);
 
         AttendanceStatusResponseDto responseDto = new AttendanceStatusResponseDto(attendanceStatus);
 
