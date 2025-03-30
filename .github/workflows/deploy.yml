@@ -13,12 +13,12 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v4
 
-      - name: Use Cache for Build Image Layer Save
-        uses: actions/cache@v4.2.0
-        with:
-          path: /tmp/.build-cache
-          key: docker-image-cache-${{ github.sha }}
-          restore-keys: docker-image-cache-
+      # - name: Use Cache for Build Image Layer Save
+      #   uses: actions/cache@v4.2.0
+      #   with:
+      #     path: /tmp/.build-cache
+      #     key: docker-image-cache-${{ github.sha }}
+      #     restore-keys: docker-image-cache-
 
       - name: Create .env file
         run: echo """${{ secrets.ENV_FILE }}""" >> .env
