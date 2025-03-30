@@ -5,7 +5,6 @@ import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import DashBoard from '../pages/dashBoard/DashBoard';
 import StudentAttendance from '../pages/studentAttendance/StudentAttendance';
-import RoomReservation from '../pages/roomReservation/RoomReservation';
 import StudentSetting from '../pages/studentSetting/StudentSetting';
 import StudentAttendanceAbsence from '../pages/studentAttendanceAbsence/StudentAttendanceAbsence';
 import StaffAttendance from '../pages/staffAttendance/StaffAttendance';
@@ -13,10 +12,9 @@ import StaffAttendanceDetail from '../pages/staffAttendanceDetail/StaffAttendanc
 import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttendanceAbsence';
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 // import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
-import DateClickingSelecting from '../pages/roomReservation/dateClickingSelecting/DateClickingSelecting';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
-import ReservationCalendar from '../pages/roomReservation/dateClickingSelecting/DateClickingSelecting';
+import RoomReservation from '../pages/roomReservation/RoomReservation';
 
 const router = createBrowserRouter([
   {
@@ -60,7 +58,7 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <ReservationCalendar />,
+                element: <RoomReservation />,
               },
             ],
           },
@@ -119,7 +117,7 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <DateClickingSelecting />,
+                element: <RoomReservation />,
               },
             ],
           },
