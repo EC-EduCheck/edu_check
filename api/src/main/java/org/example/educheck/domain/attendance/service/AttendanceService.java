@@ -40,7 +40,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
-    private static final double LOCATION_TOLERANCE = 0.05;
     private static final int ATTENDANCE_DEADLINE = 30;
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
@@ -75,6 +74,7 @@ public class AttendanceService {
 
         Campus campus = currentCourse.getCampus();
 
+        //테스트 하기 위해 우선 주석처리했습니다.
 //        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
 //            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
 //        }
@@ -82,7 +82,6 @@ public class AttendanceService {
         LocalTime currentTime = LocalTime.now();
         Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
 
-        //출석 여부 확인
         Optional<Attendance> attendanceOptional = attendanceRepository.findByStudentIdAndCheckInDate(studentId);
 
         if (attendanceOptional.isPresent()) {
@@ -111,9 +110,22 @@ public class AttendanceService {
 
     //TODO: 좌표 계산 원으로
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        boolean isWithin = Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
-                Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
-        return isWithin;
+        return calculateDistance(campus.getGpsX(), campus.getGpsY(), latitude, longitude) <= 500;
+    }
+
+    private double calculateDistance(double campusLatitude, double campusLongitude, double latitude, double longitude) {
+        final int R = 6371;
+
+        double latitudeDistance = Math.toRadians(latitude - campusLatitude);
+        double longitudeDistance = Math.toRadians(longitude - campusLongitude);
+
+        double a = Math.sin(latitudeDistance / 2) * Math.sin(latitudeDistance / 2)
+                + Math.cos(Math.toRadians(campusLatitude)) * Math.cos(Math.toRadians(latitude))
+                * Math.sin(longitudeDistance / 2) * Math.sin(longitudeDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c * 1000;
     }
 
     private Course getCourse(Long courseId) {
