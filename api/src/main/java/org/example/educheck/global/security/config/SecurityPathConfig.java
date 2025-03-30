@@ -8,4 +8,8 @@ public class SecurityPathConfig {
             "/api/auth/refresh",
             "/api/auth/email-check",
     };
+
+    public static final String[] PUBLIC_GET_URLS = {
+            "/error",
+    };
 }
