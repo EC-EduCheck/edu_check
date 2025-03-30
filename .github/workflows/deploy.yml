@@ -6,6 +6,7 @@ on:
       - main
       - deploy
       - deploy/*
+      - test/*
 
 jobs:
   deploy:
