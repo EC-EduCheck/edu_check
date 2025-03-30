@@ -57,3 +57,7 @@
 .container .active {
   margin-top: 0;
 }
+
+.buttonBox button {
+  background-color: #fff;
+}
