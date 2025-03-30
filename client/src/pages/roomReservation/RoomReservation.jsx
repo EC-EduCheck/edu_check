@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+// import FullCalendar from '@fullcalendar/react';
+// import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+// import interactionPlugin from '@fullcalendar/interaction';
 import { reservationApi } from '../../api/reservationApi';
 import { useSelector } from 'react-redux';
 
@@ -161,50 +161,51 @@ const RoomReservation = () => {
   }
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold">{selectedDate.toLocaleDateString()} 회의실 예약 현황</h2>
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded mt-2 mr-2"
-          onClick={() => setSelectedDate(new Date())}
-        >
-          오늘로 이동
-        </button>
-        <span className="text-sm text-gray-600">
-          운영 시간: 09:00 - 22:00 (15분 단위로 예약 가능)
-        </span>
-      </div>
+    <div>회의실</div>
+    // <div className="p-4">
+    //   <div className="mb-4">
+    //     <h2 className="text-xl font-bold">{selectedDate.toLocaleDateString()} 회의실 예약 현황</h2>
+    //     <button
+    //       className="bg-blue-500 text-white px-3 py-1 rounded mt-2 mr-2"
+    //       onClick={() => setSelectedDate(new Date())}
+    //     >
+    //       오늘로 이동
+    //     </button>
+    //     <span className="text-sm text-gray-600">
+    //       운영 시간: 09:00 - 22:00 (15분 단위로 예약 가능)
+    //     </span>
+    //   </div>
 
-      <FullCalendar
-        plugins={[resourceTimeGridPlugin, interactionPlugin]}
-        initialView="resourceTimeGridDay"
-        headerToolbar={{
-          left: 'prev,next',
-          center: 'title',
-          right: '',
-        }}
-        resources={resources}
-        initialDate={selectedDate}
-        events={events}
-        slotMinTime="09:00:00"
-        slotMaxTime="22:00:00"
-        slotDuration="00:15:00"
-        slotLabelInterval="01:00:00"
-        slotLabelFormat={{
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        }}
-        allDaySlot={false}
-        selectable={true}
-        selectMirror={true}
-        select={handleTimeSlotSelect}
-        eventClick={handleEventClick}
-        datesSet={handleDateSet}
-        snapDuration="00:15:00"
-        height="auto"
-      />
-    </div>
+    //   <FullCalendar
+    //     plugins={[resourceTimeGridPlugin, interactionPlugin]}
+    //     initialView="resourceTimeGridDay"
+    //     headerToolbar={{
+    //       left: 'prev,next',
+    //       center: 'title',
+    //       right: '',
+    //     }}
+    //     resources={resources}
+    //     initialDate={selectedDate}
+    //     events={events}
+    //     slotMinTime="09:00:00"
+    //     slotMaxTime="22:00:00"
+    //     slotDuration="00:15:00"
+    //     slotLabelInterval="01:00:00"
+    //     slotLabelFormat={{
+    //       hour: '2-digit',
+    //       minute: '2-digit',
+    //       hour12: false,
+    //     }}
+    //     allDaySlot={false}
+    //     selectable={true}
+    //     selectMirror={true}
+    //     select={handleTimeSlotSelect}
+    //     eventClick={handleEventClick}
+    //     datesSet={handleDateSet}
+    //     snapDuration="00:15:00"
+    //     height="auto"
+    //   />
+    // </div>
   );
 };
 
