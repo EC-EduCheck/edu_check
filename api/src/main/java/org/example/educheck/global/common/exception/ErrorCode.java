@@ -10,9 +10,10 @@ public enum ErrorCode {
 
     //0000 회원
     //1000 예약
-    RESERVATION_CONFLICT(HttpStatus.CONFLICT, "2000", "해당 시간에는 이미 예약이 있습니다. 다른 시간을 선택해주세요."),
+    RESERVATION_CONFLICT(HttpStatus.CONFLICT, "1000", "해당 시간에는 이미 예약이 있습니다. 다른 시간을 선택해주세요."),
 
-    //2000 
+    //2000 출석
+    ALREADY_ATTENDANCE(HttpStatus.BAD_REQUEST, "2000", "이미 출석 처리되었습니다."),
 
     //예시
     MEETINGROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "3000", "회의실을 찾을 수 없습니다."),

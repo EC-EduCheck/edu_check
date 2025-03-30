@@ -22,6 +22,7 @@ import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.entity.RegistrationStatus;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.attendance.AttendanceAlreadyException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -85,7 +86,7 @@ public class AttendanceService {
         Optional<Attendance> attendanceOptional = attendanceRepository.findByStudentIdAndCheckInDate(studentId);
 
         if (attendanceOptional.isPresent()) {
-            throw new IllegalArgumentException("이미 출석 처리되었습니다.");
+            throw new AttendanceAlreadyException();
         }
 
         if (timeDiff.toMillis() <= ATTENDANCE_DEADLINE) {
