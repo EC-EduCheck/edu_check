@@ -41,6 +41,8 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
                         member_id,
                         member_name,
                         course_id,
+                        start_date,
+                        end_date,
                         COUNT(lecture_date) AS progressCount,
                         COUNT(CASE WHEN attendance_status = 'ATTENDANCE' THEN 1 END) AS attendance_count,
                         COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END) AS late_count,

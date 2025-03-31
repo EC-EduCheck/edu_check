@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import styles from './RoomReservation.module.css';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/ko';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSelector } from 'react-redux';
 import { reservationApi } from '../../api/reservationApi';
+import './calendar.css';
 
 // 한국어 로케일 설정
 moment.locale('ko');
@@ -150,7 +152,7 @@ const RoomReservation = () => {
   };
 
   const eventPropGetter = (event) => {
-    const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#E91E63', '#795548', '#607D8B'];
+    const colors = ['#eef7e6', '#57dd79', '#FF9800', '#9C27B0', '#E91E63', '#795548', '#607D8B'];
     const colorIndex = event.resourceId.charCodeAt(0) % colors.length;
 
     return {
@@ -161,27 +163,73 @@ const RoomReservation = () => {
   };
 
   if (loading) {
-    return <div className="p-4">데이터를 불러오는 중...</div>;
+    return <div>데이터를 불러오는 중...</div>;
   }
 
-  return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold">
-          {moment(selectedDate).format('YYYY년 MM월 DD일')} 회의실 예약 현황
-        </h2>
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded mt-2 mr-2"
-          onClick={() => setSelectedDate(new Date())}
-        >
-          오늘로 이동
-        </button>
-        <span className="text-sm text-gray-600">
-          운영 시간: 09:00 - 22:00 (15분 단위로 예약 가능)
+  // 캘린더 컴포넌트
+  const Toolbar = (props) => {
+    const { date } = props;
+
+    const navigate = (action) => {
+      props.onNavigate(action);
+    };
+
+    const dayOfWeek = {
+      0: '일',
+      1: '월',
+      2: '화',
+      3: '수',
+      4: '목',
+      5: '금',
+      6: '토',
+    };
+
+    return (
+      <>
+        <div className="rbc-toolbar">
+          <span className="rbc-toolbar-label">
+            <div className={styles.infoIconBox}>
+              <div className={styles.icon}>
+                <img src="/assets/calendar-v2-icon.png" alt="달력 아이콘" />
+              </div>
+              <p>{`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${dayOfWeek[date.getDay()]}요일`}</p>
+            </div>
+          </span>
+          <span className="rbc-btn-group">
+            <button type="button" onClick={navigate.bind(null, 'TODAY')}>
+              오늘
+            </button>
+            <button type="button" onClick={navigate.bind(null, 'PREV')}>
+              이전
+            </button>
+            <button type="button" onClick={navigate.bind(null, 'NEXT')}>
+              다음
+            </button>
+          </span>
+        </div>
+        <span className="rbc-toolbar">
+          <span className="rbc-toolbar-label">
+            <div className={styles.infoIconBox}>
+              <div className={styles.icon}>
+                <img src="/assets/clock-icon.png" alt="시계 아이콘" />
+              </div>
+              <p>
+                09:00 - 22:00 <span>(15분 단위 예약 가능)</span>
+              </p>
+            </div>
+          </span>
         </span>
+      </>
+    );
+  };
+
+  return (
+    <div className={styles.reservationContainer}>
+      <div className={styles.info}>
+        <h2 className="subTitle">회의실 예약 현황</h2>
       </div>
 
-      <div style={{ height: 'calc(100vh - 200px)' }}>
+      <div className={styles.calendar}>
         <Calendar
           localizer={localizer}
           events={events}
@@ -203,6 +251,9 @@ const RoomReservation = () => {
           formats={{
             timeGutterFormat: (date) => moment(date).format('HH:mm'),
             dayHeaderFormat: (date) => moment(date).format('YYYY년 MM월 DD일 (ddd)'),
+          }}
+          components={{
+            toolbar: Toolbar,
           }}
         />
       </div>
