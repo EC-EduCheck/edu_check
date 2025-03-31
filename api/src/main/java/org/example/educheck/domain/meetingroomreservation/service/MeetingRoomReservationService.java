@@ -94,6 +94,9 @@ public class MeetingRoomReservationService {
             throw new ReservationConflictException("최소 예약 시간은 15분입니다.");
         }
 
+        log.info("startTime: {}", startTime);
+        log.info("endTime: {}", endTime);
+
         if (startTime.toLocalTime().isBefore(startOfDay) || endTime.toLocalTime().isAfter(endOfDay)) {
             throw new ReservationConflictException("예약 가능 시간은 오전 9시부터 오후 10시까지입니다.");
         }

@@ -82,10 +82,6 @@ const RoomReservation = () => {
     if (!confirmed) return;
 
     try {
-      const formatISOString = (date) => {
-        console.log(date);
-        return date.toISOString().split('.')[0].replace('T', ' ');
-      };
 
       const convertToKST = (date) => {
         return new Date(date.getTime() + 9 * 60 * 60 * 1000);
