@@ -15,6 +15,7 @@ import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
 import RoomReservation from '../pages/roomReservation/RoomReservation';
+import Test from '../pages/Test';
 
 const router = createBrowserRouter([
   {
@@ -134,6 +135,10 @@ const router = createBrowserRouter([
       //   path: '*',
       //   element: <Navigate to="/notfound" replace />,
       // },
+      {
+        path: '/test',
+        element: <Test />,
+      },
     ],
   },
 ]);
