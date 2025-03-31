@@ -15,7 +15,7 @@ public class AttendanceStatsResponseDto {
     private Double accumulatedAbsence;
     private Double attendanceRate;
 
-    public static AttendanceStatsResponseDto from(AttendanceStatsProjection projection) {
+    public static AttendanceStatsResponseDto from(AttendanceStatsProjection projection, double attendanceRate) {
         return AttendanceStatsResponseDto.builder()
                 .memberId(projection.getMemberId())
                 .memberName(projection.getMemberName())
@@ -24,7 +24,8 @@ public class AttendanceStatsResponseDto {
                 .earlyLeaveCount(projection.getEarlyLeaveCount())
                 .absentCount(projection.getAbsentCount())
                 .accumulatedAbsence(projection.getAccumulatedAbsence())
-                .attendanceRate(projection.getAttendanceRate())
+                .attendanceRate(attendanceRate)
                 .build();
     }
+    
 }
