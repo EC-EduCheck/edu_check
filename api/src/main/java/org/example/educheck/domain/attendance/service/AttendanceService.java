@@ -74,10 +74,9 @@ public class AttendanceService {
 
         Campus campus = currentCourse.getCampus();
 
-        //테스트 하기 위해 우선 주석처리했습니다.
-//        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
-//            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
-//        }
+        if (!isWithinCampusArea(campus, requestDto.getLongitude(), requestDto.getLatitude())) {
+            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
+        }
 
         LocalTime currentTime = LocalTime.now();
         Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
