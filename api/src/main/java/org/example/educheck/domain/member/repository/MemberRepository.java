@@ -16,7 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("""
                 select new org.example.educheck.domain.member.dto.LoginResponseDto(
-                     m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
+                     m.id, m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
                 )
                 from Member m
                 LEFT JOIN Student s ON s.member.id = m.id
@@ -29,7 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("""
             select new org.example.educheck.domain.member.dto.LoginResponseDto(
-                 m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
+                 m.id, m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
             )
             from Member m
             LEFT JOIN Staff st ON st.member.id = m.id
