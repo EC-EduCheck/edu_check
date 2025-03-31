@@ -5,16 +5,16 @@ import Home from '../pages/home/Home';
 import Login from '../pages/login/Login';
 import DashBoard from '../pages/dashBoard/DashBoard';
 import StudentAttendance from '../pages/studentAttendance/StudentAttendance';
-import RoomReservation from '../pages/roomReservation/RoomReservation';
 import StudentSetting from '../pages/studentSetting/StudentSetting';
 import StudentAttendanceAbsence from '../pages/studentAttendanceAbsence/StudentAttendanceAbsence';
 import StaffAttendance from '../pages/staffAttendance/StaffAttendance';
 import StaffAttendanceDetail from '../pages/staffAttendanceDetail/StaffAttendanceDetail';
 import StaffAttendanceAbsence from '../pages/staffAttendanceAbsence/StaffAttendanceAbsence';
 import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
-import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
+// import StaffRoomReservation from '../pages/staffRoomReservation/StaffRoomReservation';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
+import RoomReservation from '../pages/roomReservation/RoomReservation';
 
 const router = createBrowserRouter([
   {
@@ -59,6 +59,7 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <RoomReservation />,
+                // element: <StudentSetting />,
               },
             ],
           },
@@ -117,7 +118,8 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <StaffRoomReservation />,
+                element: <RoomReservation />,
+                // element: <StudentSetting />,
               },
             ],
           },

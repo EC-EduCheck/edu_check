@@ -38,6 +38,7 @@ public class S3Service {
 
 
         for (MultipartFile file : files) {
+            log.info("fileName : {}", file.getOriginalFilename());
             Map<String, String> fileInfo = uploadFile(file);
             uploadedFiles.add(fileInfo);
 
@@ -46,7 +47,8 @@ public class S3Service {
     }
 
     private Map<String, String> uploadFile(MultipartFile file) {
-        String s3Key = FILE_PATH_PREFIX + UUID.randomUUID() + "_" + file + file.getOriginalFilename();
+        String s3Key = FILE_PATH_PREFIX + UUID.randomUUID() + "_" + file.getOriginalFilename();
+        log.info("s3Key : {}", s3Key);
 
         uploadFileToS3(file, s3Key);
 

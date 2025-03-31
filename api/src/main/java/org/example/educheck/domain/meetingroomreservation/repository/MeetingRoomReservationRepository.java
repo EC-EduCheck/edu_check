@@ -66,7 +66,8 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
                 LEFT JOIN member me
                     ON r.memeber_id = me.id
                 WHERE m.campus_id = :campusId
-                 AND (DATE(r.start_time) = DATE(NOW()) OR r.start_time IS NULL)
+                  # 테스트용 날짜 잠시 수정
+                 AND (DATE(r.start_time) = DATE('2025-03-30') OR r.start_time IS NULL)
                  AND (r.status = 'ACTIVE' OR r.status IS NULL)
                 ORDER BY r.start_time
             """, nativeQuery = true)

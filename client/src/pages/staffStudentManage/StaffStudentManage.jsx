@@ -63,16 +63,19 @@ export default function StaffStudentManage() {
       <div>
         <MainButton title="학습자 등록" handleClick={openModalHandler} isEnable={true}></MainButton>
       </div>
-      {students.map((student, index) => (
-        <BaseListItem
-          key={index}
-          content={student.name}
-          phone={student.phone}
-          email={student.email}
-          tagTitle={student.tagTitle}
-          onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
-        />
-      ))}
+
+      <div className={styles.studentsBox}>
+        {students.map((student, index) => (
+          <BaseListItem
+            key={index}
+            content={student.name}
+            phone={student.phone}
+            email={student.email}
+            tagTitle={student.tagTitle}
+            onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
+          />
+        ))}
+      </div>
       <div>
         <Modal
           mainText="등록"

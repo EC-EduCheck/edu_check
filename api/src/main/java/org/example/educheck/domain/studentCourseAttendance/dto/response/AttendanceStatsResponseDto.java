@@ -3,6 +3,8 @@ package org.example.educheck.domain.studentCourseAttendance.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
 @Builder
 public class AttendanceStatsResponseDto {
@@ -14,8 +16,10 @@ public class AttendanceStatsResponseDto {
     private Integer absentCount;
     private Double accumulatedAbsence;
     private Double attendanceRate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    public static AttendanceStatsResponseDto from(AttendanceStatsProjection projection) {
+    public static AttendanceStatsResponseDto from(AttendanceStatsProjection projection, double attendanceRate) {
         return AttendanceStatsResponseDto.builder()
                 .memberId(projection.getMemberId())
                 .memberName(projection.getMemberName())
@@ -24,7 +28,10 @@ public class AttendanceStatsResponseDto {
                 .earlyLeaveCount(projection.getEarlyLeaveCount())
                 .absentCount(projection.getAbsentCount())
                 .accumulatedAbsence(projection.getAccumulatedAbsence())
-                .attendanceRate(projection.getAttendanceRate())
+                .startDate(projection.getStartDate())
+                .endDate(projection.getEndDate())
+                .attendanceRate(attendanceRate)
                 .build();
     }
+
 }

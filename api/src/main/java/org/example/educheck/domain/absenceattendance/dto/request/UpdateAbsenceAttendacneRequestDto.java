@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 
 import java.time.LocalDate;
 
@@ -22,7 +23,7 @@ public class UpdateAbsenceAttendacneRequestDto {
     @NotNull
     private LocalDate endDate;
     @NotEmpty
-    private String category;
+    private AttendanceStatus category;
 
     public void updateEntity(AbsenceAttendance entity) {
         entity.setReason(reason);

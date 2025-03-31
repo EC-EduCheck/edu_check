@@ -2,6 +2,7 @@ package org.example.educheck.domain.absenceattendance.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 
 import java.time.LocalDate;
 
@@ -13,10 +14,10 @@ public class MyAbsenceAttendanceResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private Character isApprove;
-    private String category;
+    private AttendanceStatus category;
 
     public MyAbsenceAttendanceResponseDto(Long id, LocalDate startTime, LocalDate endTime,
-                                          Character isApprove, String category) {
+                                          Character isApprove, AttendanceStatus category) {
         this.absenceAttendanceId = id;
         this.startDate = startTime;
         this.endDate = endTime;

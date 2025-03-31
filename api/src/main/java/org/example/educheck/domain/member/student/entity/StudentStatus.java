@@ -1,7 +1,6 @@
 package org.example.educheck.domain.member.student.entity;
 
-public enum Status {
-
-  PENDING, NORMAL, WITHDRAWN
+public enum StudentStatus {
+    PENDING, NORMAL, WITHDRAWN
 
 }

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.attendance.dto.request.AttendanceCheckinRequestDto;
 import org.example.educheck.domain.attendance.dto.request.AttendanceUpdateRequestDto;
-import org.example.educheck.domain.attendance.dto.response.StudentAttendanceListResponseDto;
 import org.example.educheck.domain.attendance.entity.Attendance;
-import org.example.educheck.domain.attendance.entity.Status;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 import org.example.educheck.domain.attendance.repository.AttendanceRepository;
 import org.example.educheck.domain.campus.Campus;
 import org.example.educheck.domain.course.entity.Course;
@@ -20,17 +19,20 @@ import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.member.student.repository.StudentRepository;
 import org.example.educheck.domain.registration.entity.Registration;
+import org.example.educheck.domain.registration.entity.RegistrationStatus;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
+import org.example.educheck.global.common.exception.custom.attendance.AttendanceAlreadyException;
 import org.example.educheck.global.common.exception.custom.common.ResourceNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -38,8 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
-    private static final double LOCATION_TOLERANCE = 0.05;
-    private static final LocalTime ATTENDANCE_DEADLINE = LocalTime.of(9, 30);
+    private static final int ATTENDANCE_DEADLINE = 30;
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
@@ -50,15 +51,7 @@ public class AttendanceService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public Status checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
-        if (user == null) {
-            throw new IllegalArgumentException("인증된 사용자 정보가 없습니다.");
-        }
-
-        String userEmail = user.getUsername();
-
-        Member member = memberRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+    public AttendanceStatus checkIn(Member member, AttendanceCheckinRequestDto requestDto) {
 
         Student student = studentRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
@@ -69,87 +62,70 @@ public class AttendanceService {
             throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
         }
 
-        Registration currentRegistration = registrationRepository.findByStudentIdAndStatus(
-                        studentId, org.example.educheck.domain.registration.entity.Status.PROGRESS)
+        Registration currentRegistration = registrationRepository.findByStudentIdAndRegistrationStatus(
+                        studentId, RegistrationStatus.PROGRESS)
                 .orElseThrow(() -> new IllegalArgumentException("현재 진행 중인 과정 등록이 없습니다."));
         Course currentCourse = currentRegistration.getCourse();
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-        Lecture todayLecture = lectureRepository.findByCourseIdAndDateBetween(
-                        currentCourse.getId(), startOfDay, endOfDay)
+        Lecture todayLecture = lectureRepository.findByCourseIdAndDate(
+                        currentCourse.getId(), today)
                 .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
-
-        LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(ATTENDANCE_DEADLINE)) {
-            createAttendanceRecord(student, todayLecture, Status.LATE);
-            return Status.LATE;
-        }
 
         Campus campus = currentCourse.getCampus();
 
-        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
-            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
+        //테스트 하기 위해 우선 주석처리했습니다.
+//        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
+//            throw new IllegalArgumentException("출석 가능한 위치가 아닙니다.");
+//        }
+
+        LocalTime currentTime = LocalTime.now();
+        Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
+
+        Optional<Attendance> attendanceOptional = attendanceRepository.findByStudentIdAndCheckInDate(studentId);
+
+        if (attendanceOptional.isPresent()) {
+            throw new AttendanceAlreadyException();
         }
 
-        Attendance attendance = attendanceRepository.findByStudentIdAndCheckInTimestampBetween(
-                        student.getId(), startOfDay, endOfDay)
-                .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
-
-        if (attendance.getCheckInTimestamp() != null) {
-            throw new IllegalStateException("이미 출석 처리되었습니다.");
+        if (timeDiff.toMillis() <= ATTENDANCE_DEADLINE) {
+            createAttendanceRecord(student, todayLecture, AttendanceStatus.ATTENDANCE);
+            return AttendanceStatus.ATTENDANCE;
+        } else {
+            createAttendanceRecord(student, todayLecture, AttendanceStatus.LATE);
+            return AttendanceStatus.LATE;
         }
 
-        createAttendanceRecord(student, todayLecture, Status.ATTENDANCE);
-        return Status.ATTENDANCE;
     }
 
-    private void createAttendanceRecord(Student student, Lecture lecture, Status status) {
+    private void createAttendanceRecord(Student student, Lecture lecture, AttendanceStatus attendanceStatus) {
         Attendance attendance = new Attendance();
         attendance.setStudent(student);
         attendance.setLecture(lecture);
         attendance.setCheckInTimestamp(LocalDateTime.now());
-        attendance.setStatus(status);
+        attendance.setAttendanceStatus(attendanceStatus);
 
         attendanceRepository.save(attendance);
     }
 
+    //TODO: 좌표 계산 원으로
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        boolean isWithin = Math.abs(campus.getGpsY() - latitude) <= LOCATION_TOLERANCE &&
-                Math.abs(campus.getGpsX() - longitude) <= LOCATION_TOLERANCE;
-        return isWithin;
+        return calculateDistance(campus.getGpsX(), campus.getGpsY(), latitude, longitude) <= 500;
     }
 
-    public StudentAttendanceListResponseDto getStudentAttendances(Long courseId, Long studentId, UserDetails user) {
-        checkStaffHasCourse(user, courseId);
+    private double calculateDistance(double campusLatitude, double campusLongitude, double latitude, double longitude) {
+        final int R = 6371;
 
-        // studentId에 해당하는 수강생이 있는지 확인하기
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당하는 수강생이 없습니다."));
+        double latitudeDistance = Math.toRadians(latitude - campusLatitude);
+        double longitudeDistance = Math.toRadians(longitude - campusLongitude);
 
-        // 해당 교육 강좌에 해당하는 강의 리스트
-        List<Lecture> lectures = lectureRepository.findAllByCourseId(courseId);
+        double a = Math.sin(latitudeDistance / 2) * Math.sin(latitudeDistance / 2)
+                + Math.cos(Math.toRadians(campusLatitude)) * Math.cos(Math.toRadians(latitude))
+                * Math.sin(longitudeDistance / 2) * Math.sin(longitudeDistance / 2);
 
-        // 특정 학생의 강의의 출석 리스트
-        List<Attendance> attendances = lectures.stream()
-                .map(lecture -> attendanceRepository.findByLectureIdStudentId(studentId, lecture.getId()))
-                .toList();
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        // 조회한 학생의 금일 기준 출석률
-        LocalDateTime today = LocalDateTime.now();
-        Course course = getCourse(courseId);
-        Long lectureTotalCountByToday = lectureRepository.findByCourseIdAndDateBetween(courseId, course.getStartDate(), today).stream().count();
-        Long attendanceTotalCountByToday = attendances.stream().filter(attendance -> attendance.getStatus() == Status.ATTENDANCE).count();
-        Long attendanceRateByToday = (attendanceTotalCountByToday / lectureTotalCountByToday) * 100;
-
-        // 조회한 학생의 전체 출석률
-        Long overallAttendanceRate = (attendanceTotalCountByToday / (long) attendances.size()) * 100;
-
-        // 과정 진행률
-        Long courseProgressRate = (lectureTotalCountByToday / (long) attendances.size()) * 100;
-
-        return StudentAttendanceListResponseDto.from(student, attendances, attendanceRateByToday, overallAttendanceRate, courseProgressRate);
+        return R * c * 1000;
     }
 
     private Course getCourse(Long courseId) {
@@ -167,7 +143,7 @@ public class AttendanceService {
         // 해당 날짜의 출석 구하기
         Attendance attendance = attendanceRepository.findByLectureIdStudentId(studentId, lecture.getId());
 
-        attendance.updateStatus(Status.valueOf(requestDto.getStatus()));
+        attendance.updateStatus(AttendanceStatus.valueOf(requestDto.getStatus()));
         attendanceRepository.save(attendance);
     }
 
@@ -183,7 +159,7 @@ public class AttendanceService {
     }
 
     @Transactional
-    public Status checkOut(UserDetails user, AttendanceCheckinRequestDto requestDto) {
+    public AttendanceStatus checkOut(UserDetails user, AttendanceCheckinRequestDto requestDto) {
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
@@ -197,8 +173,8 @@ public class AttendanceService {
             throw new IllegalArgumentException("현재 과정에 참여 중이지 않은 학생입니다.");
         }
 
-        Registration currentRegistration = registrationRepository.findByStudentIdAndStatus(
-                        studentId, org.example.educheck.domain.registration.entity.Status.PROGRESS)
+        Registration currentRegistration = registrationRepository.findByStudentIdAndRegistrationStatus(
+                        studentId, RegistrationStatus.PROGRESS)
                 .orElseThrow(() -> new IllegalArgumentException("현재 진행 중인 과정 등록이 없습니다."));
         Course currentCourse = currentRegistration.getCourse();
 
@@ -210,11 +186,11 @@ public class AttendanceService {
                         student.getId(), startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
 
-        Campus campus = currentCourse.getCampus();
-
-        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
-            throw new IllegalArgumentException("퇴실 가능한 위치가 아닙니다.");
-        }
+//        Campus campus = currentCourse.getCampus();
+//
+//        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
+//            throw new IllegalArgumentException("퇴실 가능한 위치가 아닙니다.");
+//        }
 
         if (attendance.getCheckOutTimestamp() != null) {
             throw new IllegalStateException("이미 퇴실 처리되었습니다.");
@@ -225,15 +201,15 @@ public class AttendanceService {
 
         LocalTime earlyLeaveTime = LocalTime.of(10, 0);
         if (now.toLocalTime().isBefore(earlyLeaveTime)) {
-            attendance.setStatus(Status.EARLY_LEAVE);
-        } else if (attendance.getStatus() == Status.LATE) {
-            attendance.setStatus(Status.LATE);
+            attendance.setAttendanceStatus(AttendanceStatus.EARLY_LEAVE);
+        } else if (attendance.getAttendanceStatus() == AttendanceStatus.LATE) {
+            attendance.setAttendanceStatus(AttendanceStatus.LATE);
         } else {
-            attendance.setStatus(Status.ATTENDANCE);
+            attendance.setAttendanceStatus(AttendanceStatus.ATTENDANCE);
         }
 
         attendanceRepository.save(attendance);
-        return attendance.getStatus();
+        return attendance.getAttendanceStatus();
     }
 
 

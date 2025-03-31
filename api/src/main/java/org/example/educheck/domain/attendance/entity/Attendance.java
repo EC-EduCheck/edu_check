@@ -34,7 +34,7 @@ public class Attendance extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")
-    private Status status;
+    private AttendanceStatus attendanceStatus;
 
     @Builder
     public Attendance(Student student, Lecture lecture, LocalDateTime checkInTimestamp) {
@@ -43,8 +43,8 @@ public class Attendance extends BaseTimeEntity {
         this.checkInTimestamp = checkInTimestamp;
     }
 
-    public Attendance updateStatus(Status status) {
-        this.status = status;
+    public Attendance updateStatus(AttendanceStatus attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
         return this;
     }
 

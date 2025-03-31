@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.educheck.domain.absenceattendance.entity.AbsenceAttendance;
+import org.example.educheck.domain.attendance.entity.AttendanceStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,25 +14,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class UpdateAbsenceAttendacneReponseDto {
+public class UpdateAbsenceAttendanceReponseDto {
 
     private Long absenceAttendanceId;
     private String reason;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String category;
+    private AttendanceStatus category;
     private Character isApprove;
-    private LocalDateTime approveDate;
+    private LocalDateTime approveDateTime;
 
-    public static UpdateAbsenceAttendacneReponseDto from(AbsenceAttendance absenceAttendance) {
-        return UpdateAbsenceAttendacneReponseDto.builder()
+    public static UpdateAbsenceAttendanceReponseDto from(AbsenceAttendance absenceAttendance) {
+        return UpdateAbsenceAttendanceReponseDto.builder()
                 .absenceAttendanceId(absenceAttendance.getId())
                 .reason(absenceAttendance.getReason())
                 .startDate(absenceAttendance.getStartTime())
                 .endDate(absenceAttendance.getEndTime())
                 .category(absenceAttendance.getCategory())
                 .isApprove(absenceAttendance.getIsApprove())
-                .approveDate(absenceAttendance.getApproveDate())
+                .approveDateTime(absenceAttendance.getApproveDateTime())
                 .build();
     }
 
