@@ -10,15 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/interaction": "^6.1.15",
-    "@fullcalendar/list": "^6.1.15",
-    "@fullcalendar/react": "^6.1.15",
-    "@fullcalendar/resource": "^6.1.15",
-    "@fullcalendar/resource-timegrid": "^6.1.15",
-    "@fullcalendar/resource-timeline": "^6.1.15",
-    "@fullcalendar/timegrid": "^6.1.15",
     "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.8.3",
     "jwt-decode": "^4.0.0",
