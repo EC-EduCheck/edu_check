@@ -27,6 +27,7 @@ const RoomReservation = () => {
       try {
         const response = await reservationApi.getReservations(campusId);
         const meetingRooms = response.data.data.meetingRooms;
+        console.log('meetingRooms', meetingRooms);
 
         // 회의실 데이터 변환
         const resourcesData = meetingRooms.map((room) => ({
@@ -39,7 +40,8 @@ const RoomReservation = () => {
         // 이벤트(예약) 데이터 변환
         const eventsData = meetingRooms.flatMap((room) =>
           room.reservations.map((reservation) => ({
-            id: `${room.meetingRoomId}-${reservation.reserverId}`,
+            id: `${reservation.meetingRoomId}`,
+            // id: `${room.meetingRoomId}-${reservation.reserverId}`,
             resourceId: room.meetingRoomId.toString(),
             title: `${reservation.reserverName} 예약`,
             start: new Date(reservation.startDateTime.replace(' ', 'T')),
@@ -140,6 +142,8 @@ const RoomReservation = () => {
 
     if (confirmed) {
       try {
+        console.log(event.id);
+        console.log(event.id.split('-')[0]);
         const response = await reservationApi.cancelReservation(campusId, event.id.split('-')[0]);
 
         if (response.status === 200 || response.status === 204) {
@@ -148,7 +152,7 @@ const RoomReservation = () => {
         }
       } catch (error) {
         console.error('예약 취소 중 오류', error);
-        alert('예약 취소에 실패했습니다.');
+        alert('예약 취소에 실패했습니다.' + error.response?.data?.message || error.message);
       }
     }
   };

@@ -16,7 +16,7 @@ export const reservationApi = {
   },
 
   cancelReservation: async (campusId, meetingRoomReservationId) => {
-    await apiInstance.delete(
+    const response = await apiInstance.delete(
       `/campuses/${campusId}/meeting-rooms/reservations/${meetingRoomReservationId}`,
     );
     return response;
