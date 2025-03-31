@@ -20,13 +20,6 @@ dbconfig = {
     "database": os.getenv("DATABASE_NAME"),
     "port": os.getenv("DATABASE_PORT"),
 }
-dbconfig = {
-    "user": os.getenv("DATABASE_USERNAME"),
-    "password": os.getenv("DATABASE_PASSWORD"),
-    "host": os.getenv("DATABASE_HOST"),
-    "database": os.getenv("DATABASE_NAME"),
-    "port": os.getenv("DATABASE_PORT"),
-}
 
 
 cnxpool = pooling.MySQLConnectionPool(pool_name="pool", pool_size=5, **dbconfig)
@@ -50,6 +43,9 @@ def get_data_from_db(member_id, course_id):
 """
         data = pd.read_sql(query, conn, params=(member_id, course_id))
         data["attendance_status"] = data["attendance_status"].replace(status_mapper)
+        data["lecture_date"] = data["lecture_date"].apply(
+            lambda x: str(x) if pd.notnull(x) else None
+        )
 
     finally:
         conn.close()
@@ -75,6 +71,7 @@ def get_student_name(member_id):
 @app.route("/app/courses/<int:course_id>/members/<int:member_id>", methods=["GET"])
 def data(member_id, course_id):
     df = get_data_from_db(member_id, course_id)
+
     json_str = json.dumps(df.to_dict(orient="records"), ensure_ascii=False)
 
     return Response(json_str, mimetype="application/json")
@@ -97,4 +94,4 @@ def download(member_id, course_id):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", debug=True)
