@@ -62,6 +62,7 @@ services:
         - type=local,src=/tmp/.build-cache/client
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_APP_URL: ${VITE_APP_URL}
         VITE_HOLIDAY_API_KEY: ${VITE_HOLIDAY_API_KEY}
         VITE_HOLIDAY_BASE_URL: ${VITE_HOLIDAY_BASE_URL}
     image: ${DOCKER_REGISTRY}/educheck-client-image:latest
