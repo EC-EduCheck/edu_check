@@ -40,7 +40,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceService {
-    private static final int ATTENDANCE_DEADLINE = 30;
+    private static final int ATTENDANCE_DEADLINE = 1800000;
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
     private final LectureRepository lectureRepository;
@@ -80,6 +80,10 @@ public class AttendanceService {
 
         LocalTime currentTime = LocalTime.now();
         Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
+
+        if(!isWithinLectureTimeRange(todayLecture, currentTime)){
+            throw new IllegalArgumentException("출석 가능한 시간이 아닙니다.");
+        }
 
         Optional<Attendance> attendanceOptional = attendanceRepository.findByStudentIdAndCheckInDate(studentId);
 
@@ -146,6 +150,10 @@ public class AttendanceService {
         attendanceRepository.save(attendance);
     }
 
+    public boolean isWithinLectureTimeRange(Lecture todayLecture, LocalTime currentTime) {
+        return !currentTime.isBefore(todayLecture.getStartTime()) && currentTime.isBefore(todayLecture.getEndTime());
+    }
+
     public void checkStaffHasCourse(UserDetails user, Long courseId) {
         // 현재 관리자가 courseId를 가지고 있는지 확인하기
         String email = user.getUsername();
@@ -185,11 +193,11 @@ public class AttendanceService {
                         student.getId(), startOfDay, endOfDay)
                 .orElseThrow(() -> new IllegalArgumentException("금일 출석 기록이 없습니다."));
 
-//        Campus campus = currentCourse.getCampus();
-//
-//        if (!isWithinCampusArea(campus, requestDto.getLatitude(), requestDto.getLongitude())) {
-//            throw new IllegalArgumentException("퇴실 가능한 위치가 아닙니다.");
-//        }
+        Campus campus = currentCourse.getCampus();
+
+        if (!isWithinCampusArea(campus, requestDto.getLongitude(), requestDto.getLatitude())) {
+            throw new IllegalArgumentException("퇴실 가능한 위치가 아닙니다.");
+        }
 
         if (attendance.getCheckOutTimestamp() != null) {
             throw new IllegalStateException("이미 퇴실 처리되었습니다.");
@@ -198,8 +206,13 @@ public class AttendanceService {
         LocalDateTime now = LocalDateTime.now();
         attendance.setCheckOutTimestamp(now);
 
-        LocalTime earlyLeaveTime = LocalTime.of(10, 0);
-        if (now.toLocalTime().isBefore(earlyLeaveTime)) {
+        Lecture todayLecture = lectureRepository.findByCourseIdAndDate(
+                        currentCourse.getId(), today)
+                .orElseThrow(() -> new IllegalArgumentException("오늘 예정된 강의가 없습니다."));
+
+        LocalTime lectureEndTime = todayLecture.getEndTime();
+
+        if (now.toLocalTime().isBefore(lectureEndTime)) {
             attendance.setAttendanceStatus(AttendanceStatus.EARLY_LEAVE);
         } else if (attendance.getAttendanceStatus() == AttendanceStatus.LATE) {
             attendance.setAttendanceStatus(AttendanceStatus.LATE);
