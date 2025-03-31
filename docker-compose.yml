@@ -4,6 +4,7 @@ services:
     image: mysql:8.0
     volumes:
       - db-volume:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
     environment:
@@ -77,6 +78,7 @@ services:
     volumes:
       - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/letsencrypt/live/${DOMAIN}/privkey.pem:ro
       - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "80:80"
       - "443:443"
