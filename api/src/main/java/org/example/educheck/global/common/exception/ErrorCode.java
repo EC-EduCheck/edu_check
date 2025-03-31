@@ -21,6 +21,7 @@ public enum ErrorCode {
     //4000 5000 공통
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "4000", "입력값이 올바르지 않습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "4004", "해당 리소스가 존재하지 않습니다."),
+    API_ENDPOINT_NOT_FOUND(HttpStatus.NOT_FOUND, "4007", "존재하지 않는 API 경로입니다."),
     MISMATCHED_RESOURCE(HttpStatus.BAD_REQUEST, "4008", "요청한 리소스가 일치하지 않습니다."),
     NOT_OWNER(HttpStatus.FORBIDDEN, "4003", "본인만 수정 및 삭제 가능합니다."),
     MAX_UPLOAD_SIZE_EXCEEDED(HttpStatus.PAYLOAD_TOO_LARGE, "4009", "파일 크기가 5MB를 초과할 수 없습니다."),

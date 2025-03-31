@@ -24,4 +24,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     List<Lecture> findAllByCourseId(Long courseId);
 
+    Long countByCourseId(Long courseId);
 }

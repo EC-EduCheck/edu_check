@@ -9,6 +9,10 @@ public interface AttendanceStatsProjection {
 
     Long getCourseId();
 
+    Integer getProgressCount();
+
+    Integer getAttendanceCount();
+
     Integer getLateCount();
 
     Integer getEarlyLeaveCount();
@@ -17,6 +21,5 @@ public interface AttendanceStatsProjection {
 
     Double getAccumulatedAbsence();
 
-    Double getAttendanceRate();
 
 }

@@ -79,6 +79,26 @@ services:
       - web-network
     depends_on:
       - api
+  flask_app:
+    container_name: flask-app-container
+    build:
+      context: ./app
+      cache_to:
+        - type=local,dest=/tmp/.build-cache/app,mode=max
+      cache_from:
+        - type=local,src=/tmp/.build-cache/app
+    image: ${DOCKER_REGISTRY}/educheck-app-image:latest
+    env_file:
+      - .env
+    networks:
+      - web-network
+      - db-network
+      - cache-network
+    ports:
+      - "5000:5000"
+    depends_on:
+      mysql:
+        condition: service_healthy  
 
 volumes:
   db-volume:
@@ -88,3 +108,5 @@ networks:
   db-network:
   cache-network:
   web-network:
+
+

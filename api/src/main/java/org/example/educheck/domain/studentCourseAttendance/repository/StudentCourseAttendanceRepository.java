@@ -41,24 +41,20 @@ public interface StudentCourseAttendanceRepository extends JpaRepository<Student
                         member_id,
                         member_name,
                         course_id,
+                        COUNT(lecture_date) AS progressCount,
+                        COUNT(CASE WHEN attendance_status = 'ATTENDANCE' THEN 1 END) AS attendance_count,
                         COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END) AS late_count,
                         COUNT(CASE WHEN attendance_status = 'EARLY_LEAVE' THEN 1 END) AS early_leave_count,
                         COUNT(CASE WHEN attendance_status = 'ABSENT' THEN 1 END) AS absent_count,
-                        (COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END)
-                            + COUNT(CASE WHEN attendance_status = 'EARLY_LEAVE' THEN 1 END)) / 3
-                            + COUNT(CASE WHEN attendance_status = 'ABSENT' THEN 1 END) AS accumulated_absence,
-                        (COUNT(lecture_id) -
-                         (COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END)
-                             + COUNT(CASE WHEN attendance_status = 'EARLY_LEAVE' THEN 1 END)
-                             + (COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END)
-                                 + COUNT(CASE WHEN attendance_status = 'EARLY_LEAVE' THEN 1 END)) / 3
-                             + COUNT(CASE WHEN attendance_status = 'ABSENT' THEN 1 END)
-                             )
-                            ) / COUNT(lecture_id) * 100 AS attendance_rate
+                        FLOOR((COUNT(CASE WHEN attendance_status = 'LATE' THEN 1 END)
+                            + COUNT(CASE WHEN attendance_status = 'EARLY_LEAVE' THEN 1 END)
+                            ) / 3)
+                            + COUNT(CASE WHEN attendance_status = 'ABSENT' THEN 1 END) AS accumulated_absence
                     FROM student_course_attendance
                     WHERE lecture_date <= CURDATE()
+                    AND member_id = :memberId
+                    AND course_id = :courseId
                     GROUP BY student_id, member_id, member_name, course_id
-                    HAVING member_id = :memberId AND course_id = :courseId
             """, nativeQuery = true)
     AttendanceStatsProjection findAttendanceStatsByStudentId(@Param("memberId") Long studentId, @Param("courseId") Long courseId);
 
