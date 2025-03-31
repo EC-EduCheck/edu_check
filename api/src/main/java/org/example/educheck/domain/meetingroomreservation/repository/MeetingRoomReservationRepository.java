@@ -41,7 +41,7 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
 
     @Query(value = """
                     SELECT
-                    COALESCE(SUM(TIMESTAMPDIFF(MINUTE , r.end_time, r.start_time)),0)
+                    COALESCE(SUM(TIMESTAMPDIFF(MINUTE , r.start_time, r.end_time)),0)
                     FROM meeting_room_reservation r
                     WHERE r.memeber_id = :memberId
                     AND r.status = 'ACTIVE'
