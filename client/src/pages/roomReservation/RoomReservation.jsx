@@ -89,10 +89,16 @@ const RoomReservation = () => {
   };
 
   const handleSelectSlot = async ({ start, end, resourceId }) => {
-    const today = new Date();
+    const now = new Date();
+    const today = new Date().setHours(0, 0, 0, 0);
 
-    if (start < today.setHours(0, 0, 0, 0)) {
+    if (start < today) {
       alert('당일 예약만 가능합니다.');
+      return;
+    }
+
+    if (start < now) {
+      alert('현재 시간 이후로만 예약할 수 있습니다.');
       return;
     }
 
