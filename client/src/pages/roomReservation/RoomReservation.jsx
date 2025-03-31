@@ -44,9 +44,10 @@ const RoomReservation = () => {
 
         // 이벤트(예약) 데이터 변환
         const eventsData = meetingRooms.flatMap((room) =>
+          //배열 안에 객체로 들고 있어서 map으로 처리
           room.reservations.map((reservation) => ({
-            id: `${reservation.meetingRoomId}`,
-            // id: `${room.meetingRoomId}-${reservation.reserverId}`,
+            // 예약 pk
+            id: `${reservation.meetingRoomReservationId}`,
             resourceId: room.meetingRoomId.toString(),
             title: `${reservation.reserverName} 예약`,
             start: new Date(reservation.startDateTime.replace(' ', 'T')),
