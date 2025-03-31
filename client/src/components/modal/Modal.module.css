@@ -3,8 +3,8 @@
   top: 0;
   left: 0;
   width: var(--width-full);
-  height: 100%;
   min-height: var(--height-full);
+  height: 100%;
   background-color: var(--text-100);
   opacity: 0.5;
   z-index: 998;
@@ -35,7 +35,7 @@
 }
 
 .container p {
-  color: var(--bg-100);
+  color: var(--text-100);
   line-height: 1.5;
   white-space: pre-line;
   text-align: center;
