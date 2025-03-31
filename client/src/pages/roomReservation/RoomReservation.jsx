@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { reservationApi } from '../../api/reservationApi';
 import Modal from '../../components/modal/Modal';
-
 import moment from 'moment';
 import 'moment/locale/ko';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
@@ -24,6 +23,7 @@ const RoomReservation = () => {
   const [modalData, setModalData] = useState({});
   const campusId = useSelector((state) => state.auth.user.campusId);
   const courseId = useSelector((state) => state.auth.user.courseId);
+  useSelector((state))
 
   useEffect(() => {
     if (!campusId) return;
