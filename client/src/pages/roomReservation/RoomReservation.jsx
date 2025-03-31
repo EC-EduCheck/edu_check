@@ -67,37 +67,36 @@ const RoomReservation = () => {
     setSelectedDate(date);
   };
 
-  const handleSelectSlot = async ({ start, end, resourceId }) => {
-    // 운영시간 체크 (9:00 - 22:00)
+  const isWithinOperationHours = (start, end) => {
     const startHour = start.getHours();
     const endHour = end.getHours();
     const endMinutes = end.getMinutes();
 
-    if (startHour < 9 || (endHour === 22 && endMinutes > 0) || endHour > 22) {
+    return !(startHour < 9 || (endHour === 22 && endMinutes > 0) || endHour > 22);
+  };
+
+  const handleSelectSlot = async ({ start, end, resourceId }) => {
+    if (!isWithinOperationHours(start, end)) {
       alert('운영 시간(09:00 - 22:00) 내에서만 예약할 수 있습니다.');
       return;
     }
 
-    const confirmed = window.confirm('이 시간에 예약하시겠습니까?');
-    if (!confirmed) return;
+    if (!window.confirm('이 시간에 예약하시겠습니까?')) return;
+
+    const convertToKST = (date) => {
+      return new Date(date.getTime() + 9 * 60 * 60 * 1000);
+    };
+
+    const requestBody = {
+      startTime: convertToKST(new Date(start)).toISOString(),
+      endTime: convertToKST(new Date(end)).toISOString(),
+      meetingRoomId: resourceId,
+      courseId: courseId,
+    };
 
     try {
-
-      const convertToKST = (date) => {
-        return new Date(date.getTime() + 9 * 60 * 60 * 1000);
-      };
-
-      const requestBody = {
-        // startTime: formatISOString(start),
-        // endTime: formatISOString(end),
-        startTime: convertToKST(new Date(start)).toISOString(),
-        endTime: convertToKST(new Date(end)).toISOString(),
-        meetingRoomId: resourceId,
-        courseId: courseId,
-      };
-
       const response = await reservationApi.createReservation(campusId, requestBody);
-
+      console.log(response);
       if (response.status === 201) {
         alert('예약이 완료되었습니다.');
 
@@ -112,7 +111,7 @@ const RoomReservation = () => {
           reserverName: response.data.data.reserverName || '새 예약',
         };
 
-        setEvents([...events, newEvent]);
+        setEvents((prevEvents) => [...prevEvents, newEvent]);
       }
     } catch (error) {
       console.error('예약 중 오류', error);

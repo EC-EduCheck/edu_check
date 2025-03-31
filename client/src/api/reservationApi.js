@@ -8,7 +8,10 @@ export const reservationApi = {
   },
 
   createReservation: async (campusId, requestBody) => {
-    await apiInstance.post(`/campuses/${campusId}/meeting-rooms/reservations`, requestBody);
+    const response = await apiInstance.post(
+      `/campuses/${campusId}/meeting-rooms/reservations`,
+      requestBody,
+    );
     return response;
   },
 
