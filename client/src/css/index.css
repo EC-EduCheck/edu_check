@@ -60,8 +60,6 @@
   /* height */
   --height-full: 100vh;
   --height-half: 50vh;
-
-  position: relative;
 }
 
 * {

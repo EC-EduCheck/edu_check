@@ -1,5 +1,6 @@
 .inputContainer {
   width: 100%;
+  height: 100%;
 }
 
 .inputBox {
@@ -9,6 +10,7 @@
   border-radius: var(--border-radius-5);
   margin: 6px 0;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .inputBox::placeholder {
