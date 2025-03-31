@@ -152,7 +152,7 @@ public class StudentCourseAttendanceService {
             return 0.0;
         }
 
-        return (projection.getAttendanceCount() - projection.getAccumulatedAbsence()) / totalLectureCount * 100;
+        return (projection.getProgressCount() - projection.getAccumulatedAbsence()) / totalLectureCount * 100;
     }
 
     public TodayAttendanceResponseDto getTodayAttendances(Long courseId, Member member) {
