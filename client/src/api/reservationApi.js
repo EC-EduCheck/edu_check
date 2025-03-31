@@ -1,9 +1,11 @@
 import apiInstance from './instance/apiInstance';
 
 export const reservationApi = {
-  getReservations: async (campusId) => {
+  getReservations: async (campusId, formattedDate) => {
     // /api/campuses/{campusId}/meeting-rooms/reservations
-    const response = await apiInstance.get(`/campuses/${campusId}/meeting-rooms/reservations`);
+    const response = await apiInstance.get(`/campuses/${campusId}/meeting-rooms/reservations`,{
+      params: {date: formattedDate}
+    });
     return response;
   },
 

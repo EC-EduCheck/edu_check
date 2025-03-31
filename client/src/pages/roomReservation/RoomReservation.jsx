@@ -30,7 +30,9 @@ const RoomReservation = () => {
 
     const fetchData = async () => {
       try {
-        const response = await reservationApi.getReservations(campusId);
+        const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
+        const response = await reservationApi.getReservations(campusId, formattedDate);
+
         const meetingRooms = response.data.data.meetingRooms;
         console.log('meetingRooms', meetingRooms);
 
@@ -60,9 +62,9 @@ const RoomReservation = () => {
         setEvents(eventsData);
 
         // API 응답에서 첫 예약 날짜를 가져와 초기 날짜로 설정
-        if (eventsData.length > 0) {
-          setSelectedDate(new Date(eventsData[0].start));
-        }
+        // if (eventsData.length > 0) {
+        //   setSelectedDate(new Date(eventsData[0].start));
+        // }
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
       } finally {
@@ -71,7 +73,7 @@ const RoomReservation = () => {
     };
 
     fetchData();
-  }, [campusId]);
+  }, [campusId, selectedDate]);
 
   const handleNavigate = (date) => {
     setSelectedDate(date);
@@ -125,7 +127,8 @@ const RoomReservation = () => {
       }
     } catch (error) {
       console.error('예약 중 오류', error);
-      alert('예약 생성에 실패했습니다.');
+      const errorMessage = error.response?.data?.message ?? '오류가 발생했습니다.';
+      alert(errorMessage);
     }
   };
 
@@ -229,6 +232,7 @@ const RoomReservation = () => {
               <p>{`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${dayOfWeek[date.getDay()]}요일`}</p>
             </div>
           </span>
+          {/* TODO: 예약은 당일만 가능하게 프론트에서 막기 */}
           <span className="rbc-btn-group">
             <button type="button" onClick={navigate.bind(null, 'TODAY')}>
               오늘
@@ -276,8 +280,26 @@ const RoomReservation = () => {
             views={['day', 'week']}
             step={15}
             timeslots={4}
-            min={new Date(selectedDate.setHours(9, 0, 0))}
-            max={new Date(selectedDate.setHours(22, 0, 0))}
+            min={
+              new Date(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                selectedDate.getDate(),
+                9,
+                0,
+                0,
+              )
+            }
+            max={
+              new Date(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                selectedDate.getDate(),
+                22,
+                0,
+                0,
+              )
+            }
             date={selectedDate}
             onNavigate={handleNavigate}
             selectable
