@@ -118,8 +118,8 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                // element: <RoomReservation />,
-                element: <StudentSetting />,
+                element: <RoomReservation />,
+                // element: <StudentSetting />,
               },
             ],
           },
