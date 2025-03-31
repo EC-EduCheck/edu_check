@@ -31,7 +31,8 @@ public class StudentCourseAttendanceController {
 
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
     @GetMapping("/courses/{courseId}/students/{studentId}/attendances")
-    public ResponseEntity<ApiResponse<AttendanceRecordListResponseDto>> getStudentAttendances(
+    public ResponseEntity<ApiResponse<AttendanceRecordListResponseDto>>
+    getStudentAttendances(
             @AuthenticationPrincipal Member member,
             @PathVariable Long courseId,
             @PathVariable Long studentId,

@@ -14,7 +14,7 @@ export default function Modal({
 }) {
   if (!isOpen) return null;
   return (
-    <>
+    <div className={styles.modal}>
       <div className={styles.backGround}></div>
       <div className={styles.container}>
         <CloseButton handleClick={onClose}></CloseButton>
@@ -23,13 +23,23 @@ export default function Modal({
           <div>{content}</div>
 
           <div className={`${styles.buttonBox} ${!mainClick && `${styles.active}`}`}>
-            {subClick && <MainButton handleClick={subClick} title={subText || '확인'} isEnable={true}></MainButton>}
+            {subClick && (
+              <MainButton
+                handleClick={subClick}
+                title={subText || '확인'}
+                isEnable={true}
+              ></MainButton>
+            )}
             {mainClick && (
-              <MainButton handleClick={mainClick} title={mainText || '취소'} isEnable={true}></MainButton>
+              <MainButton
+                handleClick={mainClick}
+                title={mainText || '취소'}
+                isEnable={true}
+              ></MainButton>
             )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
