@@ -9,6 +9,7 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import styles from './RoomReservation.module.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './calendar.css';
+import dayjs from 'dayjs';
 
 // 한국어 로케일 설정
 moment.locale('ko');
@@ -23,7 +24,7 @@ const RoomReservation = () => {
   const [modalData, setModalData] = useState({});
   const campusId = useSelector((state) => state.auth.user.campusId);
   const courseId = useSelector((state) => state.auth.user.courseId);
-  useSelector((state))
+  const memberId = useSelector((state) => state.auth.user.memberId);
 
   useEffect(() => {
     if (!campusId) return;
@@ -120,8 +121,9 @@ const RoomReservation = () => {
         alert('예약이 완료되었습니다.');
 
         // 성공적으로 예약이 되었을 때 UI에 예약 추가
+        console.log(response.data.data.reservationId);
         const newEvent = {
-          id: `new-${Date.now()}`,
+          id: response.data.data.reservationId,
           resourceId: resourceId,
           title: `${response.data.data.reserverName || '새 예약'} 예약`,
           start,
@@ -141,6 +143,7 @@ const RoomReservation = () => {
 
   const cancelReservation = async (eventId) => {
     setIsOpen(false);
+    console.log(eventId);
 
     try {
       const response = await reservationApi.cancelReservation(campusId, eventId.split('-')[0]);
@@ -188,8 +191,11 @@ const RoomReservation = () => {
 
     setModalData({
       content: confirmContent,
-      mainClick: () => cancelReservation(event.id),
-      mainText: '삭제',
+      mainClick:
+        memberId === event.reserverId && dayjs().isBefore(dayjs(event.end))
+          ? () => cancelReservation(event.id)
+          : null,
+      mainText: memberId === event.reserverId && dayjs().isBefore(dayjs(event.end)) ? '삭제' : '',
     });
 
     setIsOpen(true);

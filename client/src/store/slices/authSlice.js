@@ -11,6 +11,7 @@ const initialState = {
     isCompleted: false,
   },
   user: {
+    memberId: '',
     role: '',
     name: '',
     birthDate: '',
