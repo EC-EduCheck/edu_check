@@ -24,6 +24,36 @@ export const attendanceApi = {
     );
     return response.data;
   },
+  getAbsenceAttendanceAndRate: async (courseId) => {
+    const response = await apiInstance.get(
+      `/my/course/${courseId}/attendances/stats`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
+  getAttendanceRecords: async (courseId, page = 0, size = 10) => {
+    const response = await apiInstance.get(
+      `/my/courses/${courseId}/attendances?page=${page}&size=${size}`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
+  getAttendanceRecordsByYearMonth: async (courseId, year, month, page = 0, size = 10) => {
+    const response = await apiInstance.get(
+      `/my/courses/${courseId}/attendances?year=${year}&month=${month}&page=${page}&size=${size}`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
   // STAFF
   getTodayAttendances: async (courseId) => {
     const response = await apiInstance.get(
