@@ -115,7 +115,7 @@ const RoomReservation = () => {
       }
     } catch (error) {
       console.error('예약 중 오류', error);
-      alert('예약 생성에 실패했습니다.');
+      alert(error.response?.data?.message || error.message);
     }
   };
 
