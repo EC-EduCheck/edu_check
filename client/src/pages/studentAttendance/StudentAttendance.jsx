@@ -16,12 +16,12 @@ export default function StudentAttendance() {
     earlyLeaveCount: 0,
     absentCount: 0,
     accumulatedAbsence: 0,
+    startDate: ' ',
+    endDate: ' ',
   });
 
   const [courseInfo, setCourseInfo] = useState({
     name: '',
-    startDate: '',
-    endDate: '',
   });
 
   const [attendanceData, setAttendanceData] = useState([]);
@@ -35,18 +35,18 @@ export default function StudentAttendance() {
   useEffect(() => {
     const fetchAttendanceStats = async () => {
       try {
-        console.log('통계 API 호출 시작:', courseId);
         setIsLoading(true);
         const response = await attendanceApi.getAbsenceAttendanceAndRate(courseId);
-        console.log('통계 API 응답:', response);
 
         if (response && response.data) {
           setAttendanceStats({
-            attendanceRate: response.data.attendanceRate || 0,
+            attendanceRate: Math.round(response.data.attendanceRate) || 0,
             lateCount: response.data.lateCount || 0,
             earlyLeaveCount: response.data.earlyLeaveCount || 0,
             absentCount: response.data.absentCount || 0,
             accumulatedAbsence: response.data.accumulatedAbsence || 0,
+            startDate: response.data.startDate,
+            endDate: response.data.endDate,
           });
         }
       } catch (err) {
@@ -60,7 +60,6 @@ export default function StudentAttendance() {
     if (courseId) {
       fetchAttendanceStats();
     } else {
-      console.warn('courseId가 없습니다. Redux store를 확인하세요.');
       setIsLoading(false);
     }
   }, [courseId]);
@@ -68,17 +67,12 @@ export default function StudentAttendance() {
   useEffect(() => {
     const fetchAttendanceRecords = async () => {
       try {
-        console.log('출석 기록 API 호출 시작:', courseId);
         setIsLoading(true);
-
         const response = await attendanceApi.getAttendanceRecords(courseId);
-        console.log('출석 기록 API 응답:', response);
 
         if (response && response.data) {
           setCourseInfo({
             name: response.data.courseName,
-            startDate: response.data.startDate,
-            endDate: response.data.endDate,
           });
 
           const formattedData = response.data.attendanceList.map((item) => ({
@@ -91,29 +85,6 @@ export default function StudentAttendance() {
       } catch (err) {
         console.error('출석 기록 데이터를 가져오는 중 오류 발생:', err);
         console.error('에러 상세 정보:', err.response?.data || err);
-
-        try {
-          console.log('대체 방법으로 출석 기록 조회 시도');
-          const response = await attendanceApi.getAttendanceRecords(courseId, 0, 100); // 페이지 크기를 크게 설정
-
-          if (response && response.data) {
-            setCourseInfo({
-              name: response.data.courseName,
-              startDate: response.data.startDate,
-              endDate: response.data.endDate,
-            });
-
-            const formattedData = response.data.attendanceList.map((item) => ({
-              date: item.lectureDate,
-              status: item.attendanceStatus,
-            }));
-
-            setAttendanceData(formattedData);
-          }
-        } catch (fallbackErr) {
-          console.error('대체 방법도 실패:', fallbackErr);
-          setError('출석 기록을 불러오는 데 실패했습니다.');
-        }
       } finally {
         setIsLoading(false);
       }
@@ -124,9 +95,9 @@ export default function StudentAttendance() {
     }
   }, [courseId]);
 
-  if (!courseId) return <div>코스 정보를 불러올 수 없습니다.</div>;
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
+  // if (!courseId) return <div>코스 정보를 불러올 수 없습니다.</div>;
+  // if (isLoading) return <div>로딩 중...</div>;
+  // if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -138,8 +109,8 @@ export default function StudentAttendance() {
               <ProgressBar
                 value={attendanceStats.attendanceRate}
                 max={100}
-                startDate={courseInfo.startDate}
-                endDate={courseInfo.endDate}
+                startDate={attendanceStats.startDate}
+                endDate={attendanceStats.endDate}
               ></ProgressBar>
             </div>
           </DashBoardItem>
