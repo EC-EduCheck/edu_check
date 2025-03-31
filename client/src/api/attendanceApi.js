@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
 import apiInstance from '../api/instance/apiInstance';
-import axios from 'axios';
 
 export const attendanceApi = {
   submitAttendance: async (latitude, longitude) => {
@@ -48,10 +46,4 @@ export const attendanceApi = {
     return response;
   },
 
-  getStudentAttendanceSheet: async (courseId, memberId) => {
-    const response = await apiInstance.get(`/courses/${courseId}/members/${memberId}`, {
-      baseURL: import.meta.env.VITE_APP_URL,
-    });
-    return response;
-  },
 };
