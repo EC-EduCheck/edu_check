@@ -46,7 +46,7 @@ public class MeetingRoomReservationService {
     }
 
     @Transactional
-    public void createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
+    public MeetingRoomReservationResponseDto createReservation(UserDetails user, Long campusId, MeetingRoomReservationRequestDto requestDto) {
 
         Member findMember = getAuthenticatedMember(user);
 
@@ -62,7 +62,7 @@ public class MeetingRoomReservationService {
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
         MeetingRoomReservation meetingRoomReservation = requestDto.toEntity(findMember, meetingRoom);
-        meetingRoomReservationRepository.save(meetingRoomReservation);
+        return MeetingRoomReservationResponseDto.from(meetingRoomReservationRepository.save(meetingRoomReservation));
     }
 
     private void validateDailyReservationLimit(Long memberId) {
