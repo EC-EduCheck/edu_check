@@ -88,6 +88,13 @@ const RoomReservation = () => {
   };
 
   const handleSelectSlot = async ({ start, end, resourceId }) => {
+    const today = new Date();
+
+    if (start < today.setHours(0, 0, 0, 0)) {
+      alert('당일 예약만 가능합니다.');
+      return;
+    }
+
     if (!isWithinOperationHours(start, end)) {
       alert('운영 시간(09:00 - 22:00) 내에서만 예약할 수 있습니다.');
       return;
@@ -240,9 +247,6 @@ const RoomReservation = () => {
             <button type="button" onClick={navigate.bind(null, 'PREV')}>
               이전
             </button>
-            <button type="button" onClick={navigate.bind(null, 'NEXT')}>
-              다음
-            </button>
           </span>
         </div>
         <span className="rbc-toolbar">
@@ -252,7 +256,7 @@ const RoomReservation = () => {
                 <img src="/assets/clock-icon.png" alt="시계 아이콘" />
               </div>
               <p>
-                09:00 - 22:00 <span>(15분 단위 예약 가능)</span>
+                09:00 - 22:00 <span>(15분 단위 당일 예약만 가능)</span>
               </p>
             </div>
           </span>
