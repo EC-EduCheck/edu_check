@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '../../store/store';
 
 const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_URL,
