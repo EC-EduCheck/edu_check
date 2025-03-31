@@ -46,6 +46,14 @@ def get_data_from_db(member_id, course_id):
         data["lecture_date"] = data["lecture_date"].apply(
             lambda x: str(x) if pd.notnull(x) else None
         )
+        data.rename(
+            columns={
+                "lecture_session": "회차",
+                "lecture_date": "날짜",
+                "attendance_status": "출석 상태",
+            },
+            inplace=True,
+        )
 
     finally:
         conn.close()
