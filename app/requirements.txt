@@ -3,3 +3,4 @@ pandas
 mysql-connector-python
 python-dotenv
 gunicorn
+xlsxwriter
