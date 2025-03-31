@@ -1,22 +1,14 @@
-import React, { useEffect } from 'react'
-import { attendanceApi } from '../api/attendanceApi'
-import axios from 'axios'
+import React, { useEffect } from 'react';
+import { attendanceSheetApi } from '../api/attendanceSheetApi';
 
 export default function Test() {
   useEffect(() => {
-    const test = async () => {
-      // const response = await attendanceApi.getStudentAttendanceSheet(10, 1);
-      const response = await axios.get(
-        `/courses/10/members/1`,
-      {baseURL: import.meta.env.VITE_APP_URL},
-      );
+    const test = async (courseId, memberId) => {
+      const response = await attendanceSheetApi.getStudentAttendanceSheet(courseId, memberId);
       console.log(response);
-      
-    }
-    test();
-  })
+    };
+    test(10,1);
+  }, []);
 
-  return (
-    <div>Test</div>
-  )
+  return <div>Test</div>;
 }
