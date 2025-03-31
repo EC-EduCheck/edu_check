@@ -51,10 +51,18 @@ public class AttendanceService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public AttendanceStatus checkIn(Member member, AttendanceCheckinRequestDto requestDto) {
+    public AttendanceStatus checkIn(UserDetails user, AttendanceCheckinRequestDto requestDto) {
+
+        String email = user.getUsername();
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
+
+        if (!isStudent(member)){
+            throw new IllegalArgumentException("학생이 아닙니다.");
+        }
 
         Student student = studentRepository.findByMemberId(member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("학생 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("학생 정보를 찾을 수 없습니다."));
 
         Long studentId = student.getId();
 
@@ -150,11 +158,11 @@ public class AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-    public boolean isWithinLectureTimeRange(Lecture todayLecture, LocalTime currentTime) {
+    private boolean isWithinLectureTimeRange(Lecture todayLecture, LocalTime currentTime) {
         return !currentTime.isBefore(todayLecture.getStartTime()) && currentTime.isBefore(todayLecture.getEndTime());
     }
 
-    public void checkStaffHasCourse(UserDetails user, Long courseId) {
+    private void checkStaffHasCourse(UserDetails user, Long courseId) {
         // 현재 관리자가 courseId를 가지고 있는지 확인하기
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
@@ -165,11 +173,19 @@ public class AttendanceService {
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
     }
 
+    private boolean isStudent(Member member){
+        return "STUDENT".equals(member.getRole());
+    }
     @Transactional
     public AttendanceStatus checkOut(UserDetails user, AttendanceCheckinRequestDto requestDto) {
+
         String email = user.getUsername();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
+
+        if (!isStudent(member)){
+            throw new IllegalArgumentException("학생이 아닙니다.");
+        }
 
         Student student = studentRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("학생 정보를 찾을 수 없습니다."));
