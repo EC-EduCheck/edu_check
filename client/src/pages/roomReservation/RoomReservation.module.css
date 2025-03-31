@@ -36,3 +36,25 @@
   width: 100%;
   height: 100%;
 }
+
+/* modal */
+.modal {
+  min-width: 250px;
+  width: 60%;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.modal li {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: var(--margin-small);
+}
+
+.modal p:first-child {
+  text-align: left;
+}

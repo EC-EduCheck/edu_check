@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react'
-import { attendanceApi } from '../api/attendanceApi'
+import React, { useEffect } from 'react';
+import { attendanceSheetApi } from '../api/attendanceSheetApi';
 
 export default function Test() {
   useEffect(() => {
-    const test = async () => {
-      const response = await attendanceApi.getStudentAttendanceSheet(10, 1);
+    const test = async (courseId, memberId) => {
+      const response = await attendanceSheetApi.getStudentAttendanceSheet(courseId, memberId);
       console.log(response);
-    }
-    test();
-  })
+    };
+    test(10,1);
+  }, []);
 
-  return (
-    <div>Test</div>
-  )
+  return <div>Test</div>;
 }
