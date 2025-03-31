@@ -143,9 +143,9 @@ public class MeetingRoomReservationService {
         meetingRoomReservationRepository.save(meetingRoomReservation);
     }
 
-    public CampusMeetingRoomsDto getMeetingRoomReservations(Long campusId) {
+    public CampusMeetingRoomsDto getMeetingRoomReservations(Long campusId, LocalDate date) {
 
-        List<MeetingRoomReservationsProjections> reservationsByCampus = meetingRoomReservationRepository.findByCampusId(campusId);
+        List<MeetingRoomReservationsProjections> reservationsByCampus = meetingRoomReservationRepository.findByCampusId(campusId, date);
 
         Map<Long, MeetingRoomDto> meetingRoomDtoMap = new LinkedHashMap<>();
 
