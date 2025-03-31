@@ -63,12 +63,12 @@ public interface MeetingRoomReservationRepository extends JpaRepository<MeetingR
                 FROM meeting_room m
                 LEFT JOIN meeting_room_reservation r
                     ON m.id = r.meeting_room_id
+                    AND DATE(r.start_time) = COALESCE(:date, CURDATE())
+                    AND (r.status = 'ACTIVE' OR r.status IS NULL)
                 LEFT JOIN member me
                     ON r.memeber_id = me.id
                 WHERE m.campus_id = :campusId
-                 AND (DATE(r.start_time) = COALESCE(:date, CURDATE()) OR r.start_time IS NULL)
-                 AND (r.status = 'ACTIVE' OR r.status IS NULL)
-                ORDER BY r.start_time
+                ORDER BY m.name, m.id
             """, nativeQuery = true)
     List<MeetingRoomReservationsProjections> findByCampusId(@Param("campusId") Long campusId, @Param("date") LocalDate date);
 

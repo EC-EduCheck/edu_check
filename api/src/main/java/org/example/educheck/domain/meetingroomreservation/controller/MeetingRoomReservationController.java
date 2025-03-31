@@ -62,6 +62,7 @@ public class MeetingRoomReservationController {
                                                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
 
+        log.info("date: {}", date);
         return ResponseEntity.ok(
                 ApiResponse.ok(
                         "회의실 예약 내역 조회 성공",
