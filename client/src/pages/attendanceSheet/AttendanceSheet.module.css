@@ -1,0 +1,22 @@
+.table {
+  font-size: var(--font-size-18);
+  border-collapse: collapse;
+  margin: auto;
+  width: auto;
+  min-width: 400px;
+  max-width: 800px;
+  overflow: hidden;
+}
+
+.thead {
+  background-color: var(--primary-200);
+  color: var(--text-200);
+}
+
+.th,
+.td {
+  
+  border: 1px solid var(--border-100);
+  padding: var(--padding-small);
+  text-align: center;
+}
