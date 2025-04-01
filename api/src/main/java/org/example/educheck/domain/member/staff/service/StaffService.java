@@ -72,10 +72,8 @@ public class StaffService {
     }
 
     public GetStudentsResponseDto getStudentsByCourse(Member member, Long courseId) {
-        Staff staff = staffRepository.findByMember(member)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다."));
 
-        validateStaffManageCourse(staff.getId(), courseId);
+        validateStaffManageCourse(member.getStaff().getId(), courseId);
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다."));
