@@ -8,7 +8,9 @@ export const URL_PATHS = {
     BASE: BASE_PATHS.STUDENT,
     ATTENDANCE: {
       BASE: `${BASE_PATHS.STUDENT}/attendance`,
-      ABSENCE: `${BASE_PATHS.STUDENT}/attendance/absence`,
+      // ABSENCE_PATTERN: `${BASE_PATHS.STUDENT}/attendance/absence/course/:courseId`,
+      ABSENCE: `${BASE_PATHS.STUDENT}/attendance/absence/course/:courseId`,
+      // ABSENCE: (courseId) => `${BASE_PATHS.STUDENT}/attendance/absence/course/${courseId}`,
     },
     RESERVATION: `${BASE_PATHS.STUDENT}/reservation`,
     SETTING: `${BASE_PATHS.STUDENT}/setting`,
