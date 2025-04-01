@@ -20,7 +20,6 @@ public class TokenRedisService {
 
     public boolean isTokenBlackListed(String token) {
 
-        Boolean b = redisTemplate.hasKey(token);
-        return b;
+        return redisTemplate.hasKey(token);
     }
 }
