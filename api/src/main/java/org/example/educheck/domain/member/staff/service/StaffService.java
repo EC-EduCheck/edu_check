@@ -8,6 +8,7 @@ import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.dto.request.UpdateStudentRegistrationStatusRequestDto;
+import org.example.educheck.domain.member.staff.dto.response.GetStudentsResponseDto;
 import org.example.educheck.domain.member.staff.dto.response.UpdateStudentRegistrationStatusResponseDto;
 import org.example.educheck.domain.member.staff.entity.Staff;
 import org.example.educheck.domain.member.student.dto.response.StudentInfoResponseDto;
@@ -70,7 +71,7 @@ public class StaffService {
         }
     }
 
-    public List<StudentInfoResponseDto> getStudentsByCourse(Member member, Long courseId) {
+    public GetStudentsResponseDto getStudentsByCourse(Member member, Long courseId) {
         Staff staff = staffRepository.findByMember(member)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다."));
 
@@ -79,7 +80,9 @@ public class StaffService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다."));
 
-        return registrationRepository.findByCourseIdWithStudentAndMember(courseId);
 
+        List<StudentInfoResponseDto> byCourseIdWithStudentAndMember = registrationRepository.findByCourseIdWithStudentAndMember(courseId);
+
+        return GetStudentsResponseDto.from(courseId, course.getName(), byCourseIdWithStudentAndMember);
     }
 }

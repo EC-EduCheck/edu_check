@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.staff.dto.request.UpdateStudentRegistrationStatusRequestDto;
+import org.example.educheck.domain.member.staff.dto.response.GetStudentsResponseDto;
 import org.example.educheck.domain.member.staff.dto.response.UpdateStudentRegistrationStatusResponseDto;
 import org.example.educheck.domain.member.staff.service.StaffService;
-import org.example.educheck.domain.member.student.dto.response.StudentInfoResponseDto;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,7 +36,7 @@ public class StaffController {
 
     @PreAuthorize("hasAuthority('MIDDLE_ADMIN')")
     @GetMapping("/course/{courseId}/students")
-    public ResponseEntity<ApiResponse<List<StudentInfoResponseDto>>> getStudentsByCourse(
+    public ResponseEntity<ApiResponse<GetStudentsResponseDto>> getStudentsByCourse(
             @AuthenticationPrincipal Member member,
             @PathVariable Long courseId
     ) {
