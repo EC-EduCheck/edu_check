@@ -1,5 +1,6 @@
 package org.example.educheck.domain.member.service;
 
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -120,7 +121,18 @@ public class AuthService {
     }
 
 
-    public LoginResponseDto refreshTokenRotation(HttpServletResponse response, String email) {
+    public LoginResponseDto refreshTokenRotation(HttpServletResponse response, String refreshToken) {
+
+        if (tokenRedisService.isTokenBlackListed(refreshToken)) {
+            throw new LoginValidationException();
+        }
+
+        String email;
+        try {
+            email = jwtTokenUtil.getEmail(refreshToken);
+        } catch (SignatureException ex) {
+            throw new LoginValidationException();
+        }
 
         UserDetails userDetails = customUserDetailsService.loadUserByEmail(email);
         Authentication authentication = new UsernamePasswordAuthenticationToken(

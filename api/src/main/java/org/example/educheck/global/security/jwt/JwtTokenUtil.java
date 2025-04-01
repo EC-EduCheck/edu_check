@@ -71,12 +71,12 @@ public class JwtTokenUtil {
 
     public String createRefreshToken(Authentication authentication) {
 
-        return createToken(authentication, REFRESHTOKENVALIDITYMILLISECONDS);
+        return createToken(authentication, REFRESH_TOKEN_VALIDITY_MILLISECONDS);
     }
 
     public String createAccessToken(Authentication authentication) {
 
-        return createToken(authentication, ACCESSTOKENVALIDITYMILLISECONDS);
+        return createToken(authentication, ACCESS_TOKEN_VALIDITY_MILLISECONDS);
     }
 
     public boolean validateToken(String token) {
