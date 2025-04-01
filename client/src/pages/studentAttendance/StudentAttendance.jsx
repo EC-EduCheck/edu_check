@@ -6,6 +6,7 @@ import DataBoard from '../../components/dataBoard/DataBoard';
 import ProgressBar from '../../components/progressBar/ProgressBar';
 import Calendar from '../../components/calendar/Calendar';
 import { attendanceApi } from '../../api/attendanceApi';
+import MainButton from '../../components/buttons/mainButton/MainButton';
 
 export default function StudentAttendance() {
   const courseId = useSelector((state) => state.auth.user.courseId);
@@ -104,7 +105,16 @@ export default function StudentAttendance() {
       <div className={styles.dashBoardItemDiv}>
         <div className={styles.attendanceStatistics}>
           <DashBoardItem width="100%">
-            <p className="subTitle">출석률 {attendanceStats.attendanceRate}%</p>
+            <div className={styles.headerContainer}>
+              <p className="subTitle">출석률 {attendanceStats.attendanceRate}%</p>
+              <MainButton
+              title={"출석부 확인"}
+              isEnable={true}
+              handleClick={() => {
+                window.open('/attendanceSheet', '_blank');
+              }}
+              />
+            </div>
             <div className={styles.progressBarBottom}>
               <ProgressBar
                 value={attendanceStats.attendanceRate}

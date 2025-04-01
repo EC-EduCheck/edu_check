@@ -11,6 +11,25 @@ export default function AttendanceSheet() {
   const memberId = useSelector((state) => state.auth.user.memberId);
   const name = useSelector((state) => state.auth.user.name);
 
+  const handleDownload = async () => {
+    try {
+      const response = await attendanceSheetApi.getStudentAttendanceSheetFile(courseId, memberId, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: response.data.type });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${name}_${courseName}_출석부.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('파일 다운로드 에러:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await attendanceSheetApi.getStudentAttendanceSheet(courseId, memberId);
@@ -18,13 +37,16 @@ export default function AttendanceSheet() {
     };
     courseId && memberId && fetchData();
   }, [courseId, memberId, name, courseName]);
-  console.log(sheetData);
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.buttonContainer}>
-        <button className={styles.button} onClick={null}>다운로드</button>
-        <button className={styles.button} onClick={null}>x</button>
+        <button className={styles.button} onClick={handleDownload}>
+          다운로드
+        </button>
+        <button className={styles.button} onClick={()=>window.close()}>
+          x
+        </button>
       </div>
       <table className={styles.table}>
         <thead className={styles.thead}>
