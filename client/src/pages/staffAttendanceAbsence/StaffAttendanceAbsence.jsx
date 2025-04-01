@@ -20,7 +20,7 @@ export default function StaffAttendanceAbsence() {
   const [hasNext, setHasNext] = useState(false);
   const [page, setPage] = useState(0);
   const [selectedAbsenceAttendanceId, setSelectedAbsenceAttendanceId] = useState();
-
+ 
   const openModal = async (item) => {
     try {
       const response = await absenceAttendancesApi.getAbsenceAttendance(
