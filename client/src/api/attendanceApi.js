@@ -1,4 +1,6 @@
-import apiInstance from '../api/instance/apiInstance';
+import apiInstance from './instance/apiInstance';
+
+
 
 export const attendanceApi = {
   submitAttendance: async (latitude, longitude) => {
@@ -17,6 +19,36 @@ export const attendanceApi = {
   submitCheckOut: async () => {
     const response = await apiInstance.patch(
       '/checkout',
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
+  getAbsenceAttendanceAndRate: async (courseId) => {
+    const response = await apiInstance.get(
+      `/my/course/${courseId}/attendances/stats`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
+  getAttendanceRecords: async (courseId, page = 0, size = 10) => {
+    const response = await apiInstance.get(
+      `/my/courses/${courseId}/attendances?page=${page}&size=${size}`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  },
+  getAttendanceRecordsByYearMonth: async (courseId, year, month, page = 0, size = 10) => {
+    const response = await apiInstance.get(
+      `/my/courses/${courseId}/attendances?year=${year}&month=${month}&page=${page}&size=${size}`,
       {},
       {
         withCredentials: true,
@@ -46,4 +78,18 @@ export const attendanceApi = {
     return response;
   },
 
+  getStudentAttendanceSheet: async (courseId, memberId) => {
+    const response = await apiInstance.get(
+      `/courses/${courseId}/members/${memberId}`,
+      {baseURL: import.meta.env.VITE_APP_URL},
+
+
+
+
+
+
+
+    );
+    return response;
+  },
 };

@@ -21,23 +21,29 @@ export default function AttendanceSheet() {
   console.log(sheetData);
 
   return (
-    <table className={styles.table}>
-      <thead className={styles.thead}>
-        <tr>
-          <th className={styles.th}>회차</th>
-          <th className={styles.th}>날짜</th>
-          <th className={styles.th}>출석 상태</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sheetData.map((item, idx) => (
-          <tr key={idx}>
-            <td className={styles.td}>{item['회차']}</td>
-            <td className={styles.td}>{item['날짜']}</td>
-            <td className={styles.td}>{item['출석 상태']}</td>
+    <div className={styles.wrapper}>
+      <div className={styles.buttonContainer}>
+        <button className={styles.button} onClick={null}>다운로드</button>
+        <button className={styles.button} onClick={null}>x</button>
+      </div>
+      <table className={styles.table}>
+        <thead className={styles.thead}>
+          <tr>
+            <th className={styles.th}>회차</th>
+            <th className={styles.th}>날짜</th>
+            <th className={styles.th}>출석 상태</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {sheetData.map((item, idx) => (
+            <tr key={idx}>
+              <td className={styles.td}>{item['회차']}</td>
+              <td className={styles.td}>{item['날짜']}</td>
+              <td className={styles.td}>{item['출석 상태']}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
