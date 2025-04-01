@@ -16,6 +16,7 @@ public class AttendanceRecordListResponseDto {
     private String studentPhoneNumber;
     private Long courseId;
     private String courseName;
+    private AttendanceRateStatisticsDto statistics;
     private List<AttendanceRecordResponseDto> attendanceRecordList;
 
     private long totalPages;

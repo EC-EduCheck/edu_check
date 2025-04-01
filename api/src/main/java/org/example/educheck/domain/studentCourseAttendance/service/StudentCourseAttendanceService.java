@@ -10,10 +10,7 @@ import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
-import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordListResponseDto;
-import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceRecordResponseDto;
-import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsProjection;
-import org.example.educheck.domain.studentCourseAttendance.dto.response.AttendanceStatsResponseDto;
+import org.example.educheck.domain.studentCourseAttendance.dto.response.*;
 import org.example.educheck.domain.studentCourseAttendance.entity.StudentCourseAttendance;
 import org.example.educheck.domain.studentCourseAttendance.repository.StudentCourseAttendanceRepository;
 import org.example.educheck.global.common.exception.custom.common.ForbiddenException;
@@ -60,6 +57,9 @@ public class StudentCourseAttendanceService {
         Member validStudent = getValidStudentInCourse(studentId, courseId);
 
         Page<StudentCourseAttendance> attendanceRecordList = studentCourseAttendanceRepository.findByIdStudentIdAndIdCourseId(studentId, courseId, pageable);
+        AttendanceRateStatisticsProjection attendanceRateStatistics = studentCourseAttendanceRepository.findAttendanceRateStatistics(studentId, courseId);
+
+        AttendanceRateStatisticsDto rateStatisticsDto = AttendanceRateStatisticsDto.from(attendanceRateStatistics);
 
         List<AttendanceRecordResponseDto> list = attendanceRecordList
                 .stream()
@@ -74,6 +74,7 @@ public class StudentCourseAttendanceService {
                 .studentPhoneNumber(validStudent.getPhoneNumber())
                 .courseId(courseId)
                 .courseName(validCourse.getName())
+                .statistics(rateStatisticsDto)
                 .attendanceRecordList(list)
                 .totalPages(attendanceRecordList.getTotalPages())
                 .hasNext(attendanceRecordList.hasNext())
