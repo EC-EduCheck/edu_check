@@ -90,25 +90,14 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
                 );
 
-        String accessToken = jwtTokenUtil.createAccessToken(authenticate);
-        response.setHeader("Authorization", "Bearer " + accessToken);
-
-        String refreshToken = jwtTokenUtil.createRefreshToken(authenticate);
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setMaxAge(60 * 60 * 24 * 30);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/api/auth/refresh");
-        response.addCookie(cookie);
-
-
+        setTokens(authenticate, response);
         LoginResponseDto loginResponseDto = roleBasedLogin(member);
 
         member.setLastLoginDate(LocalDateTime.now());
 
         return loginResponseDto;
     }
-    
+
 
     private LoginResponseDto roleBasedLogin(Member member) {
 
@@ -133,17 +122,7 @@ public class AuthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
 
-        String accessToken = jwtTokenUtil.createAccessToken(authentication);
-        response.setHeader("Authorization", "Bearer " + accessToken);
-
-        String refreshToken = jwtTokenUtil.createRefreshToken(authentication);
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setMaxAge(60 * 60 * 24 * 30);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/api/auth/refresh");
-        response.addCookie(cookie);
-
+        setTokens(authentication, response);
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 LoginValidationException::new);
 
@@ -164,4 +143,18 @@ public class AuthService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
+
+    private void setTokens(Authentication authentication, HttpServletResponse response) {
+        String accessToken = jwtTokenUtil.createAccessToken(authentication);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+
+        String refreshToken = jwtTokenUtil.createRefreshToken(authentication);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setMaxAge(60 * 60 * 24 * 30);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/api/auth/refresh");
+        response.addCookie(cookie);
+    }
+
 }
