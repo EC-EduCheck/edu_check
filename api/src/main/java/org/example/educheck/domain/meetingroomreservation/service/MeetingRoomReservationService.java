@@ -125,6 +125,7 @@ public class MeetingRoomReservationService {
         MeetingRoomReservation meetingRoomReservation = meetingRoomReservationRepository.findByIdWithDetails(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 예약 내역이 존재하지 않습니다."));
 
+        log.info("시간 확인 : {}", meetingRoomReservation.getStartTime());
         return MeetingRoomReservationResponseDto.from(meetingRoomReservation);
 
 
@@ -152,6 +153,8 @@ public class MeetingRoomReservationService {
         for (MeetingRoomReservationsProjections reservation : reservationsByCampus) {
             Long meetingRoomId = reservation.getMeetingRoomId();
             String meetingRoomName = reservation.getMeetingRoomName();
+
+            log.info("reservationId, reservationStartTime : {}, {}", reservation.getMeetingRoomReservationId(), reservation.getStartTime());
 
             meetingRoomDtoMap.putIfAbsent(meetingRoomId, new MeetingRoomDto(meetingRoomId, meetingRoomName, new ArrayList<>()));
 

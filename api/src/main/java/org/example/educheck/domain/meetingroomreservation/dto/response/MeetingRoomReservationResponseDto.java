@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 public class MeetingRoomReservationResponseDto {
+    private Long reservationId;
     private Long reserverId;
     private String reserverName;
     private LocalDateTime startDateTime;
@@ -24,6 +25,7 @@ public class MeetingRoomReservationResponseDto {
 
     public static MeetingRoomReservationResponseDto from(MeetingRoomReservation reservation) {
         return MeetingRoomReservationResponseDto.builder()
+                .reservationId(reservation.getId())
                 .reserverId(reservation.getMember().getId())
                 .reserverName(reservation.getMember().getName())
                 .startDateTime(reservation.getStartTime())
