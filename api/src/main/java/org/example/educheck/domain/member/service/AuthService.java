@@ -86,6 +86,9 @@ public class AuthService {
                 )
         );
 
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
+                );
 
         String accessToken = jwtTokenUtil.createAccessToken(authenticate);
         response.setHeader("Authorization", "Bearer " + accessToken);
@@ -99,17 +102,13 @@ public class AuthService {
         response.addCookie(cookie);
 
 
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
-                );
-
         LoginResponseDto loginResponseDto = roleBasedLogin(member);
-
 
         member.setLastLoginDate(LocalDateTime.now());
 
         return loginResponseDto;
     }
+    
 
     private LoginResponseDto roleBasedLogin(Member member) {
 
