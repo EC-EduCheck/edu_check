@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -73,37 +72,15 @@ public class StaffService {
     }
 
     public GetStudentsResponseDto getStudentsByCourse(Member member, Long courseId) {
-        Staff staff = staffRepository.findByMember(member)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다."));
 
-        validateStaffManageCourse(staff.getId(), courseId);
+        validateStaffManageCourse(member.getStaff().getId(), courseId);
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다."));
 
-        List<Registration> registrations = registrationRepository.findByCourseId(courseId);
 
-        List<StudentInfoResponseDto> students = registrations.stream()
-                .map(registration -> {
-                    Student student = registration.getStudent();
-                    Member studentInfo = student.getMember();
+        List<StudentInfoResponseDto> byCourseIdWithStudentAndMember = registrationRepository.findByCourseIdWithStudentAndMember(courseId);
 
-                    return StudentInfoResponseDto.builder()
-                            .studentId(student.getId())
-                            .studentName(studentInfo.getName())
-                            .studentEmail(studentInfo.getEmail())
-                            .studentPhoneNumber(studentInfo.getPhoneNumber())
-                            .registrationStatus(registration.getRegistrationStatus()) // 수강 상태
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-
-        return GetStudentsResponseDto.from(
-                courseId,
-                course.getName(),
-                students
-        );
-
+        return GetStudentsResponseDto.from(courseId, course.getName(), byCourseIdWithStudentAndMember);
     }
 }

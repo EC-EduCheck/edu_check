@@ -1,4 +1,6 @@
-import apiInstance from '../api/instance/apiInstance';
+import apiInstance from './instance/apiInstance';
+
+
 
 export const attendanceApi = {
   submitAttendance: async (latitude, longitude) => {
@@ -24,7 +26,6 @@ export const attendanceApi = {
     );
     return response.data;
   },
-
   getAbsenceAttendanceAndRate: async (courseId) => {
     const response = await apiInstance.get(
       `/my/course/${courseId}/attendances/stats`,
@@ -73,6 +74,21 @@ export const attendanceApi = {
       {
         withCredentials: true,
       },
+    );
+    return response;
+  },
+
+  getStudentAttendanceSheet: async (courseId, memberId) => {
+    const response = await apiInstance.get(
+      `/courses/${courseId}/members/${memberId}`,
+      {baseURL: import.meta.env.VITE_APP_URL},
+
+
+
+
+
+
+
     );
     return response;
   },

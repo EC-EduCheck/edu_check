@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './StaffStudentManage.module.css';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
+import { useSelector } from 'react-redux';
+import { studentManageApi } from '../../api/studentManageApi';
 
 export default function StaffStudentManage() {
+  const courseId = useSelector((state) => state.auth.user.courseId);
+  console.log(courseId);
   const [openModal, setOpenModal] = useState(false);
-  const [students, setStudents] = useState([
-    {
-      name: '홍길동',
-      email: 'educheck@example.com',
-      phone: '010-1234-1234',
-      tagTitle: '수강중',
-    },
-    {
-      name: '홍길동',
-      email: 'educheck@example.com',
-      phone: '010-1234-1234',
-      tagTitle: '수료',
-    },
-    {
-      name: '홍길동',
-      email: 'educheck@example.com',
-      phone: '010-1234-1234',
-      tagTitle: '수강 중단',
-    },
-  ]);
+  const [students, setStudents] = useState([]);
+  const statusMap = {
+    PREVIOUS: '등록전',
+    PROGRESS: '수강중',
+    COMPLETED: '수료',
+    DROPPED: '수강 중단',
+  };
+
+  useEffect(() => {
+    if (!courseId) return;
+
+    const fetchStudents = async () => {
+      try {
+        const response = await studentManageApi.getStudentList(courseId);
+        console.log(response.data.data.students);
+        setStudents((prev) => [...prev, ...response.data.data.students]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchStudents();
+  }, []);
 
   const handleTagChange = (index, newTagTitle) => {
     setStudents((prevStudents) =>
@@ -67,11 +73,11 @@ export default function StaffStudentManage() {
       <div className={styles.studentsBox}>
         {students.map((student, index) => (
           <BaseListItem
-            key={index}
-            content={student.name}
-            phone={student.phone}
-            email={student.email}
-            tagTitle={student.tagTitle}
+            key={student.memberId}
+            content={student.studentName}
+            phone={student.studentPhoneNumber}
+            email={student.studentEmail}
+            tagTitle={statusMap[student.registrationStatus] || ' '}
             onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
           />
         ))}
