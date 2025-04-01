@@ -23,8 +23,8 @@ import java.util.Date;
 @Slf4j
 @Component
 public class JwtTokenUtil {
-    public static final long REFRESHTOKENVALIDITYMILLISECONDS = 1000L * 60 * 60 * 24 * 30;
-    private static final long ACCESSTOKENVALIDITYMILLISECONDS = 1000L * 60 * 60 * 24 * 7; // TODO: 개발 후 줄이기
+    public static final long REFRESH_TOKEN_VALIDITY_MILLISECONDS = 1000L * 60 * 60 * 24 * 30;
+    private static final long ACCESS_TOKEN_VALIDITY_MILLISECONDS = 1000L * 60 * 60 * 24 * 7; // TODO: 개발 후 줄이기
     @Value("${JWT_SECRET}")
     private String secretKey;
 
