@@ -11,6 +11,12 @@ export default function StaffStudentManage() {
   console.log(courseId);
   const [openModal, setOpenModal] = useState(false);
   const [students, setStudents] = useState([]);
+  const statusMap = {
+    PREVIOUS: '등록전',
+    PROGRESS: '수강중',
+    COMPLETED: '수료',
+    DROPPED: '수강 중단',
+  };
 
   useEffect(() => {
     if (!courseId) return;
@@ -71,7 +77,7 @@ export default function StaffStudentManage() {
             content={student.studentName}
             phone={student.studentPhoneNumber}
             email={student.studentEmail}
-            tagTitle={student.registrationStatus}
+            tagTitle={statusMap[student.registrationStatus] || ' '}
             onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
           />
         ))}
