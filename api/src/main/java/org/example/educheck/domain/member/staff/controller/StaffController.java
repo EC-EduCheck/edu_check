@@ -39,7 +39,7 @@ public class StaffController {
     public ResponseEntity<ApiResponse<GetStudentsResponseDto>> getStudentsByCourse(
             @AuthenticationPrincipal Member member,
             @PathVariable Long courseId
-            ) {
+    ) {
 
         return ResponseEntity.ok(
                 ApiResponse.ok("수강생 전체 조회 성공",

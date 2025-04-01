@@ -10,6 +10,8 @@ export default function NewInputBox({
   isSelect,
   content,
   name,
+  value,
+  innerRef,
 }) {
 
   return (
@@ -25,6 +27,8 @@ export default function NewInputBox({
         disabled={disabled}
         onChange={onChange}
         name={name}
+        value={type === "file" ? undefined : value}
+        ref={innerRef}
       ></input>
       <p className={styles.content}>{content}</p>
     </div>

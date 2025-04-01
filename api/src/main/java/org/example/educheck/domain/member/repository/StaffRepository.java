@@ -11,4 +11,5 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findByMemberId(Long memberId);
 
     Optional<Staff> findByMember(Member member);
+    
 }

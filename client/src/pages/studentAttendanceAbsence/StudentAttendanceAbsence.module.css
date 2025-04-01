@@ -7,10 +7,51 @@
 }
 
 .absenceLeftLineListItem {
+  width: 50%;
+  margin-right: 2%;
+}
+
+.absenceAttendanceList {
+  width: 100%;
+}
+
+.categoryButton {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 2rem;
+  justify-content: start;
+  margin-bottom: var(--margin-large);
+}
+.dateInputBox {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: start;
+}
+
+.dateInput {
+  background-color: transparent;
+  text-align: center;
+  cursor: pointer;
+  padding: 15px 0;
+  height: 5px;
+  width: 100%;
+  border: 1px solid var(--text-300);
+  border-radius: var(--border-radius-5);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.dateInput:focus {
+  border-color: var(--orange-color);
+  box-shadow: 0 0 5px var(--primary-200);
+  outline: none;
+}
+
+.dateSeparator {
+  font-size: var(--font-size-18);
+  color: var(--text-200);
+  padding: 0 0.5rem;
+  margin: var(--margin-small);
 }
 
 .absenceDashBoardItem {
@@ -19,21 +60,25 @@
 }
 
 .InputBox {
-  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
-.mainButton {
-  padding: 0px 180px;
+.reason {
+  height: 200px;
+}
+
+.submitButton {
+  display: flex;
+  justify-content: center;
 }
 
 /* modal창 InputBox */
 .InputBox {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    gap: 0.5rem;
-    padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  gap: 0.5rem;
+  padding: 2rem;
 }
 
 .inputContainer {
