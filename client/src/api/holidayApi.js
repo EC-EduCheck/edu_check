@@ -18,7 +18,6 @@ export const fetchHolidays = async (year, month) => {
     const items = response.data.response.body.items.item;
 
     if (!items) {
-      console.log('공휴일 데이터가 없습니다.');
       return [];
     }
 

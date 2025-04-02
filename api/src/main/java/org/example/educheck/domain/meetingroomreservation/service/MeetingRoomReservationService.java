@@ -68,7 +68,7 @@ public class MeetingRoomReservationService {
     private void validateDailyReservationLimit(Long memberId) {
         int totalReservationMinutesForMember = meetingRoomReservationRepository.getTotalReservationMinutesForMember(memberId);
         log.info("오늘 총 예약 시간 : {}", totalReservationMinutesForMember);
-        if (totalReservationMinutesForMember > 120) {
+        if (totalReservationMinutesForMember >= 120) {
             throw new InvalidRequestException("하루에 총 2시간까지 예약할 수 있습니다.");
         }
     }
@@ -140,8 +140,16 @@ public class MeetingRoomReservationService {
         Member authenticatedMember = getAuthenticatedMember(userDetails);
         validateResourceOwner(authenticatedMember, meetingRoomReservation);
 
+        validateEndTimeIsBeforeNow(meetingRoomReservation);
+
         meetingRoomReservation.cancelReservation();
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    private void validateEndTimeIsBeforeNow(MeetingRoomReservation meetingRoomReservation) {
+        if (meetingRoomReservation.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidRequestException("예약 종료 시간 이전에만 취소가 가능합니다.");
+        }
     }
 
     public CampusMeetingRoomsDto getMeetingRoomReservations(Long campusId, LocalDate date) {

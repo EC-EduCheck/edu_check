@@ -35,9 +35,7 @@ const RoomReservation = () => {
         const response = await reservationApi.getReservations(campusId, formattedDate);
 
         const meetingRooms = response.data.data.meetingRooms;
-        console.log('meetingRooms', meetingRooms);
 
-        // 회의실 데이터 변환
         const resourcesData = meetingRooms.map((room) => ({
           id: room.meetingRoomId.toString(),
           title: room.meetingRoomName,
@@ -45,11 +43,8 @@ const RoomReservation = () => {
 
         setResources(resourcesData);
 
-        // 이벤트(예약) 데이터 변환
         const eventsData = meetingRooms.flatMap((room) =>
-          //배열 안에 객체로 들고 있어서 map으로 처리
           room.reservations.map((reservation) => ({
-            // 예약 pk
             id: `${reservation.meetingRoomReservationId}`,
             resourceId: room.meetingRoomId.toString(),
             title: `${reservation.reserverName} 예약`,
@@ -61,11 +56,6 @@ const RoomReservation = () => {
         );
 
         setEvents(eventsData);
-
-        // API 응답에서 첫 예약 날짜를 가져와 초기 날짜로 설정
-        // if (eventsData.length > 0) {
-        //   setSelectedDate(new Date(eventsData[0].start));
-        // }
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
       } finally {
@@ -141,18 +131,18 @@ const RoomReservation = () => {
         setEvents((prevEvents) => [...prevEvents, newEvent]);
       }
     } catch (error) {
-      console.error('예약 중 오류', error);
+      console.error(error);
       const errorMessage = error.response?.data?.message ?? '오류가 발생했습니다.';
       alert(errorMessage);
     }
   };
 
-  const cancelReservation = async (eventId) => {
+  const cancelReservation = async (eventId, event) => {
     setIsOpen(false);
     console.log(eventId);
 
     try {
-      const response = await reservationApi.cancelReservation(campusId, eventId.split('-')[0]);
+      const response = await reservationApi.cancelReservation(campusId, eventId);
 
       if (response.status === 200 || response.status === 204) {
         alert('예약이 취소되었습니다.');
@@ -209,8 +199,8 @@ const RoomReservation = () => {
 
   const eventPropGetter = (event) => {
     const colors = ['#d1f2a2', '#c8f5b3', '#f5a3a6', '#ffd48a', '#e8fbd9', '#fde5d2', '#fff7e8'];
-    const colorIndex = event.resourceId.charCodeAt(0) % colors.length;
-
+    const colorIndex = Math.floor(Math.random() * colors.length);
+    // event.resourceId;
     return {
       style: {
         backgroundColor: colors[colorIndex],
@@ -251,7 +241,6 @@ const RoomReservation = () => {
               <p>{`${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${dayOfWeek[date.getDay()]}요일`}</p>
             </div>
           </span>
-          {/* TODO: 예약은 당일만 가능하게 프론트에서 막기 */}
           <span className="rbc-btn-group">
             <button type="button" onClick={navigate.bind(null, 'TODAY')}>
               오늘

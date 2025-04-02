@@ -1,4 +1,4 @@
-package org.example.educheck.domain.member.dto;
+package org.example.educheck.domain.member.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class LoginResponseDto {
     private Long campusId;
     private Long courseId;
     private String courseName;
-    private LocalDateTime lastLoginDateTime;
-    private LocalDateTime lastPasswordChangeDateTime;
+    private LocalDateTime lastLoginDate;
+    private LocalDateTime lastPasswordChangeDate;
 
 }

@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './Tag.module.css';
 import { getTagColors, getIsClickable, tagList } from '../../utils/buttonContentList';
 import DropBoxButton from '../buttons/dropBoxButton/DropBoxButton';
 
-export default function Tag({ title, onTagChange }) {
+export default function Tag({ title }) {
   const tagColors = getTagColors(title);
   const isClickable = getIsClickable(title);
 
   // TODO : 관리자 페이지의 학습자 관리 tag에만 사용
   const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
 
-  const handleOpenDropBox = () => {
-    setIsOpen(true);
+  const handleToggleDropBox = () => {
+    setIsOpen((prev) => !prev);
   };
 
   const handleCloseDropBox = () => {
@@ -19,7 +20,7 @@ export default function Tag({ title, onTagChange }) {
   };
 
   const handleTagClick = (newTagTitle) => {
-    onTagChange(newTagTitle);
+    // TODO : patch 요청
     setIsOpen(false);
   };
 
@@ -27,12 +28,24 @@ export default function Tag({ title, onTagChange }) {
     <DropBoxButton key={index} title={item} handleClick={() => handleTagClick(item)} />
   ));
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className={styles.tagBox}>
+    <div ref={containerRef} className={styles.tagBox}>
       <button
         disabled={!isClickable}
-        onClick={handleOpenDropBox}
-        // onBlur={handleCloseDropBox}
+        onClick={handleToggleDropBox}
         className={`${styles.tag} ${tagColors ? styles[tagColors] : ''}`}
       >
         {title}

@@ -5,12 +5,25 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
 import { useSelector } from 'react-redux';
 import { studentManageApi } from '../../api/studentManageApi';
+import { getDaysInMonth } from 'date-fns';
 
 export default function StaffStudentManage() {
   const courseId = useSelector((state) => state.auth.user.courseId);
-  console.log(courseId);
   const [openModal, setOpenModal] = useState(false);
   const [students, setStudents] = useState([]);
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    phone: '',
+    birthDate: '',
+    email: '',
+    courseId: courseId,
+  });
+  const [birthday, setBirthday] = useState({
+    year: '',
+    month: '',
+    day: '',
+  });
+
   const statusMap = {
     PREVIOUS: '등록전',
     PROGRESS: '수강중',
@@ -24,72 +37,193 @@ export default function StaffStudentManage() {
     const fetchStudents = async () => {
       try {
         const response = await studentManageApi.getStudentList(courseId);
-        console.log(response.data.data.students);
-        setStudents((prev) => [...prev, ...response.data.data.students]);
+        setStudents(response.data.data.students);
       } catch (error) {
         console.error(error);
       }
     };
     fetchStudents();
-  }, []);
+  }, [courseId]);
 
-  const handleTagChange = (index, newTagTitle) => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student, i) =>
-        i === index ? { ...student, tagTitle: newTagTitle } : student,
-      ),
-    );
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
+  const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}`);
+  const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
+  const BIRTHDAY_DAY_LIST =
+    birthday.year && birthday.month
+      ? Array.from(
+          { length: getDaysInMonth(new Date(birthday.year, birthday.month - 1)) },
+          (_, i) => `${i + 1}`,
+        )
+      : [];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let errorMessage = '';
+
+    if (name === 'email' && !emailRegex.test(value)) {
+      errorMessage = '유효한 이메일 주소를 입력해주세요.';
+    }
+    if (name === 'phone' && !phoneRegex.test(value)) {
+      errorMessage = '유효한 전화번호 형식(예: 010-1234-1234)을 입력해주세요.';
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: errorMessage,
+    }));
+
+    setNewStudent((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const openModalHandler = () => setOpenModal(true);
+  useEffect(() => {
+    setNewStudent((prev) => ({
+      ...prev,
+      courseId,
+    }));
+  }, [courseId]);
 
-  const closeModalHandler = () => setOpenModal(false);
+  const handleBirthdayChange = (e) => {
+    console.log(e.target);
+    const { name, value } = e.target;
+
+    setBirthday((prev) => {
+      const updatedBirthday = { ...prev, [name]: value };
+
+      if (name === 'month') {
+        updatedBirthday.day = '';
+      }
+
+      console.log(updatedBirthday);
+
+      return updatedBirthday;
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(birthday.day);
+    if (!birthday.year || !birthday.month || !birthday.day) {
+      alert('생년월일 입력은 필수입니다.');
+      return;
+    }
+
+    console.log(newStudent.courseId);
+    try {
+      const formattedBirthday = `${birthday.year}-${birthday.month.padStart(2, '0')}-${birthday.day.padStart(2, '0')}`;
+      const response = await studentManageApi.registerNewStudent({
+        ...newStudent,
+        birthDate: formattedBirthday,
+      });
+      console.log(response);
+      setOpenModal(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const inputBox = (
-    <>
+    <form onSubmit={handleSubmit}>
       <div className={styles.inputContainer}>
         <label>이름</label>
-        <input className={styles.smallInputBox} placeholder="이름을 입력해주세요."></input>
+        <input
+          className={styles.smallInputBox}
+          name="name"
+          type="text"
+          placeholder="홍길동"
+          onChange={handleChange}
+        />
+        {errors.name && (
+          <p className={styles.regexFont} style={{ color: 'red' }}>
+            {errors.name}
+          </p>
+        )}
+
         <label>연락처</label>
-        <input className={styles.smallInputBox} placeholder="연락처를 입력해주세요."></input>
+        <input
+          className={styles.smallInputBox}
+          name="phone"
+          type="text"
+          placeholder="010-0000-0000"
+          onChange={handleChange}
+        />
+        {errors.phone && (
+          <p className={styles.regexFont} style={{ color: 'red' }}>
+            {errors.phone}
+          </p>
+        )}
+
         <label>생년월일</label>
         <div className={styles.birthdate}>
-          <input className={styles.smallInputBox}></input>
-          <input className={styles.smallInputBox}></input>
-          <input className={styles.smallInputBox}></input>
+          <select className={styles.smallInputBox} name="year" onChange={handleBirthdayChange}>
+            {BIRTHDAY_YEAR_LIST.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <select className={styles.smallInputBox} name="month" onChange={handleBirthdayChange}>
+            {BIRTHDAY_MONTH_LIST.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+          <select className={styles.smallInputBox} name="day" onChange={handleBirthdayChange}>
+            {BIRTHDAY_DAY_LIST.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
+            ))}
+          </select>
         </div>
+
         <label>이메일</label>
-        <input className={styles.smallInputBox} placeholder="이메일을 입력해주세요."></input>
+        <input
+          className={styles.smallInputBox}
+          name="email"
+          type="text"
+          placeholder="이메일을 입력해주세요."
+          onChange={handleChange}
+        />
+        {errors.email && (
+          <p className={styles.regexFont} style={{ color: 'red' }}>
+            {errors.email}
+          </p>
+        )}
       </div>
-    </>
+      <div className={styles.MainButton}>
+        <button type="submit" className={styles.button}>
+          등록
+        </button>
+      </div>
+    </form>
   );
 
   return (
     <>
-      <div>
-        <MainButton title="학습자 등록" handleClick={openModalHandler} isEnable={true}></MainButton>
-      </div>
-
+      <MainButton title="학습자 등록" handleClick={() => setOpenModal(true)} isEnable={true} />
       <div className={styles.studentsBox}>
-        {students.map((student, index) => (
+        {students.map((student) => (
           <BaseListItem
             key={student.memberId}
             content={student.studentName}
             phone={student.studentPhoneNumber}
             email={student.studentEmail}
             tagTitle={statusMap[student.registrationStatus] || ' '}
-            onTagChange={(newTagTitle) => handleTagChange(index, newTagTitle)}
           />
         ))}
       </div>
-      <div>
-        <Modal
-          mainText="등록"
-          content={inputBox}
-          isOpen={openModal}
-          onClose={closeModalHandler}
-        ></Modal>
-      </div>
+      <Modal content={inputBox} isOpen={openModal} onClose={() => setOpenModal(false)} />
     </>
   );
 }

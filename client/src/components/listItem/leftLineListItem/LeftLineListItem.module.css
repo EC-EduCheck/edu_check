@@ -11,6 +11,7 @@
   box-sizing: border-box;
   position: relative;
   transition: var(--transition-basic);
+  cursor: pointer;
 }
 
 .colorLine {

@@ -15,7 +15,6 @@ import StaffStudentManage from '../pages/staffStudentManage/StaffStudentManage';
 import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
 import RoomReservation from '../pages/roomReservation/RoomReservation';
-import Test from '../pages/Test';
 import AttendanceSheet from '../pages/attendanceSheet/AttendanceSheet';
 
 const router = createBrowserRouter([

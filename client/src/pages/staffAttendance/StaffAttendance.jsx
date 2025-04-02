@@ -12,14 +12,23 @@ import { useNavigate } from 'react-router-dom';
 import { URL_PATHS } from '../../constants/urlPaths';
 export default function StaffAttendance() {
   const navigate = useNavigate();
-  const [isActiveIndex, setIsActiveIndex] = useState(false);
   const [dataList, setDataList] = useState([]);
+  const isMultiSelect = true;
+  const [isActiveIndex, setIsActiveIndex] = useState(
+    isMultiSelect ? dataList.map((_, index) => index) : false,
+  );
   const [students, setStudents] = useState([]);
   const { courseId } = useSelector((state) => state.auth.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({
     content: '페이지를 확인할 수 없습니다.',
   });
+
+  useEffect(() => {
+    if (isMultiSelect && dataList.length > 0) {
+      setIsActiveIndex(dataList.map((_, index) => index));
+    }
+  }, [dataList, isMultiSelect]);
 
   const getAttendances = async () => {
     try {
@@ -49,11 +58,13 @@ export default function StaffAttendance() {
   }, [courseId]);
 
   const handleActiveFilter = (index) => {
-    if (index === isActiveIndex) {
-      setIsActiveIndex(false);
-    } else {
-      setIsActiveIndex(index);
-    }
+    setIsActiveIndex((prev) => {
+      if (isMultiSelect) {
+        return prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index];
+      } else {
+        return prev === index ? false : index;
+      }
+    });
   };
   const handleStudentClick = (studentId) => {
     navigate(URL_PATHS.MIDDLE_ADMIN.ATTENDANCE.DETAIL(courseId, studentId));
@@ -65,6 +76,7 @@ export default function StaffAttendance() {
         key={index}
         index={index}
         isActiveIndex={isActiveIndex}
+        isMultiSelect={true}
         title={item.label}
         content={item.value}
         handleActiveFilter={handleActiveFilter}
@@ -72,38 +84,46 @@ export default function StaffAttendance() {
     );
   });
 
-  const studentsList = students.map((item, index) => {
-    const tag = {
-      ATTENDANCE: '출석',
-      EARLY_LEAVE: '조퇴',
-      LATE: '지각',
-      ABSENT: '결석',
-    };
+  const studentsList = students
+    .map((item, index) => {
+      const tag = {
+        ATTENDANCE: '출석',
+        EARLY_LEAVE: '조퇴',
+        LATE: '지각',
+        ABSENT: '결석',
+      };
 
-    if (
-      (typeof isActiveIndex === 'number' && dataList[isActiveIndex].label === tag[item.status]) ||
-      isActiveIndex === false
-    ) {
-      return (
-        <BaseListItem
-          key={index}
-          content={item.studentName}
-          tagTitle={tag[item.status]}
-          onClick={() => handleStudentClick(item.studentId)}
-        ></BaseListItem>
-      );
-    }
-  });
+      const isFiltered =
+        (Array.isArray(isActiveIndex) &&
+          isActiveIndex.some((idx) => dataList[idx]?.label === tag[item.status])) ||
+        isActiveIndex === false;
+
+      if (isFiltered) {
+        return (
+          <div key={index} className={styles.baseListItems}>
+            <BaseListItem
+              content={item.studentName}
+              tagTitle={tag[item.status]}
+              onClick={() => handleStudentClick(item.studentId)}
+            />
+          </div>
+        );
+      }
+      return null;
+    })
+    .filter(Boolean);
 
   return (
-    <div>
+    <div className={styles.container}>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} {...modalData}></Modal>
-      <DashBoardItem width="100%">
-        <>
-          <h2 className="subTitle">출결 현황</h2>
-          <div className={styles.filterButtonBox}>{filterButtons}</div>
-        </>
-      </DashBoardItem>
+      <div className={styles.dashBoardItemBox}>
+        <DashBoardItem width="100%">
+          <>
+            <h2 className="subTitle">출결 현황</h2>
+            <div className={styles.filterButtonBox}>{filterButtons}</div>
+          </>
+        </DashBoardItem>
+      </div>
 
       <div className={styles.studentsBox}>{studentsList}</div>
     </div>

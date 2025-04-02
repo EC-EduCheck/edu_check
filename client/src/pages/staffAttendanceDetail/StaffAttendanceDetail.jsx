@@ -5,17 +5,33 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import DataBoard from '../../components/dataBoard/DataBoard';
 import { attendanceApi } from '../../api/attendanceApi';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function StaffAttendanceDetail() {
   const { courseId, studentId } = useParams();
+  const accessToken = useSelector((state) => state.auth.accessToken);
   const [studentAttendance, setStudentAttendance] = useState({
     studentName: '',
     studentPhoneNumber: '',
     attendanceRecordList: [],
+    statistics: {},
   });
+
+  // 출석 상태 텍스트 변환 함수
+  function getAttendanceStatusText(status) {
+    const statusMap = {
+      ATTENDANCE: '출석',
+      LATE: '지각',
+      EARLY_LEAVE: '조퇴',
+      ABSENT: '결석',
+    };
+    return statusMap[status] || status;
+  }
 
   useEffect(() => {
     const studentAttendanceById = async () => {
+      console.log(accessToken);
+      if (!courseId || !studentId || !accessToken) return;
       try {
         const response = await attendanceApi.getStudentAttendances(courseId, studentId);
         const studentAttendanceData = response.data.data;
@@ -27,7 +43,7 @@ export default function StaffAttendanceDetail() {
     };
 
     studentAttendanceById();
-  }, [courseId, studentId]);
+  }, [courseId, studentId, accessToken]);
 
   return (
     <div className={styles.container}>
@@ -42,13 +58,16 @@ export default function StaffAttendanceDetail() {
           <div className={styles.databoardContainer}>
             <DataBoard
               title="금일 기준 출석률"
-              data={`${studentAttendance.attendanceRateByToday || 0}%`}
+              data={`${Math.round(studentAttendance.statistics.attendanceRateUntilToday) || 0}%`}
             />
             <DataBoard
               title="전체 출석률"
-              data={`${studentAttendance.overallAttendanceRate || 0}%`}
+              data={`${Math.round(studentAttendance.statistics.totalAttendanceRate) || 0}%`}
             />
-            <DataBoard title="과정 진행률" data={`${studentAttendance.courseProgressRate || 0}%`} />
+            <DataBoard
+              title="과정 진행률"
+              data={`${Math.round(studentAttendance.statistics.courseProgressRate) || 0}%`}
+            />
           </div>
         </DashBoardItem>
       </div>
@@ -57,25 +76,15 @@ export default function StaffAttendanceDetail() {
         <div className={styles.listContainer}>
           {studentAttendance.attendanceRecordList &&
             studentAttendance.attendanceRecordList.map((item, index) => (
-              <BaseListItem
-                key={index}
-                content={item.lectureDateTime}
-                tagTitle={getAttendanceStatusText(item.attendanceStatus)}
-              />
+              <div key={index} >
+                <BaseListItem
+                  content={item.lectureDateTime}
+                  tagTitle={getAttendanceStatusText(item.attendanceStatus)}
+                />
+              </div>
             ))}
         </div>
       </div>
     </div>
   );
-}
-
-// 출석 상태 텍스트 변환 함수
-function getAttendanceStatusText(status) {
-  const statusMap = {
-    ATTENDANCE: '출석',
-    LATE: '지각',
-    EARLY_LEAVE: '조퇴',
-    ABSENT: '결석',
-  };
-  return statusMap[status] || status;
 }

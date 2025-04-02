@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import styles from './AttendanceAbsenceDetail.module.css';
+import InputBox from '../../components/inputBox/InputBox';
 
 export default function AttendanceAbsenceDetail({ courseId, id }) {
   const [data, setData] = useState(null);
@@ -58,6 +59,8 @@ export default function AttendanceAbsenceDetail({ courseId, id }) {
       ) : (
         <div className={styles.boxItem}>첨부 파일이 없습니다.</div>
       )}
+      <div>사유</div>
+      <InputBox value = {data.reason}/>
     </div>
   );
 }
