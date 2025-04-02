@@ -12,6 +12,7 @@ export default function StaffAttendanceDetail() {
     studentName: '',
     studentPhoneNumber: '',
     attendanceRecordList: [],
+    statistics: {},
   });
 
   useEffect(() => {
@@ -42,13 +43,16 @@ export default function StaffAttendanceDetail() {
           <div className={styles.databoardContainer}>
             <DataBoard
               title="금일 기준 출석률"
-              data={`${studentAttendance.attendanceRateByToday || 0}%`}
+              data={`${Math.round(studentAttendance.statistics.attendanceRateUntilToday) || 0}%`}
             />
             <DataBoard
               title="전체 출석률"
-              data={`${studentAttendance.overallAttendanceRate || 0}%`}
+              data={`${Math.round(studentAttendance.statistics.totalAttendanceRate) || 0}%`}
             />
-            <DataBoard title="과정 진행률" data={`${studentAttendance.courseProgressRate || 0}%`} />
+            <DataBoard
+              title="과정 진행률"
+              data={`${Math.round(studentAttendance.statistics.courseProgressRate) || 0}%`}
+            />
           </div>
         </DashBoardItem>
       </div>
