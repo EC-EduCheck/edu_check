@@ -35,7 +35,6 @@ const RoomReservation = () => {
         const response = await reservationApi.getReservations(campusId, formattedDate);
 
         const meetingRooms = response.data.data.meetingRooms;
-        console.log('meetingRooms', meetingRooms);
 
         // 회의실 데이터 변환
         const resourcesData = meetingRooms.map((room) => ({
@@ -51,6 +50,7 @@ const RoomReservation = () => {
           room.reservations.map((reservation) => ({
             // 예약 pk
             id: `${reservation.meetingRoomReservationId}`,
+            //회의실 I
             resourceId: room.meetingRoomId.toString(),
             title: `${reservation.reserverName} 예약`,
             start: new Date(reservation.startDateTime.replace(' ', 'T')),
@@ -152,7 +152,7 @@ const RoomReservation = () => {
     console.log(eventId);
 
     try {
-      const response = await reservationApi.cancelReservation(campusId, eventId.split('-')[0]);
+      const response = await reservationApi.cancelReservation(campusId, eventId);
 
       if (response.status === 200 || response.status === 204) {
         alert('예약이 취소되었습니다.');

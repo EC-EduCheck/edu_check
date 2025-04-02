@@ -47,7 +47,6 @@ const authSlice = createSlice({
         lastLoginDate: action.payload.lastLoginDate || '',
         lastPasswordChangeDate: action.payload.lastPasswordChangeDate || '',
       };
-      console.log('login reducer');
     },
     logout: (state) => {
       state.accessToken = '';
