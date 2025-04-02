@@ -30,8 +30,8 @@ public class Member implements UserDetails {
     private String phoneNumber;
     private LocalDate birthDate;
     private String password;
-    private LocalDateTime lastLoginDate;
-    private LocalDateTime lastPasswordChangeDate;
+    private LocalDateTime lastLoginDateTime;
+    private LocalDateTime lastPasswordChangeDateTime;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")

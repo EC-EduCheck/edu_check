@@ -98,7 +98,7 @@ public class AuthService {
         setTokensInResponse(authenticate, response);
         LoginResponseDto loginResponseDto = roleBasedLogin(member);
 
-        member.setLastLoginDate(LocalDateTime.now());
+        member.setLastLoginDateTime(LocalDateTime.now());
 
         return loginResponseDto;
     }
