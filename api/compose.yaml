@@ -1,17 +1,17 @@
 version: "3.8"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_local2
-    ports:
-      - "${DATABASE_PORT}:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
-      MYSQL_DATABASE: ${DATABASE_NAME}
-      TZ: Asia/Seoul
-    volumes:
-      - mysql-volume:/var/lib/mysql2
+  #  mysql:
+  #    image: mysql:8.0
+  #    container_name: mysql_local2
+  #    ports:
+  #      - "${DATABASE_PORT}:3306"
+  #    environment:
+  #      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+  #      MYSQL_DATABASE: ${DATABASE_NAME}
+  #      TZ: Asia/Seoul
+  #    volumes:
+  #      - mysql-volume:/var/lib/mysql2
 
   redis:
     image: redis:alpine
@@ -26,4 +26,4 @@ services:
 
 volumes:
   redis-volume:
-  mysql-volume:
+#  mysql-volume:
