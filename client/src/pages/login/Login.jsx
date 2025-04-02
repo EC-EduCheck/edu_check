@@ -75,31 +75,33 @@ export default function Login() {
   }, [inputData]);
 
   return (
-    <div className={styles.login}>
-      <div className={styles.logoImage}>
-        <img src="/assets/logo.png" alt="user image" />
+    <form onSubmit={(e)=> e.preventDefault()} >
+      <div className={styles.login}>
+        <div className={styles.logoImage}>
+          <img src="/assets/logo.png" alt="user image" />
+        </div>
+        <InputBox
+          type="email"
+          name="email"
+          disabled={false}
+          onChange={handleInputChange}
+          title="이메일을 입력하세요."
+        />
+        <InputBox
+          type="password"
+          name="password"
+          disabled={false}
+          onChange={handleInputChange}
+          title="비밀번호를 입력하세요."
+        />
+        <div className={styles.loginButton}>
+          <MainButton
+            handleClick={handleLoginButtonClick}
+            title="로그인"
+            isEnable={isLoginButtonEnable}
+          ></MainButton>
+        </div>
       </div>
-      <InputBox
-        type="email"
-        name="email"
-        disabled={false}
-        onChange={handleInputChange}
-        title="이메일을 입력하세요."
-      />
-      <InputBox
-        type="password"
-        name="password"
-        disabled={false}
-        onChange={handleInputChange}
-        title="비밀번호를 입력하세요."
-      />
-      <div className={styles.loginButton}>
-        <MainButton
-          handleClick={handleLoginButtonClick}
-          title="로그인"
-          isEnable={isLoginButtonEnable}
-        ></MainButton>
-      </div>
-    </div>
+    </form>
   );
 }
