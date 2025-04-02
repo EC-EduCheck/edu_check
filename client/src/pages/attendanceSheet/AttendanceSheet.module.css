@@ -1,0 +1,40 @@
+.table {
+  font-size: var(--font-size-18);
+  border-collapse: collapse;
+  width: auto;
+  min-width: 400px;
+  max-width: 800px;
+  overflow: hidden;
+}
+
+.wrapper {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.buttonContainer {
+  text-align: right;
+}
+
+.button {
+  padding: var(--padding-small) var(--padding-basic);
+  background-color: var(--primary-500);
+  border: 1px solid var(--border-100);
+  cursor: pointer;
+  font-size: var(--font-size-16);
+  margin: var(--margin-small);
+  margin-right: 0;
+}
+
+
+.thead {
+  background-color: var(--primary-200);
+  color: var(--text-200);
+}
+
+.th,
+.td {
+  border: 1px solid var(--border-100);
+  padding: var(--padding-small);
+  text-align: center;
+}

@@ -23,7 +23,8 @@ import java.util.Date;
 @Slf4j
 @Component
 public class JwtTokenUtil {
-
+    public static final long REFRESH_TOKEN_VALIDITY_MILLISECONDS = 1000L * 60 * 60 * 24 * 30;
+    private static final long ACCESS_TOKEN_VALIDITY_MILLISECONDS = 1000L * 60 * 60 * 24 * 7; // TODO: 개발 후 줄이기
     @Value("${JWT_SECRET}")
     private String secretKey;
 
@@ -69,15 +70,13 @@ public class JwtTokenUtil {
     }
 
     public String createRefreshToken(Authentication authentication) {
-        final long refreshTokenValidityMilliSeconds = 1000L * 60 * 60 * 24 * 30;
 
-        return createToken(authentication, refreshTokenValidityMilliSeconds);
+        return createToken(authentication, REFRESH_TOKEN_VALIDITY_MILLISECONDS);
     }
 
     public String createAccessToken(Authentication authentication) {
-        long accessTokenValidityMilliSeconds = 1000L * 60 * 60 * 24 * 7; // 개발 7일
 
-        return createToken(authentication, accessTokenValidityMilliSeconds);
+        return createToken(authentication, ACCESS_TOKEN_VALIDITY_MILLISECONDS);
     }
 
     public boolean validateToken(String token) {

@@ -21,6 +21,7 @@ const initialState = {
     email: '',
     phoneNumber: '',
     lastLoginDate: '',
+    lastPasswordChangeDate: '',
   },
 };
 
@@ -44,6 +45,7 @@ const authSlice = createSlice({
         courseName: action.payload.courseName || '',
         phoneNumber: action.payload.phoneNumber || '',
         lastLoginDate: action.payload.lastLoginDate || '',
+        lastPasswordChangeDate: action.payload.lastPasswordChangeDate || '',
       };
       console.log('login reducer');
     },

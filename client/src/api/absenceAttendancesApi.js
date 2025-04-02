@@ -11,4 +11,7 @@ export const absenceAttendancesApi = {
 
   getAbsenceAttendance: async (courseId, absenceAttendancedId) =>
     await apiInstance.get(`/course/${courseId}/absence-attendances/${absenceAttendancedId}`),
+  
+  getAbsenceAttendanceListByStudent: async(courseId)=>
+    await apiInstance.get(`/my/course/${courseId}/absence-attendances`) 
 };

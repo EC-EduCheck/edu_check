@@ -1,6 +1,7 @@
 package org.example.educheck.domain.member.repository;
 
 import org.example.educheck.domain.member.dto.LoginResponseDto;
+import org.example.educheck.domain.member.dto.response.MyProfileResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,8 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("""
                 select new org.example.educheck.domain.member.dto.LoginResponseDto(
-                     m.id, m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
-                )
+                     m.id, m.email, m.name, m.phoneNumber, m.birthDate, c.id, cr.id, cr.name,  m.lastLoginDate, m.lastPasswordChangeDate)
                 from Member m
                 LEFT JOIN Student s ON s.member.id = m.id
                 LEFT JOIN Registration r ON r.student.id = s.id
@@ -29,7 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("""
             select new org.example.educheck.domain.member.dto.LoginResponseDto(
-                 m.id, m.email, m.name, m.phoneNumber, m.birthDate, m.lastLoginDate, c.id, cr.id, cr.name
+                 m.id, m.email, m.name, m.phoneNumber, m.birthDate, c.id, cr.id, cr.name,  m.lastLoginDate, m.lastPasswordChangeDate
             )
             from Member m
             LEFT JOIN Staff st ON st.member.id = m.id
@@ -42,5 +42,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByStudent_Id(Long studentId);
 
-
+    @Query("SELECT new org.example.educheck.domain.member.dto.response.MyProfileResponseDto(" +
+            "m.id, m.phoneNumber, m.birthDate) " +
+            "FROM Member m " +
+            "WHERE m.id = :memberId")
+    MyProfileResponseDto findMyProfileDtoById(Long memberId);
 }

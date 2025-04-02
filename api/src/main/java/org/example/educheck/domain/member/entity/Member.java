@@ -31,6 +31,7 @@ public class Member implements UserDetails {
     private LocalDate birthDate;
     private String password;
     private LocalDateTime lastLoginDate;
+    private LocalDateTime lastPasswordChangeDate;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(50)")

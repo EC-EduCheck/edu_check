@@ -16,6 +16,7 @@ import TmpLayout from '../layout/TmpLayout';
 import { URL_PATHS } from '../constants/urlPaths';
 import RoomReservation from '../pages/roomReservation/RoomReservation';
 import Test from '../pages/Test';
+import AttendanceSheet from '../pages/attendanceSheet/AttendanceSheet';
 
 const router = createBrowserRouter([
   {
@@ -60,7 +61,6 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <RoomReservation />,
-                // element: <StudentSetting />,
               },
             ],
           },
@@ -120,7 +120,6 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <RoomReservation />,
-                // element: <StudentSetting />,
               },
             ],
           },
@@ -135,9 +134,10 @@ const router = createBrowserRouter([
       //   path: '*',
       //   element: <Navigate to="/notfound" replace />,
       // },
+
       {
-        path: '/test',
-        element: <Test />,
+        path: '/attendanceSheet',
+        element: <AttendanceSheet />,
       },
     ],
   },

@@ -19,8 +19,10 @@ public class LoginResponseDto {
     private String name;
     private String phoneNumber;
     private LocalDate birthDate;
-    private LocalDateTime lastLoginDate;
     private Long campusId;
     private Long courseId;
     private String courseName;
+    private LocalDateTime lastLoginDate;
+    private LocalDateTime lastPasswordChangeDate;
+
 }

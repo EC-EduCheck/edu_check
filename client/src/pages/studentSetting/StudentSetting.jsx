@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import styles from './StudentSetting.module.css';
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
+import { profileApi } from '../../api/profileApi';
 
 export default function StudentSetting() {
+  const [profileData, setProfileData] = useState({});
   const [error, setError] = useState('');
   const [input, setInput] = useState({
     phoneNumber: '',
@@ -23,6 +25,22 @@ export default function StudentSetting() {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
+  useEffect(() => {
+    const fetchMyProfile = async () => {
+      try {
+        const response = await profileApi.getMyProfile();
+        console.log(response);
+        setProfileData((prev) => ({
+          ...prev,
+          ...response.data.data,
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchMyProfile();
+  }, []);
 
   useEffect(() => {
     if (!validatePhoneNumber(input.phoneNumber)) {

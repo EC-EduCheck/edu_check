@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import styles from './StudentAttendanceAbsence.module.css';
 import LeftLineListItem from '../../components/listItem/leftLineListItem/LeftLineListItem';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
@@ -9,42 +10,14 @@ import Modal from '../../components/modal/Modal';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
+import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
+import { useSelector } from 'react-redux';
 
 export default function StudentAttendanceAbsence() {
-  const [absenceList, setAbsenceList] = useState([
-    {
-      absenceAttendanceId: 3,
-      startDate: '2025-03-14',
-      endDate: '2025-03-14',
-      category: 'LATE',
-      isApprove: '대기',
-      approvedDate: '2025-03-14',
-    },
-    {
-      absenceAttendanceId: 20,
-      startDate: '2025-03-14',
-      endDate: '2025-03-14',
-      category: 'EARLY_LEAVE',
-      isApprove: '승인',
-      approvedDate: '2025-03-14',
-    },
-    {
-      absenceAttendanceId: 3,
-      startDate: '2025-03-14',
-      endDate: '2025-03-14',
-      category: 'ABSENCE',
-      isApprove: '승인',
-      approvedDate: '2025-03-14',
-    },
-    {
-      absenceAttendanceId: 3,
-      startDate: '2025-03-14',
-      endDate: '2025-03-14',
-      category: 'ABSENCE',
-      isApprove: '반려',
-      approvedDate: '2025-03-14',
-    },
-  ]);
+  const courseId = useSelector((state) => state.auth.user.courseId);
+  const [absenceList, setAbsenceList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -53,6 +26,30 @@ export default function StudentAttendanceAbsence() {
   const [file, setFile] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchAbsenceList = async (courseId) => {
+      try {
+        setLoading(true);
+        const response = await absenceAttendancesApi.getAbsenceAttendanceListByStudent(courseId);
+
+        if (response.data && response.data.data && response.data.data.content) {
+          setAbsenceList(response.data.data.content);
+        } else {
+          setAbsenceList([]);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('유고 결석 데이터 조회 실패:', err);
+        setError('유고 결석 데이터를 불러오는데 실패했습니다.');
+        setLoading(false);
+      }
+    };
+
+    if (courseId) {
+      fetchAbsenceList(courseId);
+    }
+  }, [courseId]);
 
   const handleTagChange = (item) => {
     setCurrentItem(item);
@@ -159,15 +156,39 @@ export default function StudentAttendanceAbsence() {
     />
   ));
 
-  const absenceListItems = absenceList.map((item, index) => (
-    <LeftLineListItem
-      key={index}
-      isClickable={false}
-      status={item.isApprove}
-      children={item}
-      onTagChange={() => handleTagChange(item)}
-    />
-  ));
+  if (loading) {
+    return <div className={styles.loading}>데이터를 불러오는 중입니다...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
+
+  const absenceListItems = absenceList.map((item, index) => {
+    let statusText;
+    if (item.isApprove === true || item.isApprove === 'T') {
+      statusText = '승인';
+    } else if (item.isApprove === false || item.isApprove === 'F') {
+      statusText = '반려';
+    } else {
+      statusText = '대기';
+    }
+
+    const modifiedItem = {
+      ...item,
+      isApprove: statusText,
+    };
+
+    return (
+      <LeftLineListItem
+        key={index}
+        isClickable={false}
+        status={statusText}
+        children={modifiedItem}
+        onTagChange={() => handleTagChange(item)}
+      />
+    );
+  });
 
   return (
     <>
