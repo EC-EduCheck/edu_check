@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
 import styles from './StudentAttendanceAbsence.module.css';
 import LeftLineListItem from '../../components/listItem/leftLineListItem/LeftLineListItem';
 import DashBoardItem from '../../components/dashBoardItem/DashBoardItem';
