@@ -7,3 +7,7 @@
 .studentsBox > div:hover {
   box-shadow: var(--box-shadow-medium);
 }
+
+.baseListItem {
+  margin: 10px;
+}

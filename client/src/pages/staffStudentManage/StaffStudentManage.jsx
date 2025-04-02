@@ -6,11 +6,24 @@ import Modal from '../../components/modal/Modal';
 import { useSelector } from 'react-redux';
 import { studentManageApi } from '../../api/studentManageApi';
 import axios from 'axios';
+import { getDaysInMonth } from 'date-fns';
 
 export default function StaffStudentManage() {
   const courseId = useSelector((state) => state.auth.user.courseId);
   const [openModal, setOpenModal] = useState(false);
   const [students, setStudents] = useState([]);
+  const [newStudent, setNewStudent] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    tagTitle: '수강중',
+  });
+  const [birthday, setBirthday] = useState({
+    year: '',
+    month: '',
+    day: '',
+  });
+
   const statusMap = {
     PREVIOUS: '등록전',
     PROGRESS: '수강중',
@@ -33,13 +46,6 @@ export default function StaffStudentManage() {
     fetchStudents();
   }, []);
 
-  const [newStudent, setNewStudent] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    tagTitle: '수강중',
-  });
-
   const [errors, setErrors] = useState({
     name: '',
     email: '',
@@ -49,9 +55,15 @@ export default function StaffStudentManage() {
   const nameRegex = /^[가-힣]+$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-  const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}년`);
-  const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
-  const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
+  const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}`);
+  const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
+  const BIRTHDAY_DAY_LIST =
+    birthday.year && birthday.month
+      ? Array.from(
+          { length: getDaysInMonth(new Date(birthday.year, birthday.month - 1)) },
+          (_, i) => `${i + 1}`,
+        )
+      : [];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -115,7 +127,26 @@ export default function StaffStudentManage() {
     console.log(newStudent);
   };
 
+  const handleBirthdayChange = (e) => {
+    const { name, value } = e.target;
 
+    setBirthday((prev) => {
+      const updatedBirthday = { ...prev, [name]: value };
+
+      if (updatedBirthday.year && updatedBirthday.month) {
+        const year = parseInt(updatedBirthday.year, 10);
+        const month = parseInt(updatedBirthday.month, 10);
+
+        if (!isNaN(year) && !isNaN(month)) {
+          const maxDays = getDaysInMonth(new Date(year, month - 1));
+          if (updatedBirthday.day > maxDays) {
+            updatedBirthday.day = maxDays.toString();
+          }
+        }
+      }
+      return updatedBirthday;
+    });
+  };
 
   const inputBox = (
     <>
@@ -148,19 +179,25 @@ export default function StaffStudentManage() {
 
           <label>생년월일</label>
           <div class="info" id="info__birth" className={styles.birthdate}>
-            <select className={styles.smallInputBox}>
+            <select className={styles.smallInputBox} name="year" onChange={handleBirthdayChange}>
               {BIRTHDAY_YEAR_LIST.map((year, index) => (
-                <option key={index}>{year}</option>
+                <option key={index} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
-            <select className={styles.smallInputBox}>
+            <select className={styles.smallInputBox} name="month" onChange={handleBirthdayChange}>
               {BIRTHDAY_MONTH_LIST.map((month, index) => (
-                <option key={index}>{month}</option>
+                <option key={index} value={month}>
+                  {month}
+                </option>
               ))}
             </select>
-            <select className={styles.smallInputBox}>
+            <select className={styles.smallInputBox} name="day" onChange={handleBirthdayChange}>
               {BIRTHDAY_DAY_LIST.map((day, index) => (
-                <option key={index}>{day}</option>
+                <option key={index} value={day}>
+                  {day}
+                </option>
               ))}
             </select>
           </div>

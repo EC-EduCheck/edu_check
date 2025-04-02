@@ -46,7 +46,6 @@ export default function Login() {
           accessToken: accessToken,
         }),
       );
-      console.log(isLoggedIn, 'isloggedin');
     } catch (error) {
       // TODO: BE에서 에러처리 후 응답 메시지 출력으로 변경
       console.log(error);

@@ -85,12 +85,14 @@ export default function StaffAttendance() {
       isActiveIndex === false
     ) {
       return (
-        <BaseListItem
-          key={index}
-          content={item.studentName}
-          tagTitle={tag[item.status]}
-          onClick={() => handleStudentClick(item.studentId)}
-        ></BaseListItem>
+        <div className={styles.baseListItems}>
+          <BaseListItem
+            key={index}
+            content={item.studentName}
+            tagTitle={tag[item.status]}
+            onClick={() => handleStudentClick(item.studentId)}
+          ></BaseListItem>
+        </div>
       );
     }
   });
