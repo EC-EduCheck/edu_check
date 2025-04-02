@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,7 +58,7 @@ public class MeetingRoomReservationService {
 
         validateReservationTime(requestDto.getStartTime(), requestDto.getEndTime());
 
-        validateDailyReservationLimit(findMember.getId());
+        validateDailyReservationLimit(findMember.getId(), requestDto);
 
         validateReservableTime(meetingRoom, requestDto.getStartTime(), requestDto.getEndTime());
 
@@ -65,11 +66,16 @@ public class MeetingRoomReservationService {
         return MeetingRoomReservationResponseDto.from(meetingRoomReservationRepository.save(meetingRoomReservation));
     }
 
-    private void validateDailyReservationLimit(Long memberId) {
+    private void validateDailyReservationLimit(Long memberId, MeetingRoomReservationRequestDto requestDto) {
         int totalReservationMinutesForMember = meetingRoomReservationRepository.getTotalReservationMinutesForMember(memberId);
         log.info("오늘 총 예약 시간 : {}", totalReservationMinutesForMember);
-        if (totalReservationMinutesForMember >= 120) {
-            throw new InvalidRequestException("하루에 총 2시간까지 예약할 수 있습니다.");
+
+        int totalMinAfterRequest = (int) Duration.between(requestDto.getStartTime(), requestDto.getEndTime()).toMinutes() + totalReservationMinutesForMember;
+        int availableTime = 120 - totalReservationMinutesForMember;
+
+        log.info("totalMinAfterRequest : {}", totalMinAfterRequest);
+        if (totalMinAfterRequest >= 120) {
+            throw new InvalidRequestException(String.format("하루에 총 2시간까지 예약할 수 있습니다. 오늘 가능한 시간은 %d분 입니다.", availableTime));
         }
     }
 
