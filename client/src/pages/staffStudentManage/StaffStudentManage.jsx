@@ -148,17 +148,17 @@ export default function StaffStudentManage() {
 
           <label>생년월일</label>
           <div class="info" id="info__birth" className={styles.birthdate}>
-            <select className="birthdayBox yearBox" className={styles.smallInputBox}>
+            <select className={styles.smallInputBox}>
               {BIRTHDAY_YEAR_LIST.map((year, index) => (
                 <option key={index}>{year}</option>
               ))}
             </select>
-            <select className="birthdayBox monthBox" className={styles.smallInputBox}>
+            <select className={styles.smallInputBox}>
               {BIRTHDAY_MONTH_LIST.map((month, index) => (
                 <option key={index}>{month}</option>
               ))}
             </select>
-            <select className="birthdayBox dayBox" className={styles.smallInputBox}>
+            <select className={styles.smallInputBox}>
               {BIRTHDAY_DAY_LIST.map((day, index) => (
                 <option key={index}>{day}</option>
               ))}
