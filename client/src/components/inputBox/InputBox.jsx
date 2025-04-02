@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './InputBox.module.css';
 
 export default function InputBox({
@@ -10,8 +9,8 @@ export default function InputBox({
   isSelect,
   content,
   name,
+  value,
 }) {
-
   return (
     <div className={styles.inputContainer}>
       <p className={styles.label}>
@@ -25,6 +24,7 @@ export default function InputBox({
         disabled={disabled}
         onChange={onChange}
         name={name}
+        value={value}
       ></input>
       <p className={styles.content}>{content}</p>
     </div>

@@ -3,14 +3,29 @@ import styles from './StudentSetting.module.css';
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
 import { profileApi } from '../../api/profileApi';
+import { useSelector } from 'react-redux';
+import { setYear } from 'date-fns';
 
 export default function StudentSetting() {
   const [profileData, setProfileData] = useState({});
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [day, setDay] = useState('');
+  const accessToken = useSelector((state) => state.auth.accessToken);
   const [error, setError] = useState('');
   const [input, setInput] = useState({
     phoneNumber: '',
     password: '',
   });
+
+  useEffect(() => {
+    if (profileData.birthDate) {
+      const [year, month, day] = profileData.birthDate.split('-');
+      setYear(year);
+      setMonth(month);
+      setDay(day);
+    }
+  }, [profileData]);
 
   const validatePhoneNumber = (phoneNumber) => {
     const phoneRegex = /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/;
@@ -27,6 +42,8 @@ export default function StudentSetting() {
   };
 
   useEffect(() => {
+    if (!accessToken) return;
+
     const fetchMyProfile = async () => {
       try {
         const response = await profileApi.getMyProfile();
@@ -70,6 +87,7 @@ export default function StudentSetting() {
         onChange={handleChange}
         label="연락처"
         isSelect="(선택)"
+        value={profileData.phoneNumber}
       ></InputBox>
 
       <div className={styles.smallInputBox}>
@@ -80,11 +98,24 @@ export default function StudentSetting() {
           onChange={handleChange}
           label="생년월일"
           isSelect="(선택)"
+          value={year}
         ></InputBox>
 
-        <InputBox type="text" title="월" disabled={false} onChange={handleChange}></InputBox>
+        <InputBox
+          type="text"
+          title="월"
+          disabled={false}
+          onChange={handleChange}
+          value={month}
+        ></InputBox>
 
-        <InputBox type="text" title="일" disabled={false} onChange={handleChange}></InputBox>
+        <InputBox
+          type="text"
+          title="일"
+          disabled={false}
+          onChange={handleChange}
+          value={day}
+        ></InputBox>
       </div>
 
       <InputBox
