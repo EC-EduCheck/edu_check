@@ -17,6 +17,17 @@ export default function StaffAttendanceDetail() {
     statistics: {},
   });
 
+  // 출석 상태 텍스트 변환 함수
+  function getAttendanceStatusText(status) {
+    const statusMap = {
+      ATTENDANCE: '출석',
+      LATE: '지각',
+      EARLY_LEAVE: '조퇴',
+      ABSENT: '결석',
+    };
+    return statusMap[status] || status;
+  }
+
   useEffect(() => {
     const studentAttendanceById = async () => {
       console.log(accessToken);
@@ -65,25 +76,15 @@ export default function StaffAttendanceDetail() {
         <div className={styles.listContainer}>
           {studentAttendance.attendanceRecordList &&
             studentAttendance.attendanceRecordList.map((item, index) => (
-              <BaseListItem
-                key={index}
-                content={item.lectureDateTime}
-                tagTitle={getAttendanceStatusText(item.attendanceStatus)}
-              />
+              <div key={index} >
+                <BaseListItem
+                  content={item.lectureDateTime}
+                  tagTitle={getAttendanceStatusText(item.attendanceStatus)}
+                />
+              </div>
             ))}
         </div>
       </div>
     </div>
   );
-}
-
-// 출석 상태 텍스트 변환 함수
-function getAttendanceStatusText(status) {
-  const statusMap = {
-    ATTENDANCE: '출석',
-    LATE: '지각',
-    EARLY_LEAVE: '조퇴',
-    ABSENT: '결석',
-  };
-  return statusMap[status] || status;
 }

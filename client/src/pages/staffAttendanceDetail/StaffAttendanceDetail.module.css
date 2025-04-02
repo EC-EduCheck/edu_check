@@ -65,6 +65,7 @@
 .listContainer {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .listContainer > div:first-child {

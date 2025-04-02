@@ -1,5 +1,6 @@
 .container {
   margin: 0 10em;
+  padding-top: var(--padding-large);
 }
 
 .filterButtonBox {
