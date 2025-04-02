@@ -1,3 +1,7 @@
+.container {
+  margin: 0 10em;
+}
+
 .filterButtonBox {
   display: flex;
   width: 100%;

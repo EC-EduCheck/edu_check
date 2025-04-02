@@ -114,7 +114,7 @@ export default function StaffAttendance() {
     .filter(Boolean);
 
   return (
-    <div>
+    <div className={styles.container}>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} {...modalData}></Modal>
       <div className={styles.dashBoardItemBox}>
         <DashBoardItem width="100%">
