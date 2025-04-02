@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import styles from './FilterButton.module.css';
 
-export default function FilterButton({ index, isActiveIndex, title, content, handleActiveFilter }) {
+export default function FilterButton({
+  index,
+  isActiveIndex,
+  title,
+  content,
+  handleActiveFilter,
+  isMultiSelect = false,
+}) {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (index === isActiveIndex) {
-      setIsActive(true);
+    if (isMultiSelect) {
+      setIsActive(Array.isArray(isActiveIndex) && isActiveIndex.includes(index));
     } else {
-      setIsActive(false);
+      setIsActive(index === isActiveIndex);
     }
-  }, [isActiveIndex]);
+  }, [isActiveIndex, isMultiSelect]);
 
   return (
     <button
