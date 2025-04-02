@@ -85,6 +85,13 @@ export default function StaffStudentManage() {
     }));
   };
 
+  useEffect(() => {
+    setNewStudent((prev) => ({
+      ...prev,
+      courseId,
+    }));
+  }, [courseId]);
+
   const handleBirthdayChange = (e) => {
     console.log(e.target);
     const { name, value } = e.target;
@@ -110,6 +117,7 @@ export default function StaffStudentManage() {
       return;
     }
 
+    console.log(newStudent.courseId);
     try {
       const formattedBirthday = `${birthday.year}-${birthday.month.padStart(2, '0')}-${birthday.day.padStart(2, '0')}`;
       const response = await studentManageApi.registerNewStudent({

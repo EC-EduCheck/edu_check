@@ -11,6 +11,7 @@ import org.example.educheck.domain.member.dto.EmailCheckResponseDto;
 import org.example.educheck.domain.member.dto.LoginRequestDto;
 import org.example.educheck.domain.member.dto.LoginResponseDto;
 import org.example.educheck.domain.member.dto.SignUpRequestDto;
+import org.example.educheck.domain.member.dto.response.RegisteredMemberResponseDto;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.student.entity.Student;
@@ -52,7 +53,7 @@ public class AuthService {
     private final TokenRedisService tokenRedisService;
 
     @Transactional
-    public Member signUp(SignUpRequestDto requestDto) {
+    public RegisteredMemberResponseDto signUp(SignUpRequestDto requestDto) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
@@ -76,10 +77,10 @@ public class AuthService {
                 .course(course)
                 .registrationStatus(RegistrationStatus.PREVIOUS)
                 .build();
-        registrationRepository.save(registration);
+        Registration savedRegistration = registrationRepository.save(registration);
 
+        return RegisteredMemberResponseDto.from(member, savedRegistration.getRegistrationStatus());
 
-        return member;
     }
 
     @Transactional
