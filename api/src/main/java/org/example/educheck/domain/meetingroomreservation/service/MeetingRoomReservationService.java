@@ -68,7 +68,7 @@ public class MeetingRoomReservationService {
     private void validateDailyReservationLimit(Long memberId) {
         int totalReservationMinutesForMember = meetingRoomReservationRepository.getTotalReservationMinutesForMember(memberId);
         log.info("오늘 총 예약 시간 : {}", totalReservationMinutesForMember);
-        if (totalReservationMinutesForMember > 120) {
+        if (totalReservationMinutesForMember >= 120) {
             throw new InvalidRequestException("하루에 총 2시간까지 예약할 수 있습니다.");
         }
     }
