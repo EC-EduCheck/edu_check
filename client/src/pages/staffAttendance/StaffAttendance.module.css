@@ -2,12 +2,19 @@
   display: flex;
   width: 100%;
   gap: 1rem;
+  margin-bottom: var(--margin-basic);
+}
+
+.dashBoardItemBox {
+  margin-bottom: var(--margin-basic);
+}
+
+.studentsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .studentsBox > div:hover {
   box-shadow: var(--box-shadow-medium);
-}
-
-.baseListItem {
-  margin: 10px;
 }

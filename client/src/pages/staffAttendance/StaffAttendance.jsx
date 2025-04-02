@@ -100,12 +100,14 @@ export default function StaffAttendance() {
   return (
     <div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} {...modalData}></Modal>
-      <DashBoardItem width="100%">
-        <>
-          <h2 className="subTitle">출결 현황</h2>
-          <div className={styles.filterButtonBox}>{filterButtons}</div>
-        </>
-      </DashBoardItem>
+      <div className={styles.dashBoardItemBox}>
+        <DashBoardItem width="100%">
+          <>
+            <h2 className="subTitle">출결 현황</h2>
+            <div className={styles.filterButtonBox}>{filterButtons}</div>
+          </>
+        </DashBoardItem>
+      </div>
 
       <div className={styles.studentsBox}>{studentsList}</div>
     </div>
