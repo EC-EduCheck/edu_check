@@ -5,19 +5,14 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
 import { useSelector } from 'react-redux';
 import { studentManageApi } from '../../api/studentManageApi';
-import axios from 'axios';
 import { getDaysInMonth } from 'date-fns';
+
 
 export default function StaffStudentManage() {
   const courseId = useSelector((state) => state.auth.user.courseId);
   const [openModal, setOpenModal] = useState(false);
   const [students, setStudents] = useState([]);
-  const [newStudent, setNewStudent] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    tagTitle: '수강중',
-  });
+
   const [birthday, setBirthday] = useState({
     year: '',
     month: '',
@@ -117,7 +112,7 @@ export default function StaffStudentManage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newStudent);
+
   };
 
   const handleBirthdayChange = (e) => {
