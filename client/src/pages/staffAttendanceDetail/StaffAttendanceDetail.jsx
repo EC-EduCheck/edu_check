@@ -5,9 +5,11 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import DataBoard from '../../components/dataBoard/DataBoard';
 import { attendanceApi } from '../../api/attendanceApi';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function StaffAttendanceDetail() {
   const { courseId, studentId } = useParams();
+  const accessToken = useSelector((state) => state.auth.accessToken);
   const [studentAttendance, setStudentAttendance] = useState({
     studentName: '',
     studentPhoneNumber: '',
@@ -17,6 +19,8 @@ export default function StaffAttendanceDetail() {
 
   useEffect(() => {
     const studentAttendanceById = async () => {
+      console.log(accessToken);
+      if (!courseId || !studentId || !accessToken) return;
       try {
         const response = await attendanceApi.getStudentAttendances(courseId, studentId);
         const studentAttendanceData = response.data.data;
@@ -28,7 +32,7 @@ export default function StaffAttendanceDetail() {
     };
 
     studentAttendanceById();
-  }, [courseId, studentId]);
+  }, [courseId, studentId, accessToken]);
 
   return (
     <div className={styles.container}>
