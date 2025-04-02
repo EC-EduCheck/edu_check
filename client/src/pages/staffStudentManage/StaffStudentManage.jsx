@@ -5,10 +5,10 @@ import BaseListItem from '../../components/listItem/baseListItem/BaseListItem';
 import Modal from '../../components/modal/Modal';
 import { useSelector } from 'react-redux';
 import { studentManageApi } from '../../api/studentManageApi';
+import axios from 'axios';
 
 export default function StaffStudentManage() {
   const courseId = useSelector((state) => state.auth.user.courseId);
-  console.log(courseId);
   const [openModal, setOpenModal] = useState(false);
   const [students, setStudents] = useState([]);
   const statusMap = {
@@ -49,7 +49,7 @@ export default function StaffStudentManage() {
   const nameRegex = /^[가-힣]+$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-  const BIRTHDAY_YEAR_LIST = Array.from({ length: 15 }, (_, i) => `${i + 1990}년`);
+  const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}년`);
   const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
   const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
 
@@ -113,8 +113,9 @@ export default function StaffStudentManage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(newStudent);
-    setStudents((prev) => [...prev, newStudent]);
   };
+
+
 
   const inputBox = (
     <>
@@ -146,18 +147,18 @@ export default function StaffStudentManage() {
           </div>
 
           <label>생년월일</label>
-          <div class="info" id="info__birth">
-            <select className="birthdayBox yearBox">
+          <div class="info" id="info__birth" className={styles.birthdate}>
+            <select className="birthdayBox yearBox" className={styles.smallInputBox}>
               {BIRTHDAY_YEAR_LIST.map((year, index) => (
                 <option key={index}>{year}</option>
               ))}
             </select>
-            <select className="birthdayBox monthBox">
+            <select className="birthdayBox monthBox" className={styles.smallInputBox}>
               {BIRTHDAY_MONTH_LIST.map((month, index) => (
                 <option key={index}>{month}</option>
               ))}
             </select>
-            <select className="birthdayBox dayBox">
+            <select className="birthdayBox dayBox" className={styles.smallInputBox}>
               {BIRTHDAY_DAY_LIST.map((day, index) => (
                 <option key={index}>{day}</option>
               ))}
