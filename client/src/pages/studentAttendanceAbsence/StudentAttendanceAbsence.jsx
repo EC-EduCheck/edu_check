@@ -10,11 +10,11 @@ import Modal from '../../components/modal/Modal';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
-import { absenceAttendancesApi } from '../../api/absenceAttendancesApi'; // 올바른 import 방식
+import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import { useSelector } from 'react-redux';
 
 export default function StudentAttendanceAbsence() {
-  const { courseId } = useSelector((state) => state.auth.user);
+  const courseId = useSelector((state) => state.auth.user.courseId);
   const [absenceList, setAbsenceList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,16 +28,15 @@ export default function StudentAttendanceAbsence() {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const fetchAbsenceList = async () => {
+    const fetchAbsenceList = async (courseId) => {
       try {
         setLoading(true);
         const response = await absenceAttendancesApi.getAbsenceAttendanceListByStudent(courseId);
 
-        if (response.data && response.data.data) {
-          const userData = response.data.data;
-          if (userData.absenceAttendances) {
-            setAbsenceList(userData.absenceAttendances);
-          }
+        if (response.data && response.data.data && response.data.data.content) {
+          setAbsenceList(response.data.data.content);
+        } else {
+          setAbsenceList([]);
         }
         setLoading(false);
       } catch (err) {
@@ -48,7 +47,7 @@ export default function StudentAttendanceAbsence() {
     };
 
     if (courseId) {
-      fetchAbsenceList();
+      fetchAbsenceList(courseId);
     }
   }, [courseId]);
 
@@ -157,7 +156,6 @@ export default function StudentAttendanceAbsence() {
     />
   ));
 
-  // 로딩 상태와 에러 상태 표시 (주석 해제)
   if (loading) {
     return <div className={styles.loading}>데이터를 불러오는 중입니다...</div>;
   }
@@ -166,15 +164,31 @@ export default function StudentAttendanceAbsence() {
     return <div className={styles.error}>{error}</div>;
   }
 
-  const absenceListItems = absenceList.map((item, index) => (
-    <LeftLineListItem
-      key={index}
-      isClickable={false}
-      status={item.isApprove}
-      children={item}
-      onTagChange={() => handleTagChange(item)}
-    />
-  ));
+  const absenceListItems = absenceList.map((item, index) => {
+    let statusText;
+    if (item.isApprove === true || item.isApprove === 'T') {
+      statusText = '승인';
+    } else if (item.isApprove === false || item.isApprove === 'F') {
+      statusText = '반려';
+    } else {
+      statusText = '대기';
+    }
+
+    const modifiedItem = {
+      ...item,
+      isApprove: statusText,
+    };
+
+    return (
+      <LeftLineListItem
+        key={index}
+        isClickable={false}
+        status={statusText}
+        children={modifiedItem}
+        onTagChange={() => handleTagChange(item)}
+      />
+    );
+  });
 
   return (
     <>
