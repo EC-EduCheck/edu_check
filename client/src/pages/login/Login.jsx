@@ -8,15 +8,16 @@ import { login } from '../../store/slices/authSlice';
 
 import InputBox from '../../components/inputBox/InputBox';
 import MainButton from '../../components/buttons/mainButton/MainButton';
-import { BASE_PATHS } from '../../constants/urlPaths';
+import { BASE_PATHS, URL_PATHS } from '../../constants/urlPaths';
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const lastLoginDate = useSelector((state) => state.auth.user.lastLoginDate);
+  const lastPasswordChangeDate = useSelector((state) => state.auth.user.lastPasswordChangeDate);
   const { role } = useSelector((state) => state.auth.user);
-  const user = useSelector((state) => state.auth.user);
   const [inputData, setInputData] = useState({
     email: '',
     password: '',
@@ -56,10 +57,16 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const mainPath = BASE_PATHS?.[role];
-      navigate(mainPath, { replace: true });
+      if (role === 'STUDENT' && !lastPasswordChangeDate) {
+        const settingPath = URL_PATHS?.[role].SETTING;
+        alert('초기 비밀번호를 변경하세요,');
+        navigate(settingPath, { replace: true });
+      } else {
+        const mainPath = BASE_PATHS?.[role];
+        navigate(mainPath, { replace: true });
+      }
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, lastPasswordChangeDate]);
 
   useEffect(() => {
     setIsLoginButtonEnable(

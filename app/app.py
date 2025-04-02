@@ -1,4 +1,5 @@
 from flask import Flask, Response, send_file
+from flask_cors import CORS
 import pandas as pd
 import io
 import mysql.connector
@@ -11,6 +12,7 @@ import json
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, resources={r"/app/*": {"origins": "http://localhost:5173"}})
 
 
 dbconfig = {

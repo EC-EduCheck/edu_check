@@ -43,7 +43,7 @@ public class StudentCourseAttendanceController {
         Pageable pageable = createPageable(page, size);
 
         return ResponseEntity.ok(ApiResponse.ok(
-                "특정 학생 세부 출결 현황 조회 성공",
+                "특정 학생 세부 출결 현황 페이지 데이터 조회 성공",
                 "OK",
                 studentCourseAttendanceService.getStudentAttendanceRecordLists(member, studentId, courseId, pageable)
         ));
