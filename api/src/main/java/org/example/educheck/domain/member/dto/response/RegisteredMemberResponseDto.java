@@ -10,19 +10,19 @@ import org.example.educheck.domain.registration.entity.RegistrationStatus;
 @Getter
 @AllArgsConstructor
 public class RegisteredMemberResponseDto {
-    private Long id;
-    private String name;
-    private String phone;
-    private String email;
-    private RegistrationStatus status;
+    private Long memberId;
+    private String studentName;
+    private String studentPhoneNumber;
+    private String studentEmail;
+    private RegistrationStatus registrationStatus;
 
     public static RegisteredMemberResponseDto from(Member member, RegistrationStatus status) {
         return RegisteredMemberResponseDto.builder()
-                .id(member.getId())
-                .name(member.getName())
-                .phone(member.getPhoneNumber())
-                .email(member.getEmail())
-                .status(status)
+                .memberId(member.getId())
+                .studentName(member.getName())
+                .studentPhoneNumber(member.getPhoneNumber())
+                .studentEmail(member.getEmail())
+                .registrationStatus(status)
                 .build();
     }
 
