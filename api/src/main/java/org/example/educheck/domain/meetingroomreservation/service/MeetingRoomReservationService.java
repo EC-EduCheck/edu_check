@@ -140,8 +140,16 @@ public class MeetingRoomReservationService {
         Member authenticatedMember = getAuthenticatedMember(userDetails);
         validateResourceOwner(authenticatedMember, meetingRoomReservation);
 
+        validateEndTimeIsBeforeNow(meetingRoomReservation);
+
         meetingRoomReservation.cancelReservation();
         meetingRoomReservationRepository.save(meetingRoomReservation);
+    }
+
+    private void validateEndTimeIsBeforeNow(MeetingRoomReservation meetingRoomReservation) {
+        if (meetingRoomReservation.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidRequestException("예약 종료 시간 이전에만 취소가 가능합니다.");
+        }
     }
 
     public CampusMeetingRoomsDto getMeetingRoomReservations(Long campusId, LocalDate date) {
