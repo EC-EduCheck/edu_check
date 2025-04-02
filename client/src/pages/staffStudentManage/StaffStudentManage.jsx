@@ -52,7 +52,6 @@ export default function StaffStudentManage() {
     phone: '',
   });
 
-  const nameRegex = /^[가-힣]+$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
   const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}`);
@@ -69,12 +68,6 @@ export default function StaffStudentManage() {
     const { name, value } = e.target;
 
     let errorMessage = '';
-
-    if (name === 'name') {
-      if (!nameRegex.test(value)) {
-        errorMessage = '이름은 한글만 입력 가능합니다.';
-      }
-    }
 
     if (name === 'email') {
       if (!emailRegex.test(value)) {
@@ -157,7 +150,7 @@ export default function StaffStudentManage() {
             className={styles.smallInputBox}
             name="name"
             type="text"
-            placeholder="이름을 입력해주세요."
+            placeholder="홍길동"
             onChange={handleChange}
             content=""
           ></input>
@@ -170,7 +163,7 @@ export default function StaffStudentManage() {
             className={styles.smallInputBox}
             name="phone"
             type="text"
-            placeholder="연락처를 입력해주세요."
+            placeholder="010-0000-0000."
             onChange={handleChange}
           ></input>
           <div className={styles.regexFont}>
