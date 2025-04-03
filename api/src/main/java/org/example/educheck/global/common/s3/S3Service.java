@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,16 +34,11 @@ public class S3Service {
     private String region;
 
     public List<Map<String, String>> uploadFiles(MultipartFile[] files) {
-        List<Map<String, String>> uploadedFiles = new ArrayList<>();
 
-
-        for (MultipartFile file : files) {
-            log.info("fileName : {}", file.getOriginalFilename());
-            Map<String, String> fileInfo = uploadFile(file);
-            uploadedFiles.add(fileInfo);
-
-        }
-        return uploadedFiles;
+        return Arrays.stream(files)
+                .parallel()
+                .map(this::uploadFile)
+                .toList();
     }
 
     private Map<String, String> uploadFile(MultipartFile file) {
