@@ -17,7 +17,6 @@ import org.example.educheck.domain.member.entity.Role;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
-import org.example.educheck.domain.member.student.entity.Student;
 import org.example.educheck.domain.registration.entity.Registration;
 import org.example.educheck.domain.registration.repository.RegistrationRepository;
 import org.example.educheck.domain.staffcourse.repository.StaffCourseRepository;
@@ -161,7 +160,10 @@ public class AbsenceAttendanceService {
     }
 
     private void validateRegistrationCourse(Member member, Long courseId) {
-        Student student = member.getStudent();
+
+        log.info("==============");
+        log.info("test", member.getStudent().getId());
+        log.info("================");
 
         Registration registration = registrationRepository.findByStudentIdAndCourseId(member.getStudent().getId(), courseId)
                 .orElseThrow(ResourceNotFoundException::new);
