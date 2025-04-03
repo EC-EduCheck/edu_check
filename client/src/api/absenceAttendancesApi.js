@@ -24,4 +24,7 @@ export const absenceAttendancesApi = {
       },
     });
   },
+  deleteAbsenceAttendance: async (courseId, absenceAttendancesId)=>{
+    await apiInstance.delete(`/my/course/${courseId}/absence-attendances/${absenceAttendancesId}`)
+  }
 };
