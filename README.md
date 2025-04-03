@@ -33,7 +33,10 @@
 
 ## 🏗️서비스 아키텍처
 
+![Image](https://github.com/user-attachments/assets/f135b387-bde9-4461-aa0a-6bda9bfb43d9)
 
+## 🏗️CI/CD 아키텍처
+![Image](https://github.com/user-attachments/assets/ba7f4fb9-273f-4ae4-b622-51f220a403aa)
 
 ## ⚙️설치 및 실행 방법
 
