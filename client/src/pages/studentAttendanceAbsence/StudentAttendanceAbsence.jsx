@@ -13,6 +13,7 @@ import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { URL_PATHS } from '../../constants/urlPaths';
+import AttendanceAbsenceDetail from '../staffAttendanceAbsence/AttendanceAbsenceDetail';
 
 export default function StudentAttendanceAbsence() {
   const courseId = useSelector((state) => state.auth.user.courseId);
@@ -41,6 +42,13 @@ export default function StudentAttendanceAbsence() {
     endDate: '',
     reason: '',
   });
+
+  const modalContent = currentItem ? (
+    <AttendanceAbsenceDetail
+      courseId={courseId}
+      id={currentItem.absenceAttendanceId}
+    />
+  ) : null;
 
   const resetFormFields = () => {
     setUploadData({
@@ -325,53 +333,6 @@ export default function StudentAttendanceAbsence() {
       />
     );
   });
-  const editInputBox = (
-    <>
-      <div className={styles.editInputBox}>
-        {' '}
-        <div className={styles.editCategoryButton}>{editRoundButtons}</div>
-        <div className={styles.applicationDate}>
-          <NewInputBox label="신청 날짜" value={'2025-04-03'}></NewInputBox>
-        </div>
-        <p className={styles.editTermTitle}>기간</p>
-        <div className={styles.editDateInputBox}>
-          <DatePicker
-            selected={startDate}
-            onChange={setStartDate}
-            dateFormat="yyyy-MM-dd"
-            className={styles.editDateInput}
-            locale={ko}
-            placeholderText="시작일"
-            maxDate={endDate}
-            utcOffset={0}
-          />
-          <span className={styles.editDateSeparator}>~</span>
-          <DatePicker
-            selected={endDate}
-            onChange={setEndDate}
-            dateFormat="yyyy-MM-dd"
-            className={styles.editDateInput}
-            locale={ko}
-            placeholderText="종료일"
-            minDate={startDate}
-            utcOffset={0}
-          />
-        </div>
-        <div className={styles.editTextInput}>
-          <NewInputBox
-            label="서류"
-            title="파일 선택 또는 끌어놓기..."
-            type="file"
-            onChange={(e) => setFile(e.target.files[0])}
-            innerRef={fileInputRef}
-          />
-          <div className={styles.editReason}>
-            <NewInputBox label="사유" value={reason} onChange={handleOnChange} />
-          </div>
-        </div>
-      </div>
-    </>
-  );
 
   return (
     <>
@@ -445,7 +406,7 @@ export default function StudentAttendanceAbsence() {
           onClose={handleCloseModal}
           isEnable={true}
           mainText={'수정'}
-          content={editInputBox}
+          content={modalContent}
         />
       </div>
     </>
