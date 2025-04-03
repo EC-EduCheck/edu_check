@@ -13,7 +13,11 @@
 ## 개발 환경
 
 ## ⚒️기술 스택
-
+- Frontend: React.js, Redux, Axios
+- Backend: Spring Boot, Spring Data JPA, Spring Security
+- Database: MySQL8.0, Redis
+- DevOps: Docker, AWS EC2, AWS S3, AWS Route 53, GitHub Actions
+- Tools: GitHub, Jira, Postman, Figma, Notion, Discord
 
 ## 🏛️ERD
 ![edu-check (2)](https://github.com/user-attachments/assets/1635afe8-8a2a-4cb2-97e4-62bea159b7b3)
@@ -24,7 +28,7 @@
 
 
 
-## 설치 및 실행 방법
+## ⚙️설치 및 실행 방법
 
 - 로컬 실행 환경과 운영 실행 환경을 구분해서 환경 변수 작성 및 설명
 - 로컬 실행 방법 설명
