@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.dto.EmailCheckResponseDto;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -83,22 +85,18 @@ public class AuthService {
 
     }
 
+
     @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        Authentication authenticate = authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         requestDto.getEmail(), requestDto.getPassword()
                 )
         );
-
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다.")
-                );
-
-        setTokensInResponse(authenticate, response);
+        Member member = (Member) authentication.getPrincipal();
+        setTokensInResponse(authentication, response);
         LoginResponseDto loginResponseDto = roleBasedLogin(member);
-
         member.setLastLoginDateTime(LocalDateTime.now());
 
         return loginResponseDto;

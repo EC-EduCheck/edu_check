@@ -7,13 +7,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.example.educheck.global.common.exception.custom.LoginValidationException;
+import org.example.educheck.domain.member.entity.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,8 +41,8 @@ public class JwtTokenUtil {
 
     private String createToken(Authentication authentication, long validityMilliSeconds) {
 
-        log.info("authentication: {}", authentication.getAuthorities());
-        String email = null;
+
+/*        String email = null;
         try {
             Object principal = authentication.getPrincipal();
             Field field = principal.getClass().getDeclaredField("email");
@@ -51,8 +50,9 @@ public class JwtTokenUtil {
             email = field.get(principal).toString();
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new LoginValidationException();
-        }
-        Claims claims = Jwts.claims().setSubject(email);
+        }*/
+        Member member = (Member) authentication.getPrincipal();
+        Claims claims = Jwts.claims().setSubject(member.getEmail());
         claims.put("roles", authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
