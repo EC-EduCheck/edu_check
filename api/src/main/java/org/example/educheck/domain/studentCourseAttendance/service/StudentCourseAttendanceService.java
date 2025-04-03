@@ -164,7 +164,6 @@ public class StudentCourseAttendanceService {
                 .map(TodayAttendanceStatus::from)
                 .toList();
 
-        //getAttendanceStatus() 를 기준으로 그룹화하고, 각 상태별 개수를 Map<String, Long> 형태로 저장
         Map<String, Long> statusCounts = studentRecords.stream()
                 .collect(Collectors.groupingBy(TodayAttendanceStatus::getStatus, Collectors.counting()));
 

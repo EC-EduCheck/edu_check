@@ -11,6 +11,7 @@ import org.example.educheck.domain.absenceattendance.repository.AbsenceAttendanc
 import org.example.educheck.domain.absenceattendanceattachmentfile.dto.response.AttachmentFileReposeDto;
 import org.example.educheck.domain.absenceattendanceattachmentfile.entity.AbsenceAttendanceAttachmentFile;
 import org.example.educheck.domain.absenceattendanceattachmentfile.repository.AbsenceAttendanceAttachmentFileRepository;
+import org.example.educheck.domain.course.entity.Course;
 import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.member.entity.Member;
 import org.example.educheck.domain.member.entity.Role;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -113,10 +115,11 @@ public class AbsenceAttendanceService {
     public CreateAbsenceAttendanceResponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         validateRegistrationCourse(member, courseId);
+        Course course = getCourseById(courseId);
+        validateAbsenceAttendanceDate(requestDto.getStartDate(), requestDto.getEndDate(), course);
 
         AbsenceAttendance absenceAttendance = AbsenceAttendance.builder()
-                .course(courseRepository.findById(courseId)
-                        .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다.")))
+                .course(course)
                 .student(member.getStudent())
                 .startTime(requestDto.getStartDate())
                 .endTime(requestDto.getEndDate())
@@ -129,6 +132,21 @@ public class AbsenceAttendanceService {
         saveAttachmentFiles(files, savedAbsenceAttendance);
 
         return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
+    }
+
+    private void validateAbsenceAttendanceDate(LocalDate startDate, LocalDate endDate, Course course) {
+        if (startDate.isBefore(course.getStartDate()) || endDate.isAfter(course.getStartDate())) {
+            throw new InvalidRequestException("유고결석 신청 기간은 교육 과정 기간 내에 있어야 합니다.");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new InvalidRequestException("유고결석 시작일은 종료일보다 이후일 수 없습니다.");
+        }
+    }
+
+    private Course getCourseById(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 교육 과정을 찾을 수 없습니다."));
     }
 
     private void saveAttachmentFiles(MultipartFile[] files, AbsenceAttendance savedAbsenceAttendance) {
