@@ -19,9 +19,9 @@ export default function StaffStudentManage() {
     courseId: courseId,
   });
   const [birthday, setBirthday] = useState({
-    year: '',
-    month: '',
-    day: '',
+    year: '2000',
+    month: '01',
+    day: '01',
   });
 
   const statusMap = {
@@ -53,7 +53,7 @@ export default function StaffStudentManage() {
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/;
-  const BIRTHDAY_YEAR_LIST = Array.from({ length: 50 }, (_, i) => `${i + 1980}`);
+  const BIRTHDAY_YEAR_LIST = Array.from({ length: 70 }, (_, i) => `${i + 1960}`);
   const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
   const BIRTHDAY_DAY_LIST =
     birthday.year && birthday.month
