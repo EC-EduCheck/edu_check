@@ -2,25 +2,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Tag.module.css';
 import { getTagColors, getIsClickable, tagList } from '../../utils/buttonContentList';
 import DropBoxButton from '../buttons/dropBoxButton/DropBoxButton';
+import { studentManageApi } from '../../api/studentManageApi';
 
-export default function Tag({ title }) {
-  const tagColors = getTagColors(title);
+export default function Tag({ title, studentId, courseId }) {
+  const [currentTitle, setCurrentTitle] = useState(title);
+  const tagColors = getTagColors(currentTitle);
   const isClickable = getIsClickable(title);
 
-  // TODO : 관리자 페이지의 학습자 관리 tag에만 사용
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
+  const statusMapper = {
+    등록전: 'PREVIOUS',
+    수강중: 'PROGRESS',
+    수료: 'COMPLETED',
+    '수강 중단': 'DROPPED',
+  };
 
   const handleToggleDropBox = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const handleCloseDropBox = () => {
-    setIsOpen(false);
-  };
-
   const handleTagClick = (newTagTitle) => {
-    // TODO : patch 요청
+    const status = statusMapper[newTagTitle];
+    try{
+      studentManageApi.modifyStudentStatus(courseId, studentId, status);
+      setCurrentTitle(newTagTitle);
+    } catch (error) {
+      console.error(error);
+    }
+
+
     setIsOpen(false);
   };
 
@@ -34,7 +45,6 @@ export default function Tag({ title }) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -48,10 +58,8 @@ export default function Tag({ title }) {
         onClick={handleToggleDropBox}
         className={`${styles.tag} ${tagColors ? styles[tagColors] : ''}`}
       >
-        {title}
+        {currentTitle}
       </button>
-
-      {/* TODO : 관리자 페이지의 학습자 관리 tag에만 사용 */}
       <div
         style={
           isClickable ? (isOpen ? { display: 'block' } : { display: 'none' }) : { display: 'none' }

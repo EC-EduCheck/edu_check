@@ -220,6 +220,8 @@ export default function StaffStudentManage() {
             phone={student.studentPhoneNumber}
             email={student.studentEmail}
             tagTitle={statusMap[student.registrationStatus] || ' '}
+            studentId={student.memberId}
+            courseId={courseId}
           />
         ))}
       </div>
