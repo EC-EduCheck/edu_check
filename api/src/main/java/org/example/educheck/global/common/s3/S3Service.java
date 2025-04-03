@@ -35,10 +35,17 @@ public class S3Service {
 
     public List<Map<String, String>> uploadFiles(MultipartFile[] files) {
 
-        return Arrays.stream(files)
-                .parallel()
-                .map(this::uploadFile)
-                .toList();
+        if (files.length > 5) {
+            return Arrays.stream(files)
+                    .parallel()
+                    .map(this::uploadFile)
+                    .toList();
+        } else {
+            return Arrays.stream(files)
+                    .map(this::uploadFile)
+                    .toList();
+        }
+
     }
 
     private Map<String, String> uploadFile(MultipartFile file) {
