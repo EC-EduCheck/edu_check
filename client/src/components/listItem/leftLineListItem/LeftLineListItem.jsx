@@ -3,7 +3,7 @@ import styles from './LeftLineListItem.module.css';
 import { getBackgroundColor } from '../../../utils/buttonContentList';
 import MoreButton from '../../buttons/moreButton/MoreButton';
 
-// TODO : 관리자의 유고 결석 관리만 isClickable = true
+
 export default function LeftLineListItem({
   isClickable,
   handleClick,

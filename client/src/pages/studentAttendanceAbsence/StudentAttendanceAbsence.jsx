@@ -316,10 +316,10 @@ export default function StudentAttendanceAbsence() {
     return (
       <LeftLineListItem
         key={index}
-        isClickable={false}
+        isClickable={true}
         status={statusText}
         children={modifiedItem}
-        onTagChange={() => handleTagChange(item)}
+        handleClick ={() => handleTagChange(item)}
         onEdit={handleEdit}
         onDelete={() => handleDelete(item)}
       />
@@ -377,7 +377,7 @@ export default function StudentAttendanceAbsence() {
     <>
       <div className={styles.LeftLineListItemDisplay}>
         <div className={styles.absenceLeftLineListItem}>
-          <p className="subTitle">신청 내역(페이지네이션 필요)</p>
+          <p className="subTitle">신청 내역</p>
           <div className={styles.absenceAttendanceList}>{absenceListItems}</div>
         </div>
 
@@ -444,7 +444,6 @@ export default function StudentAttendanceAbsence() {
           isOpen={openModal}
           onClose={handleCloseModal}
           isEnable={true}
-          mainClick={handleInfoEdit}
           mainText={'수정'}
           content={editInputBox}
         />

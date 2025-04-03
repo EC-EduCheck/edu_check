@@ -98,9 +98,9 @@ public class AbsenceAttendanceController {
 
     @PreAuthorize("hasAnyAuthority('STUDENT','MIDDLE_ADMIN')")
     @GetMapping("/course/{courseId}/absence-attendances/{absenceAttendancesId}")
-    public ResponseEntity<ApiResponse<AbsenceAttendanceResponseDto>> c(@AuthenticationPrincipal Member member,
-                                                                       @PathVariable Long courseId,
-                                                                       @PathVariable Long absenceAttendancesId
+    public ResponseEntity<ApiResponse<AbsenceAttendanceResponseDto>> getAbsenceAttendance(@AuthenticationPrincipal Member member,
+                                                                                          @PathVariable Long courseId,
+                                                                                          @PathVariable Long absenceAttendancesId
     ) {
         return ResponseEntity.ok(
                 ApiResponse.ok("유고 결석 신청 내역 상세 조회 성공",
