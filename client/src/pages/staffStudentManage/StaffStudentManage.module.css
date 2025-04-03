@@ -36,10 +36,13 @@
   margin-top: var(--margin-small);
 } */
 
-/* .studentsBox {
-  margin-top: 1rem;
+.studentsBox {
+  margin-top: var(--margin-large);
+  margin: 0 10em;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-} */
+}
 
 .regexFont {
   font-size: var(--font-size-12);

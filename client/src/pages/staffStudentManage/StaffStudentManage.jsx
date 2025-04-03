@@ -93,7 +93,6 @@ export default function StaffStudentManage() {
   }, [courseId]);
 
   const handleBirthdayChange = (e) => {
-    console.log(e.target);
     const { name, value } = e.target;
 
     setBirthday((prev) => {
@@ -103,7 +102,6 @@ export default function StaffStudentManage() {
         updatedBirthday.day = '';
       }
 
-      console.log(updatedBirthday);
 
       return updatedBirthday;
     });
@@ -111,20 +109,17 @@ export default function StaffStudentManage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(birthday.day);
     if (!birthday.year || !birthday.month || !birthday.day) {
       alert('생년월일 입력은 필수입니다.');
       return;
     }
 
-    console.log(newStudent.courseId);
     try {
       const formattedBirthday = `${birthday.year}-${birthday.month.padStart(2, '0')}-${birthday.day.padStart(2, '0')}`;
       const response = await studentManageApi.registerNewStudent({
         ...newStudent,
         birthDate: formattedBirthday,
       });
-      console.log(response);
       setOpenModal(false);
     } catch (error) {
       console.error(error);
@@ -211,19 +206,21 @@ export default function StaffStudentManage() {
 
   return (
     <>
-      <MainButton title="학습자 등록" handleClick={() => setOpenModal(true)} isEnable={true} />
-      <div className={styles.studentsBox}>
-        {students.map((student) => (
-          <BaseListItem
-            key={student.memberId}
-            content={student.studentName}
-            phone={student.studentPhoneNumber}
-            email={student.studentEmail}
-            tagTitle={statusMap[student.registrationStatus] || ' '}
-            studentId={student.memberId}
-            courseId={courseId}
-          />
-        ))}
+      <div>
+        <MainButton title="학습자 등록" handleClick={() => setOpenModal(true)} isEnable={true} />
+        <div className={styles.studentsBox}>
+          {students.map((student) => (
+            <BaseListItem
+              key={student.memberId}
+              content={student.studentName}
+              phone={student.studentPhoneNumber}
+              email={student.studentEmail}
+              tagTitle={statusMap[student.registrationStatus] || ' '}
+              studentId={student.memberId}
+              courseId={courseId}
+            />
+          ))}
+        </div>
       </div>
       <Modal content={inputBox} isOpen={openModal} onClose={() => setOpenModal(false)} />
     </>

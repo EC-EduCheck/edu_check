@@ -48,7 +48,7 @@ export default function Login() {
       );
     } catch (error) {
       // TODO: BE에서 에러처리 후 응답 메시지 출력으로 변경
-      console.log(error);
+      console.error(error);
       alert('로그인에 실패했습니다. 아이디 혹은 비밀번호를 확인하세요');
       setIsLoginButtonEnable(true);
     }

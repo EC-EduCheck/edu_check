@@ -30,12 +30,10 @@ export default function StaffAttendanceDetail() {
 
   useEffect(() => {
     const studentAttendanceById = async () => {
-      console.log(accessToken);
       if (!courseId || !studentId || !accessToken) return;
       try {
         const response = await attendanceApi.getStudentAttendances(courseId, studentId);
         const studentAttendanceData = response.data.data;
-        console.log('세부 출결조회', studentAttendanceData);
         setStudentAttendance(studentAttendanceData);
       } catch (error) {
         console.error('수강생 출결 현황 조회 실패:', error);

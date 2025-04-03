@@ -47,7 +47,6 @@ export default function StudentSetting() {
     const fetchMyProfile = async () => {
       try {
         const response = await profileApi.getMyProfile();
-        console.log(response);
         setProfileData((prev) => ({
           ...prev,
           ...response.data.data,

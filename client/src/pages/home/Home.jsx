@@ -11,11 +11,9 @@ export default function Home() {
   const naviate = useNavigate();
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log('not loged in ');
       naviate('/login', { replace: true });
     } else {
       const role = user?.role;
-      console.log(user);
     }
   }, [isLoggedIn]);
 

@@ -91,7 +91,6 @@ export default function SideBar() {
 
   useEffect(() => {
     if (coords) {
-      // console.log('위도:', coords.latitude, '경도:', coords.longitude);
       submitAttendanceAPI(coords.latitude, coords.longitude);
     } else if (error) {
       console.error('위치 정보 오류:', error);
@@ -102,9 +101,7 @@ export default function SideBar() {
   const submitAttendanceAPI = async (latitude, longitude) => {
     try {
       const data = await attendanceApi.submitAttendance(latitude, longitude);
-      console.log(data);
       alert(data.message);
-      // console.log(data);
       dispatch(checkIn());
     } catch (error) {
       console.error('출석 체크 오류:', error);

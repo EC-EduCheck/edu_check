@@ -35,7 +35,6 @@ export default function StudentAttendanceAbsence() {
     1: 'EARLY_LEAVE',
     2: 'LATE',
   };
-  console.log(isActiveIndex);
   const [uploadData, setUploadData] = useState({
     category: categoryMap[isActiveIndex],
     startDate: '',

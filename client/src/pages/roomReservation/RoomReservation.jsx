@@ -112,12 +112,10 @@ const RoomReservation = () => {
 
     try {
       const response = await reservationApi.createReservation(campusId, requestBody);
-      console.log(response);
       if (response.status === 201) {
         alert('예약이 완료되었습니다.');
 
         // 성공적으로 예약이 되었을 때 UI에 예약 추가
-        console.log(response.data.data.reservationId);
         const newEvent = {
           id: response.data.data.reservationId,
           resourceId: resourceId,
@@ -139,7 +137,6 @@ const RoomReservation = () => {
 
   const cancelReservation = async (eventId, event) => {
     setIsOpen(false);
-    console.log(eventId);
 
     try {
       const response = await reservationApi.cancelReservation(campusId, eventId);
