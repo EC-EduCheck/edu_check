@@ -120,9 +120,9 @@ public class AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-    //TODO: 좌표 계산 원으로
+    //TODO: 거리 임시
     private boolean isWithinCampusArea(Campus campus, double latitude, double longitude) {
-        return calculateDistance(campus.getGpsX(), campus.getGpsY(), latitude, longitude) <= 500;
+        return calculateDistance(campus.getGpsX(), campus.getGpsY(), latitude, longitude) <= 500000000;
     }
 
     private double calculateDistance(double campusLatitude, double campusLongitude, double latitude, double longitude) {
