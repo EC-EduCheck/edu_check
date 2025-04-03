@@ -115,8 +115,11 @@ public class AbsenceAttendanceService {
     public CreateAbsenceAttendanceResponseDto createAbsenceAttendance(Member member, Long courseId, CreateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
 
         validateRegistrationCourse(member, courseId);
+
         Course course = getCourseById(courseId);
         validateAbsenceAttendanceDate(requestDto.getStartDate(), requestDto.getEndDate(), course);
+        validateDuplicateAbsenceAttendance(member, course, requestDto.getStartDate(), requestDto.getEndDate());
+
 
         AbsenceAttendance absenceAttendance = AbsenceAttendance.builder()
                 .course(course)
@@ -134,8 +137,17 @@ public class AbsenceAttendanceService {
         return CreateAbsenceAttendanceResponseDto.from(savedAbsenceAttendance);
     }
 
+    private void validateDuplicateAbsenceAttendance(Member member, Course course, LocalDate startDate, LocalDate endDate) {
+        boolean isDuplicate = absenceAttendanceRepository.existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                member.getStudent(), course, endDate, startDate);
+
+        if (isDuplicate) {
+            throw new InvalidRequestException("해당 기간에 이미 유고결석 신청이 존재합니다.");
+        }
+    }
+
     private void validateAbsenceAttendanceDate(LocalDate startDate, LocalDate endDate, Course course) {
-        if (startDate.isBefore(course.getStartDate()) || endDate.isAfter(course.getStartDate())) {
+        if (startDate.isBefore(course.getStartDate()) || endDate.isAfter(course.getEndDate())) {
             throw new InvalidRequestException("유고결석 신청 기간은 교육 과정 기간 내에 있어야 합니다.");
         }
 
