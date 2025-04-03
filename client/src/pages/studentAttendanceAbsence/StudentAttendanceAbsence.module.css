@@ -70,6 +70,7 @@
 .submitButton {
   display: flex;
   justify-content: center;
+  margin-top: 50px;
 }
 
 .editInputBox {
@@ -79,7 +80,7 @@
   gap: 0.5rem;
   padding: 2rem;
   text-align: left;
-  align-items: flex-start; 
+  align-items: flex-start;
 }
 
 .editInputBox,

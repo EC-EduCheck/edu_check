@@ -13,6 +13,7 @@ import org.example.educheck.domain.course.repository.CourseRepository;
 import org.example.educheck.domain.lecture.entity.Lecture;
 import org.example.educheck.domain.lecture.repository.LectureRepository;
 import org.example.educheck.domain.member.entity.Member;
+import org.example.educheck.domain.member.entity.Role;
 import org.example.educheck.domain.member.repository.MemberRepository;
 import org.example.educheck.domain.member.repository.StaffRepository;
 import org.example.educheck.domain.member.staff.entity.Staff;
@@ -57,7 +58,7 @@ public class AttendanceService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
 
-        if (!isStudent(member)){
+        if (!isStudent(member)) {
             throw new IllegalArgumentException("학생이 아닙니다.");
         }
 
@@ -89,7 +90,7 @@ public class AttendanceService {
         LocalTime currentTime = LocalTime.now();
         Duration timeDiff = Duration.between(todayLecture.getStartTime(), currentTime);
 
-        if(!isWithinLectureTimeRange(todayLecture, currentTime)){
+        if (!isWithinLectureTimeRange(todayLecture, currentTime)) {
             throw new IllegalArgumentException("출석 가능한 시간이 아닙니다.");
         }
 
@@ -173,9 +174,10 @@ public class AttendanceService {
                 .orElseThrow(() -> new ResourceNotFoundException("관리자가 해당하는 강의를 가지고 있지 않습니다."));
     }
 
-    private boolean isStudent(Member member){
-        return "STUDENT".equals(member.getRole());
+    private boolean isStudent(Member member) {
+        return Role.STUDENT.equals(member.getRole());
     }
+
     @Transactional
     public AttendanceStatus checkOut(UserDetails user, AttendanceCheckinRequestDto requestDto) {
 
@@ -183,7 +185,7 @@ public class AttendanceService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자 정보를 찾을 수 없습니다."));
 
-        if (!isStudent(member)){
+        if (!isStudent(member)) {
             throw new IllegalArgumentException("학생이 아닙니다.");
         }
 

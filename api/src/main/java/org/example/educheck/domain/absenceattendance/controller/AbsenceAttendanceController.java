@@ -115,8 +115,7 @@ public class AbsenceAttendanceController {
                                                                                                      @PathVariable Long courseId,
                                                                                                      @PageableDefault(sort = "createdAt",
                                                                                                              direction = Sort.Direction.DESC,
-                                                                                                             size = 20) Pageable pageable) {
-
+                                                                                                             size = 4) Pageable pageable) {
 
         return ResponseEntity.ok(
                 ApiResponse.ok("유고 결석 신청 목록 조회 성공",

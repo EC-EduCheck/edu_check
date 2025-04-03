@@ -29,8 +29,15 @@ export default function StudentAttendanceAbsence() {
   const [files, setFiles] = useState(null);
   const [fileNames, setFileNames] = useState('');
   const navigate = useNavigate();
+  const [isActiveIndex, setIsActiveIndex] = useState(0);
+  const categoryMap = {
+    0: 'ABSENCE',
+    1: 'EARLY_LEAVE',
+    2: 'LATE',
+  };
+  console.log(isActiveIndex);
   const [uploadData, setUploadData] = useState({
-    category: '',
+    category: categoryMap[isActiveIndex],
     startDate: '',
     endDate: '',
     reason: '',
@@ -38,7 +45,7 @@ export default function StudentAttendanceAbsence() {
 
   const resetFormFields = () => {
     setUploadData({
-      category: categoryMap[isActiveIndex], 
+      category: categoryMap[isActiveIndex],
       startDate: '',
       endDate: '',
       reason: '',
@@ -170,12 +177,6 @@ export default function StudentAttendanceAbsence() {
     alert('수정이 완료되었습니다.');
   };
 
-  const categoryMap = {
-    0: 'ABSENCE',
-    1: 'EARLY_LEAVE',
-    2: 'LATE',
-  };
-
   const inputBox = (
     <>
       <RoundButton title="결석" />
@@ -256,7 +257,6 @@ export default function StudentAttendanceAbsence() {
 
   const list = ['결석', '조퇴', '지각'];
 
-  const [isActiveIndex, setIsActiveIndex] = useState(0);
   const handleActiveFilter = (index) => {
     setIsActiveIndex(index);
 
