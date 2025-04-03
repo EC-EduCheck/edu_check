@@ -25,6 +25,7 @@ export default function StudentAttendanceAbsence() {
   const [file, setFile] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
   const fileInputRef = useRef(null);
+  const [fileObject, setFileObject] = useState(null);
 
   useEffect(() => {
     const fetchAbsenceList = async (courseId) => {
@@ -49,6 +50,13 @@ export default function StudentAttendanceAbsence() {
       fetchAbsenceList(courseId);
     }
   }, [courseId]);
+
+  const handleFileChange = (e) => {
+    // 이벤트에서 직접 파일 객체 가져오기
+    const selectedFile = e.target.files[0];
+    console.log("파일 선택됨:", selectedFile);
+    setFileObject(selectedFile);
+  };
 
   const handleTagChange = (item) => {
     setCurrentItem(item);
@@ -98,44 +106,60 @@ export default function StudentAttendanceAbsence() {
     </>
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!startDate || !endDate) {
       alert('시작일과 종료일을 입력해주세요.');
       return;
     }
 
-    const formatDate = (date) => {
-      return date
-        .toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-        .replace(/\. /g, '-')
-        .replace(/\./g, '');
-    };
-
-    const newItem = {
-      absenceAttendanceId: Date.now(),
-      startDate: formatDate(startDate),
-      endDate: formatDate(endDate),
-      category: categoryMap[isActiveIndex],
-      isApprove: '대기',
-      approvedDate: formatDate(new Date()),
-    };
-
-    setAbsenceList((prevList) => [newItem, ...prevList]);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    if (!reason) {
+      alert('사유를 입력해주세요.');
+      return;
     }
 
-    setStartDate(null);
-    setEndDate(null);
-    setReason('');
-    setFile(null);
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+      };
+      const fileInput = fileInputRef.current;
+      const file = fileInput?.files[0];
+      console.log('선택된 파일:', file);
+    try {
+      const absenceData = {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        category: categoryMap[isActiveIndex],
+        reason: reason,
+        file: file,
+      };
 
-    alert('신청이 완료되었습니다.');
+      const response = await absenceAttendancesApi.submitAbsenceAttendance(courseId, absenceData);
+
+      if (response.data && response.data.data) {
+        setAbsenceList((prevList) => [response.data.data, ...prevList]);
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+
+        setStartDate(null);
+        setEndDate(null);
+        setReason('');
+        setFile(null);
+
+        alert('유고 결석 신청이 완료되었습니다.');
+      }
+    } catch (error) {
+      console.error('유고 결석 신청 실패:', error);
+
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`신청 실패: ${error.response.data.message}`);
+      } else {
+        alert('유고 결석 신청 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   const list = ['결석', '조퇴', '지각'];
