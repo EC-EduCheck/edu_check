@@ -98,6 +98,11 @@ form input {
   font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
 }
 
+input {
+  border: none;
+  font-family: Pretendard, 'Pretendard Variable', 'Noto Sans KR', sans-serif;
+}
+
 ol,
 ul,
 li {

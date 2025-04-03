@@ -102,7 +102,6 @@ export default function StaffStudentManage() {
         updatedBirthday.day = '';
       }
 
-
       return updatedBirthday;
     });
   };
@@ -207,8 +206,14 @@ export default function StaffStudentManage() {
   return (
     <>
       <div>
-        <MainButton title="학습자 등록" handleClick={() => setOpenModal(true)} isEnable={true} />
         <div className={styles.studentsBox}>
+          <div>
+            <MainButton
+              title="학습자 등록"
+              handleClick={() => setOpenModal(true)}
+              isEnable={true}
+            />
+          </div>
           {students.map((student) => (
             <BaseListItem
               key={student.memberId}
