@@ -74,7 +74,7 @@ public class MeetingRoomReservationService {
         int availableTime = 120 - totalReservationMinutesForMember;
 
         log.info("totalMinAfterRequest : {}", totalMinAfterRequest);
-        if (totalMinAfterRequest >= 120) {
+        if (totalMinAfterRequest > 120) {
             throw new InvalidRequestException(String.format("하루에 총 2시간까지 예약할 수 있습니다. 오늘 가능한 시간은 %d분 입니다.", availableTime));
         }
     }
