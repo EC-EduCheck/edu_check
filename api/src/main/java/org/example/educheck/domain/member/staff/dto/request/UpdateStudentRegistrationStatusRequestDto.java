@@ -10,6 +10,6 @@ import org.example.educheck.domain.registration.entity.RegistrationStatus;
 @NoArgsConstructor
 public class UpdateStudentRegistrationStatusRequestDto {
 
-    private RegistrationStatus registrationStatus;
+    private RegistrationStatus status;
 
 }

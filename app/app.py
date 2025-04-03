@@ -29,7 +29,7 @@ cnxpool = pooling.MySQLConnectionPool(pool_name="pool", pool_size=5, **dbconfig)
 
 def get_data_from_db(member_id, course_id):
 
-    status_mapper = {
+    statusMapper = {
         "ATTENDANCE": "출석",
         "LATE": "지각",
         "EARLY_LEAVE": "조퇴",
@@ -44,7 +44,7 @@ def get_data_from_db(member_id, course_id):
     WHERE member_id = %s AND course_id = %s
 """
         data = pd.read_sql(query, conn, params=(member_id, course_id))
-        data["attendance_status"] = data["attendance_status"].replace(status_mapper)
+        data["attendance_status"] = data["attendance_status"].replace(statusMapper)
         data["lecture_date"] = data["lecture_date"].apply(
             lambda x: str(x) if pd.notnull(x) else None
         )

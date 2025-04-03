@@ -53,14 +53,14 @@ public class StaffService {
         Registration registration = registrationRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 학생의 수강 정보를 찾을 수 없습니다."));
 
-        registration.setRegistrationStatus(requestDto.getRegistrationStatus());
+        registration.setRegistrationStatus(requestDto.getStatus());
 
         return UpdateStudentRegistrationStatusResponseDto.from(
                 studentId,
                 courseId,
                 studentMember.getName(),
                 course.getName(),
-                requestDto.getRegistrationStatus()
+                requestDto.getStatus()
         );
     }
 
