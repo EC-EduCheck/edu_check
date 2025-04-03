@@ -15,14 +15,13 @@ export const absenceAttendancesApi = {
   getAbsenceAttendanceListByStudent: async (courseId) =>
     await apiInstance.get(`/my/course/${courseId}/absence-attendances`),
 
-  submitAbsenceAttendance: async (courseId, absenceData) => {
-    console.log('API 요청 데이터:', absenceData);
-    console.log('file 객체:', absenceData.file);
-    await apiInstance.post(`${baseURL}/my/course/${courseId}/absence-attendances`, formData, {
+  submitAbsenceAttendance: async (courseId, data) => {
+    const response = await apiInstance.post(`/my/course/${courseId}/absence-attendances`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+    return response;
   },
   deleteAbsenceAttendance: async (courseId, absenceAttendancesId)=>{
     await apiInstance.delete(`/my/course/${courseId}/absence-attendances/${absenceAttendancesId}`)

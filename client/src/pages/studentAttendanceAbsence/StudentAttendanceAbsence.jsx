@@ -8,9 +8,11 @@ import NewInputBox from '../../components/inputBox/newInputBox/NewInputBox';
 import Modal from '../../components/modal/Modal';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-import { ko } from 'date-fns/locale';
+import { fi, ko } from 'date-fns/locale';
 import { absenceAttendancesApi } from '../../api/absenceAttendancesApi';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { URL_PATHS } from '../../constants/urlPaths';
 
 export default function StudentAttendanceAbsence() {
   const courseId = useSelector((state) => state.auth.user.courseId);
@@ -22,40 +24,63 @@ export default function StudentAttendanceAbsence() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
   const fileInputRef = useRef(null);
-  const [fileObject, setFileObject] = useState(null);
+  const [files, setFiles] = useState(null);
+  const [fileNames, setFileNames] = useState('');
+  const navigate = useNavigate();
+  const [uploadData, setUploadData] = useState({
+    category: '',
+    startDate: '',
+    endDate: '',
+    reason: '',
+  });
+
+  const resetFormFields = () => {
+    setUploadData({
+      category: categoryMap[isActiveIndex], 
+      startDate: '',
+      endDate: '',
+      reason: '',
+    });
+    setFiles(null);
+    setFileNames('');
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const fetchAbsenceList = async (courseId) => {
+    try {
+      setLoading(true);
+      const response = await absenceAttendancesApi.getAbsenceAttendanceListByStudent(courseId);
+
+      if (response.data && response.data.data && response.data.data.content) {
+        setAbsenceList(response.data.data.content);
+      } else {
+        setAbsenceList([]);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error('유고 결석 데이터 조회 실패:', err);
+      setError('유고 결석 데이터를 불러오는데 실패했습니다.');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAbsenceList = async (courseId) => {
-      try {
-        setLoading(true);
-        const response = await absenceAttendancesApi.getAbsenceAttendanceListByStudent(courseId);
-
-        if (response.data && response.data.data && response.data.data.content) {
-          setAbsenceList(response.data.data.content);
-        } else {
-          setAbsenceList([]);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error('유고 결석 데이터 조회 실패:', err);
-        setError('유고 결석 데이터를 불러오는데 실패했습니다.');
-        setLoading(false);
-      }
-    };
-
     if (courseId) {
       fetchAbsenceList(courseId);
     }
   }, [courseId]);
 
   const handleFileChange = (e) => {
-    // 이벤트에서 직접 파일 객체 가져오기
-    const selectedFile = e.target.files[0];
-    console.log("파일 선택됨:", selectedFile);
-    setFileObject(selectedFile);
+    const selectedFiles = Array.from(e.target.files);
+    const names = selectedFiles.map((file) => file.name).join(',');
+
+    setFiles(selectedFiles);
+    setFileNames(names);
   };
 
   const handleTagChange = (item) => {
@@ -151,16 +176,49 @@ export default function StudentAttendanceAbsence() {
     2: 'LATE',
   };
 
-  const handleSubmit = async () => {
-    if (!startDate || !endDate) {
-      alert('시작일과 종료일을 입력해주세요.');
-      return;
-    }
+  const inputBox = (
+    <>
+      <RoundButton title="결석" />
+      <RoundButton title="조퇴" />
+      <RoundButton title="지각" />
+      <div className={styles.inputContainer}>
+        <label>신청날짜</label>
+        <input
+          className={styles.smallInputBox}
+          placeholder="2025.03.31"
+          readOnly
+          value={new Date().toISOString().split('T')[0].replace(/-/g, '.')}
+        ></input>
+        <label>신청기간</label>
+        <input
+          className={styles.smallInputBox}
+          placeholder="2025.03.31-2025.04.01"
+          readOnly
+          value={
+            currentItem
+              ? `${currentItem.startDate.replace(/-/g, '.')}-${currentItem.endDate.replace(/-/g, '.')}`
+              : ''
+          }
+        ></input>
+        <label>서류</label>
+        <input className={styles.smallInputBox} placeholder="파일을 첨부해주세요."></input>
+        <label>사유</label>
+        <input className={styles.smallInputBox} placeholder="자세한 사유을 입력해주세요."></input>
+      </div>
+    </>
+  );
 
-    if (!reason) {
-      alert('사유를 입력해주세요.');
-      return;
-    }
+  const handleOnChange = (name, value) => {
+    setUploadData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
 
     const formatDate = (date) => {
       const year = date.getFullYear();
@@ -168,42 +226,31 @@ export default function StudentAttendanceAbsence() {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
-    const fileInput = fileInputRef.current;
-    const file = fileInput?.files[0];
-    console.log('선택된 파일:', file);
+
+    const jsonData = {
+      startDate: formatDate(uploadData.startDate),
+      endDate: formatDate(uploadData.endDate),
+      category: uploadData.category,
+      reason: uploadData.reason,
+    };
+
+    formData.append('data', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
     try {
-      const absenceData = {
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        category: categoryMap[isActiveIndex],
-        reason: reason,
-        file: file,
-      };
-
-      const response = await absenceAttendancesApi.submitAbsenceAttendance(courseId, absenceData);
-
-      if (response.data && response.data.data) {
-        setAbsenceList((prevList) => [response.data.data, ...prevList]);
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-
-        setStartDate(null);
-        setEndDate(null);
-        setReason('');
-        setFile(null);
-
+      const response = await absenceAttendancesApi.submitAbsenceAttendance(courseId, formData);
+      if (response.status === 200 || response.status === 201) {
         alert('유고 결석 신청이 완료되었습니다.');
+        resetFormFields();
+        if (courseId) {
+          fetchAbsenceList(courseId);
+        }
       }
     } catch (error) {
-      console.error('유고 결석 신청 실패:', error);
-
-      if (error.response && error.response.data && error.response.data.message) {
-        alert(`신청 실패: ${error.response.data.message}`);
-      } else {
-        alert('유고 결석 신청 중 오류가 발생했습니다.');
-      }
+      console.error(error);
     }
   };
 
@@ -212,6 +259,11 @@ export default function StudentAttendanceAbsence() {
   const [isActiveIndex, setIsActiveIndex] = useState(0);
   const handleActiveFilter = (index) => {
     setIsActiveIndex(index);
+
+    setUploadData((prev) => ({
+      ...prev,
+      category: categoryMap[index],
+    }));
   };
 
   const [editActiveIndex, setEditActiveIndex] = useState(0);
@@ -315,7 +367,7 @@ export default function StudentAttendanceAbsence() {
             innerRef={fileInputRef}
           />
           <div className={styles.editReason}>
-            <NewInputBox label="사유" value={reason} onChange={(e) => setReason(e.target.value)} />
+            <NewInputBox label="사유" value={reason} onChange={handleOnChange} />
           </div>
         </div>
       </div>
@@ -326,20 +378,20 @@ export default function StudentAttendanceAbsence() {
     <>
       <div className={styles.LeftLineListItemDisplay}>
         <div className={styles.absenceLeftLineListItem}>
-          <p className="subTitle">신청 내역</p>
+          <p className="subTitle">신청 내역(페이지네이션 필요)</p>
           <div className={styles.absenceAttendanceList}>{absenceListItems}</div>
         </div>
 
         <div className={styles.absenceDashBoardItem}>
-          <p className="subTitle">유고 결석 내역</p>
+          <p className="subTitle">유고 결석 신청</p>
           <DashBoardItem>
             <div className={styles.inputBox}>
               <div className={styles.categoryButton}>{roundButtons}</div>
               <p className={styles.termTitle}>기간</p>
               <div className={styles.dateInputBox}>
                 <DatePicker
-                  selected={startDate}
-                  onChange={setStartDate}
+                  selected={uploadData.startDate}
+                  onChange={(data) => handleOnChange('startDate', data)}
                   dateFormat="yyyy-MM-dd"
                   className={styles.dateInput}
                   locale={ko}
@@ -349,8 +401,8 @@ export default function StudentAttendanceAbsence() {
                 />
                 <span className={styles.dateSeparator}>~</span>
                 <DatePicker
-                  selected={endDate}
-                  onChange={setEndDate}
+                  selected={uploadData.endDate}
+                  onChange={(data) => handleOnChange('endDate', data)}
                   dateFormat="yyyy-MM-dd"
                   className={styles.dateInput}
                   locale={ko}
@@ -365,21 +417,24 @@ export default function StudentAttendanceAbsence() {
                   label="서류"
                   title="파일 선택 또는 끌어놓기..."
                   type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  isMultiple={true}
+                  onChange={handleFileChange}
                   innerRef={fileInputRef}
                 />
                 <div className={styles.reason}>
                   <NewInputBox
                     label="사유"
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
+                    name="reason"
+                    type="text"
+                    value={uploadData.reason}
+                    onChange={(event) => handleOnChange('reason', event.target.value)}
                   />
                 </div>
               </div>
-            </div>
 
-            <div className={styles.submitButton}>
-              <MainButton isEnable={true} title="신청" handleClick={handleSubmit} />
+              <div className={styles.submitButton}>
+                <MainButton isEnable={true} title="신청" handleClick={handleSubmit} />
+              </div>
             </div>
           </DashBoardItem>
         </div>
