@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.educheck.global.common.dto.ApiResponse;
 import org.example.educheck.global.common.exception.ErrorCode;
 import org.example.educheck.global.common.exception.custom.LoginValidationException;
+import org.example.educheck.global.common.exception.custom.auth.EmailNotFoundException;
 import org.example.educheck.global.common.exception.custom.common.GlobalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -117,5 +118,13 @@ public class GlobalExceptionHandler {
                 .status(ErrorCode.RESOURCE_NOT_FOUND.getStatus())
                 .body(ApiResponse.error(ErrorCode.RESOURCE_NOT_FOUND.getMessage(),
                         ErrorCode.RESOURCE_NOT_FOUND.getCode()));
+    }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEmailNotFoundException(EmailNotFoundException ex) {
+        return ResponseEntity
+                .status(ErrorCode.EMAIL_NOT_FOUND.getStatus())
+                .body(ApiResponse.error(ErrorCode.EMAIL_NOT_FOUND.getMessage(),
+                        ErrorCode.EMAIL_NOT_FOUND.getCode()));
     }
 }

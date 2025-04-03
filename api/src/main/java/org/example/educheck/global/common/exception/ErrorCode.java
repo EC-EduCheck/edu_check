@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     //0000 회원
+    EMAIL_NOT_FOUND(HttpStatus.UNAUTHORIZED, "0000", "인증 정보를 찾을 수 없습니다."),
     //1000 예약
     RESERVATION_CONFLICT(HttpStatus.CONFLICT, "1000", "해당 시간에는 이미 예약이 있습니다. 다른 시간을 선택해주세요."),
 
