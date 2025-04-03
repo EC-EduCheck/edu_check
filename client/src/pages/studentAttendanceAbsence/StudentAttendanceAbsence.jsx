@@ -25,7 +25,15 @@ export default function StudentAttendanceAbsence() {
   const [file, setFile] = useState(null);
   const [currentItem, setCurrentItem] = useState(null);
   const fileInputRef = useRef(null);
-  const [fileObject, setFileObject] = useState(null);
+  const [files, setFiles] = useState(null);
+  const [fileNames, setFileNames] = useState('');
+  const [uploadData, setUploadData] = useState({
+    category: '',
+    startDate: '',
+    endDate: '',
+    // files: [],
+    reason: '',
+  });
 
   useEffect(() => {
     const fetchAbsenceList = async (courseId) => {
@@ -52,10 +60,18 @@ export default function StudentAttendanceAbsence() {
   }, [courseId]);
 
   const handleFileChange = (e) => {
-    // 이벤트에서 직접 파일 객체 가져오기
-    const selectedFile = e.target.files[0];
-    console.log("파일 선택됨:", selectedFile);
-    setFileObject(selectedFile);
+    //이벤트 객체를 통해서 선택된 파일 정보에 접근
+    //선택한 파일들을 가져오는데, 실제 객체가 아니라 map 돌리기 위해 배여로 변환
+    const selectedFiles = Array.from(e.target.files);
+    //변환된 파일 이름 처리하기, 다중이라 사용자에게 어떤 파일이 선택되었는지 보여줘야 함
+    const names = selectedFiles.map((file) => file.name).join(',');
+
+    //서버로 전송하기 위한 파일객체 상태 관리
+    setFiles(selectedFiles);
+    console.log('업로드한 파일 목록', selectedFiles);
+
+    setFileNames(names);
+    console.log('보여줄 파일들', fileNames);
   };
 
   const handleTagChange = (item) => {
@@ -132,60 +148,111 @@ export default function StudentAttendanceAbsence() {
     2: 'LATE',
   };
 
-  const handleSubmit = async () => {
-    if (!startDate || !endDate) {
-      alert('시작일과 종료일을 입력해주세요.');
-      return;
-    }
+  const inputBox = (
+    <>
+      <RoundButton title="결석" />
+      <RoundButton title="조퇴" />
+      <RoundButton title="지각" />
+      <div className={styles.inputContainer}>
+        <label>신청날짜</label>
+        <input
+          className={styles.smallInputBox}
+          placeholder="2025.03.31"
+          readOnly
+          value={new Date().toISOString().split('T')[0].replace(/-/g, '.')}
+        ></input>
+        <label>신청기간</label>
+        <input
+          className={styles.smallInputBox}
+          placeholder="2025.03.31-2025.04.01"
+          readOnly
+          value={
+            currentItem
+              ? `${currentItem.startDate.replace(/-/g, '.')}-${currentItem.endDate.replace(/-/g, '.')}`
+              : ''
+          }
+        ></input>
+        <label>서류</label>
+        <input className={styles.smallInputBox} placeholder="파일을 첨부해주세요."></input>
+        <label>사유</label>
+        <input className={styles.smallInputBox} placeholder="자세한 사유을 입력해주세요."></input>
+      </div>
+    </>
+  );
 
-    if (!reason) {
-      alert('사유를 입력해주세요.');
-      return;
-    }
+  // const handleOnChange = (event) => {
+  //   if (event && event.target) {
+  //     const { name, value } = event.target;
 
+  //     console.log(name);
+  //     console.log(value);
+
+  //     setUploadData((prev) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+
+  //     console.log(uploadData);
+  //     //Date Picker인 경우
+  //   } else if (event instanceof Date) {
+  //     console.log(event);
+  //     // setUploadData((prev) => ({
+  //     //   ...prev,
+  //     //   [value] = name,
+  //     // })
+  //   }
+  // };
+
+  const handleOnChange = (name, value) => {
+    if (value instanceof Date) {
+      console.log('선택된 날짜:', value);
+
+      setUploadData((prev) => ({
+        ...prev,
+        [name]: value, // 'startDate'에 날짜 값 저장
+      }));
+    } else if (value && value.target) {
+      const { name: eventName, value: eventValue } = value.target;
+
+      console.log('입력 변경:', eventName, eventValue);
+
+      setUploadData((prev) => ({
+        ...prev,
+        [eventName || name]: eventValue,
+      }));
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    //FormData 객체 생성
+    const formData = new FormData();
+
+    //FormData객체에 다중파일 첨부하기
+    files.forEach((file) => {
+      formData.append('file', file);
+    });
+
+    // 날짜 포맷 함수
     const formatDate = (date) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
-      };
-      const fileInput = fileInputRef.current;
-      const file = fileInput?.files[0];
-      console.log('선택된 파일:', file);
-    try {
-      const absenceData = {
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        category: categoryMap[isActiveIndex],
-        reason: reason,
-        file: file,
-      };
+    };
 
-      const response = await absenceAttendancesApi.submitAbsenceAttendance(courseId, absenceData);
+    // requestBody 내용 첨부
+    const jsonData = {
+      startDate: formatDate(uploadData.startDate),
+      endDate: formatDate(uploadData.endDate),
+      category: categoryMap[isActiveIndex],
+      reason: uploadData.reason,
+    };
 
-      if (response.data && response.data.data) {
-        setAbsenceList((prevList) => [response.data.data, ...prevList]);
+    formData.append('data', JSON.stringify(jsonData));
 
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-
-        setStartDate(null);
-        setEndDate(null);
-        setReason('');
-        setFile(null);
-
-        alert('유고 결석 신청이 완료되었습니다.');
-      }
-    } catch (error) {
-      console.error('유고 결석 신청 실패:', error);
-
-      if (error.response && error.response.data && error.response.data.message) {
-        alert(`신청 실패: ${error.response.data.message}`);
-      } else {
-        alert('유고 결석 신청 중 오류가 발생했습니다.');
-      }
-    }
+    //API 호출
   };
 
   const list = ['결석', '조퇴', '지각'];
@@ -193,6 +260,11 @@ export default function StudentAttendanceAbsence() {
   const [isActiveIndex, setIsActiveIndex] = useState(0);
   const handleActiveFilter = (index) => {
     setIsActiveIndex(index);
+
+    setUploadData((prev) => ({
+      ...prev,
+      category: categoryMap[index],
+    }));
   };
 
   const [editActiveIndex, setEditActiveIndex] = useState(0);
@@ -312,15 +384,15 @@ export default function StudentAttendanceAbsence() {
         </div>
 
         <div className={styles.absenceDashBoardItem}>
-          <p className="subTitle">유고 결석 내역</p>
+          <p className="subTitle">유고 결석 신청</p>
           <DashBoardItem>
             <div className={styles.inputBox}>
               <div className={styles.categoryButton}>{roundButtons}</div>
               <p className={styles.termTitle}>기간</p>
               <div className={styles.dateInputBox}>
                 <DatePicker
-                  selected={startDate}
-                  onChange={setStartDate}
+                  selected={uploadData.startDate}
+                  onChange={(data) => handleOnChange('startDate', data)}
                   dateFormat="yyyy-MM-dd"
                   className={styles.dateInput}
                   locale={ko}
@@ -330,8 +402,8 @@ export default function StudentAttendanceAbsence() {
                 />
                 <span className={styles.dateSeparator}>~</span>
                 <DatePicker
-                  selected={endDate}
-                  onChange={setEndDate}
+                  selected={uploadData.endDate}
+                  onChange={(data) => handleOnChange('endDate', data)}
                   dateFormat="yyyy-MM-dd"
                   className={styles.dateInput}
                   locale={ko}
@@ -346,27 +418,30 @@ export default function StudentAttendanceAbsence() {
                   label="서류"
                   title="파일 선택 또는 끌어놓기..."
                   type="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  multiple={true}
+                  onChange={handleFileChange}
                   innerRef={fileInputRef}
                 />
                 <div className={styles.reason}>
                   <NewInputBox
                     label="사유"
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
+                    name="reason"
+                    type="text"
+                    value={reason || uploadData.reason}
+                    onChange={handleOnChange}
                   />
                 </div>
               </div>
-            </div>
 
-            <div className={styles.submitButton}>
-              <MainButton isEnable={true} title="신청" handleClick={handleSubmit} />
+              <div className={styles.submitButton}>
+                <MainButton isEnable={true} title="신청" handleClick={handleSubmit} />
+              </div>
             </div>
           </DashBoardItem>
         </div>
       </div>
 
-      <div className={styles.editModalContainer}>
+      {/* <div className={styles.editModalContainer}>
         <Modal
           isOpen={openModal}
           onClose={handleCloseModal}
@@ -375,7 +450,7 @@ export default function StudentAttendanceAbsence() {
           mainText={'수정'}
           content={editInputBox}
         />
-      </div>
+      </div> */}
     </>
   );
 }
