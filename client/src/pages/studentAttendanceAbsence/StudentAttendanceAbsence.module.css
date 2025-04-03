@@ -59,7 +59,7 @@
   height: 100%;
 }
 
-.InputBox {
+.inputBox {
   margin-bottom: 2rem;
 }
 
@@ -72,49 +72,51 @@
   justify-content: center;
 }
 
-/* modal창 InputBox */
-.InputBox {
+.editInputBox {
   display: flex;
   flex-direction: column;
   justify-content: left;
   gap: 0.5rem;
   padding: 2rem;
+  text-align: left;
+  align-items: flex-start; 
 }
 
-.inputContainer {
+.editInputBox,
+.editInputBox * {
+  text-align: left !important;
+}
+
+.reason,
+.editReason {
+  height: 200px;
+}
+
+.submitButton {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  width: 300px;
-  padding: 2rem 0rem;
-  gap: 0.5rem;
 }
 
-.smallInputBox {
-  width: 170%;
-  padding: var(--padding-small);
-  border: 1px solid var(--text-300);
-  border-radius: var(--border-radius-5);
-  margin: 6px 0;
-  box-sizing: border-box;
+.termTitle,
+.editTermTitle {
+  text-align: left !important;
+  display: block;
+  width: 100%;
+  margin-left: 0;
 }
 
-.smallInputBox::placeholder {
-  color: var(--text-300);
+.dateInputBox,
+.editDateInputBox,
+.textInput,
+.editTextInput {
+  width: 100%;
   text-align: left;
 }
 
-.smallInputBox:focus {
-  color: var(--text-100);
-  outline-color: var(--primary-100);
-}
-
-.birthdate {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.studentsBox p {
-  margin-top: var(--margin-small);
+.editInputBox p,
+.editInputBox label,
+.editInputBox div {
+  text-align: left !important;
+  margin-left: 0;
+  margin-right: auto;
 }

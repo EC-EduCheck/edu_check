@@ -3,11 +3,11 @@ name: deploy service
 on:
   push:
     branches:
-      - main
-      - deploy/*
+      # - main
+      # - deploy/*
       - test/*
-      - deploy
-      - fix/*
+      # - deploy
+      # - fix/*
 
 jobs:
   deploy:

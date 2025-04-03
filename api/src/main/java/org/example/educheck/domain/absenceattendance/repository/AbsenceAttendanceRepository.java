@@ -15,6 +15,7 @@ public interface AbsenceAttendanceRepository extends JpaRepository<AbsenceAttend
             "a.id, a.startTime, a.endTime, a.isApprove, a.category) " +
             "FROM AbsenceAttendance a " +
             "WHERE a.course.id = :courseId AND a.student.id = :studentId " +
+            "AND a.deletionRequestedAt IS NULL " +
             "ORDER BY a.createdAt DESC",
             countQuery = "SELECT COUNT(a) FROM AbsenceAttendance a " +
                     "WHERE a.course.id = :courseId AND a.student.id = :studentId")

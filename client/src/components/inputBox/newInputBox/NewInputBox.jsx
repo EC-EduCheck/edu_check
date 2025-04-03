@@ -12,8 +12,8 @@ export default function NewInputBox({
   name,
   value,
   innerRef,
+  isMultiple,
 }) {
-
   return (
     <div className={styles.inputContainer}>
       <p className={styles.label}>
@@ -27,8 +27,9 @@ export default function NewInputBox({
         disabled={disabled}
         onChange={onChange}
         name={name}
-        value={type === "file" ? undefined : value}
+        value={type === 'file' ? undefined : value}
         ref={innerRef}
+        multiple={isMultiple}
       ></input>
       <p className={styles.content}>{content}</p>
     </div>
