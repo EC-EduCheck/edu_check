@@ -68,6 +68,12 @@ public class AbsenceAttendanceService {
         }
     }
 
+    private static void validateAttendanceAbsenceCancellable(AbsenceAttendance absenceAttendance) {
+        if (absenceAttendance.getIsApprove().equals('T') || absenceAttendance.getIsApprove().equals('F')) {
+            throw new InvalidRequestException("처리된 신청 내역은 취소할 수 없습니다.");
+        }
+    }
+
     @Transactional
     @PreAuthorize("hasAnyAuthority('MIDDLE_ADMIN')")
     public void processAbsenceAttendanceService(Long courseId, Long absenceAttendancesId, ProcessAbsenceAttendanceRequestDto requestDto, Member member) {
@@ -208,13 +214,13 @@ public class AbsenceAttendanceService {
 
         AbsenceAttendance absenceAttendance = getAbsenceAttendance(absenceAttendancesId);
         validateMatchApplicant(member, absenceAttendance);
+        validateAttendanceAbsenceCancellable(absenceAttendance);
 
         markAttachementFilesForDeletion(absenceAttendance);
 
         absenceAttendance.markDeletionRequested();
         absenceAttendanceRepository.save(absenceAttendance);
     }
-
 
     @Transactional
     public UpdateAbsenceAttendanceReponseDto updateAttendanceAbsence(Member member, Long absenceAttendancesId, UpdateAbsenceAttendacneRequestDto requestDto, MultipartFile[] files) {
