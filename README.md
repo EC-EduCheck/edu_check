@@ -1,6 +1,7 @@
 # EC(Edu Check)
 
 ## 📖프로젝트 소개
+
 > 서비스 데모 : https://edu-check.com
 - 프로젝트 기간 : 2025. 03. 10 ~ 2025. 04. 03
 - 프로젝트 참여 인원 :  ?
@@ -16,6 +17,7 @@
 
 
 ## ⚒️기술 스택
+
 - Frontend: React.js(Vite), Redux, Axios, NJavaScript ES6, Node.js v20.17.0
 - Backend: Spring Boot(Gradle) Spring Data JPA, Spring Security, Java 21
 - Database: MySQL8.0, Redis
@@ -25,8 +27,8 @@
  
 
 ## 🏛️ERD
-![edu-check (2)](https://github.com/user-attachments/assets/1635afe8-8a2a-4cb2-97e4-62bea159b7b3)
 
+![edu-check (3)](https://github.com/user-attachments/assets/4686608d-4211-4469-b015-9099bcbccb5b)
 
 
 ## 🏗️서비스 아키텍처
@@ -39,10 +41,10 @@
 - 로컬 실행 방법 설명
 - 프로젝트 실행을 위한 필요한 프로그램(도커 등)
 
-## 👶팀원들
-
 
 ## 주요 기능
 
 - 핵심 기능 설명과 이미지(또는 GIF)
 - 분량이 가장 많은 섹션이기 때문에 가능한 마지막에 작성한다.
+
+## 👶팀원들
