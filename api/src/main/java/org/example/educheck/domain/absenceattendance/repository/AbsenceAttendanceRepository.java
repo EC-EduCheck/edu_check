@@ -26,4 +26,9 @@ public interface AbsenceAttendanceRepository extends JpaRepository<AbsenceAttend
     Page<MyAbsenceAttendanceResponseDto> findByStudentIdAndCourseId(@Param("studentId") Long studentId, @Param("courseId") Long courseId, Pageable pageable);
 
     boolean existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(Student student, Course course, LocalDate endDate, LocalDate startDate);
+
+    boolean existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndDeletionRequestedAtIsNull(
+            Student student, Course course, LocalDate endDate, LocalDate startDate
+    );
+
 }

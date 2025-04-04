@@ -147,9 +147,10 @@ public class AbsenceAttendanceService {
     }
 
     private void validateDuplicateAbsenceAttendance(Member member, Course course, LocalDate startDate, LocalDate endDate) {
-        boolean isDuplicate = absenceAttendanceRepository.existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                member.getStudent(), course, endDate, startDate);
+//        boolean isDuplicate = absenceAttendanceRepository.existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+//                member.getStudent(), course, endDate, startDate);
 
+        boolean isDuplicate = absenceAttendanceRepository.existsByStudentAndCourseAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndDeletionRequestedAtIsNull(member.getStudent(), course, endDate, startDate);
         if (isDuplicate) {
             throw new InvalidRequestException("해당 기간에 이미 유고결석 신청이 존재합니다.");
         }
