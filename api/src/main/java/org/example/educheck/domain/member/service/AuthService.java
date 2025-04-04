@@ -77,7 +77,7 @@ public class AuthService {
         Registration registration = Registration.builder()
                 .student(savedStudent)
                 .course(course)
-                .registrationStatus(RegistrationStatus.PREVIOUS)
+                .registrationStatus(RegistrationStatus.PROGRESS)
                 .build();
         Registration savedRegistration = registrationRepository.save(registration);
 

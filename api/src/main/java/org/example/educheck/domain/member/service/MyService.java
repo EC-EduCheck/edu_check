@@ -9,6 +9,7 @@ import org.example.educheck.domain.member.repository.MemberRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class MyService {
                             member.getEmail(), requestDto.getCurrentPassword())
             );
 
-//            SecurityContextHolder.getContext().setAuthentication(authentication); //TODO: 삭제?
+            SecurityContextHolder.getContext().setAuthentication(authentication); //TODO: 삭제?
 
         }
         memberRepository.save(member);
