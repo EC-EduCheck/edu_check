@@ -331,7 +331,7 @@ export default function StudentAttendanceAbsence() {
     return (
       <LeftLineListItem
         key={index}
-        isClickable={true}
+        isClickable={false}
         status={statusText}
         children={modifiedItem}
         handleClick ={() => handleTagChange(item)}

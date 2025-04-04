@@ -69,7 +69,10 @@ public class AbsenceAttendanceService {
     }
 
     private static void validateAttendanceAbsenceCancellable(AbsenceAttendance absenceAttendance) {
-        if (absenceAttendance.getIsApprove().equals('T') || absenceAttendance.getIsApprove().equals('F')) {
+
+        Character isApprove = absenceAttendance.getIsApprove();
+
+        if (isApprove != null && (isApprove.equals('T') || isApprove.equals('F'))) {
             throw new InvalidRequestException("처리된 신청 내역은 취소할 수 없습니다.");
         }
     }

@@ -5,7 +5,7 @@ import MoreButton from '../../buttons/moreButton/MoreButton';
 
 
 export default function LeftLineListItem({
-  isClickable,
+  isClickable = false,
   handleClick,
   status,
   children,
